@@ -23,4 +23,6 @@ $(function(){
 	$("#play").click(start);
 	
 	$("#stop").click(stop);
+	
+	loadBass();
 });
