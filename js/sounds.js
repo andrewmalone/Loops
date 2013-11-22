@@ -5,32 +5,32 @@
 var SOUNDS = [
 	{
 		name:"kick",
-		source:"Ruffrider/Kick 3.mp3",
+		source:"Ruffrider/Kick 3.wav",
 		mute:null
 	},
 	{
 		name:"snare",
-		source:"Ruffrider/Snare base 4.mp3",
+		source:"Ruffrider/Snare base 4.wav",
 		mute:null
 	},
 	{
 		name:"rim",
-		source:"Ruffrider/Snare rim 3.mp3",
+		source:"Ruffrider/Snare rim 3.wav",
 		mute:null
 	},
 	{
 		name:"cl hat",
-		source:"Ruffrider/hihat base 3.mp3",
+		source:"Ruffrider/hihat base 3.wav",
 		mute:1
 	},
 	{
 		name:"op hat",
-		source:"Ruffrider/hihat open 3.mp3",
+		source:"Ruffrider/hihat open 3.wav",
 		mute:1
 	},
 	{
 		name:"ride",
-		source:"Ruffrider/ride 3.mp3",
+		source:"Ruffrider/ride 3.wav",
 		mute:2
 	}
 ];

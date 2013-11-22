@@ -1,13 +1,7 @@
-// Set up the global audio context
-if (typeof AudioContext !== "undefined") {
-    context = new AudioContext();
-} else if (typeof webkitAudioContext !== "undefined") {
-    context = new webkitAudioContext();
-} else {
-   // @todo some kind of graceful fail needs to go here
-}
+context = new AudioContext();
 
 var amp = null;
+//
 
 // Initialize things after the page loads
 $(function(){
@@ -16,11 +10,11 @@ $(function(){
 	
 	// set up some audio stuff
 	// this will all get moved
-	amp = context.createGainNode()
+	amp = context.createGain()
 	amp.connect(context.destination)
 	
 	// connect the buttons
 	$("#play").click(start);
-	
 	$("#stop").click(stop);
+	
 });

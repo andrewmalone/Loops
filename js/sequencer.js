@@ -3,25 +3,26 @@
  *
  * functions for looping and audio playback
  */
- 
+
 // set some global variables
 // number of steps
 // @todo Add better comments here
 var NUMSTEPS = 16;
 var steps = [];
 steps = [
-	[1,0,1,0,0,0,0,0,1,0,1,0,0,0,0,0],
-	[0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],
+	[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+	[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
 	[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
 	[1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0],
-	[0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0],
+	[0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0],
 	[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 ]
 var volumes = [];
 var rowVolumes = [];
 var currentStep = 0;
 var scheduleAhead = .1 // buffer in seconds, to set ahead 
-var looper = null; // TODO: rename (this is the animation timeout variable)
+// variable used for requestAnimate
+var looper = null;
 var tempo = 120;
 var nextStepTime = 0;
 //var queue = []; // used to match up the drawing timing with the sound
@@ -78,7 +79,7 @@ function playSound(buffer, time, volume)
 	source.connect(amp);
 	// v.connect(context.destination)
 	// v.connect(amp)
-	source.noteOn(time);
+	source.start(time);
 	scheduledSounds.push(source);	
 }
 
@@ -115,7 +116,8 @@ function loop()
 					{
 						if (scheduledSounds[j].buffer._mute == buffers[name]._mute) 
 						{
-							scheduledSounds[j].noteOff(nextStepTime);
+							scheduledSounds[j].stop(nextStepTime + 5/tempo);
+							console.log(nextStepTime);
 						}
 					}
 				}
@@ -123,6 +125,7 @@ function loop()
 				// schedule the sound
 				// playSound(buffers[name], nextStepTime, volumes[i][currentStep] * rowVolumes[i]);
 				playSound(buffers[name], nextStepTime, 75)
+				console.log(nextStepTime);
 			}
 		}
 		
