@@ -4,6 +4,7 @@ var buffers = [];
 function loadSounds() 
 {
 	// @todo create some sort of loader, to prevent playback from starting before all sounds are loaded
+	// @todo think about error handling for file types
 	SOUNDS.forEach(function(sound) {
 		loadSound(sound);
 	});
