@@ -51,7 +51,7 @@ window.cancelAnimFrame = (function(){
 function start()
 {
 	nextStepTime = context.currentTime;
-	looper = requestAnimFrame(loop)	;
+	looper = requestAnimFrame(loop);
 }
 
 /**
@@ -117,13 +117,14 @@ function loop()
 						if (scheduledSounds[j].buffer._mute == buffers[name]._mute) 
 						{
 							scheduledSounds[j].stop(nextStepTime + 5/tempo);
-							// @todo is this extra time padding needed?						}
+							// @todo is this extra time padding needed?	
+						}
 					}
 				}
 				
 				// schedule the sound
 				// playSound(buffers[name], nextStepTime, volumes[i][currentStep] * rowVolumes[i]);
-				playSound(buffers[name], nextStepTime, 75)
+				playSound(buffers[name], nextStepTime, 75);
 			}
 		}
 		
