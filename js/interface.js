@@ -18,7 +18,8 @@ function initInterface()
 	table.on("change", "input", function() {
 		var row = $(this).parentsUntil("table","tr").index();
 		var col = $(this).parentsUntil("tr").index();
-		drumPatterns[currentDrumPattern].steps[row][col] = $(this).val();
+		drumPatterns[currentDrumPattern].steps[row][col] = $(this).val() > 0 ? 1 : 0;
+		drumPatterns[currentDrumPattern].volumes[row][col] = $(this).val() / 100;
 		return false;
 	});
 }
@@ -30,7 +31,7 @@ function showDrumPattern(i)
 	$("#drumseq input").val(function(index) {
 		var row = Math.floor(index / NUMSTEPS);
 		var col = index % NUMSTEPS;
-		return drumPatterns[i].steps[row][col];
+		return drumPatterns[i].volumes[row][col] * 100;
 	});
 }
 

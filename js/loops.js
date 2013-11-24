@@ -1,6 +1,13 @@
+/*
+- Add volumes to playback and interface
+- Add row volumes to playback and interface
+- copy pattern to new
+- sequencing
+- FX? (not yet?)
+*/
+
 var context; // = new AudioContext();
 var amp;
-//
 
 // Initialize things after the page loads
 $(function(){

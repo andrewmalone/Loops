@@ -82,12 +82,12 @@ function playSound(buffer, time, volume)
 	var source = context.createBufferSource();
 	source.buffer = buffer;
 	
-	// var v = context.createGainNode();
-	// v.gain.value = exp_volume(volume);
-
-	source.connect(amp);
-	// v.connect(context.destination)
-	// v.connect(amp)
+	var v = context.createGain();
+	v.gain.value = volume;
+	// @todo - Figure out exponential volume curve!
+	
+	source.connect(v);
+	v.connect(amp)
 	source.start(time);
 	scheduledSounds.push(source);	
 }
@@ -136,7 +136,7 @@ function loop()
 				
 				// schedule the sound
 				// playSound(buffers[name], nextStepTime, volumes[i][currentStep] * rowVolumes[i]);
-				playSound(buffers[name], nextStepTime, 75);
+				playSound(buffers[name], nextStepTime, volumes[i][currentStep]);
 			}
 		}
 		
