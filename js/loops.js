@@ -1,12 +1,12 @@
 /*
 - Add row volumes to playback and interface
-- copy pattern to new
-- sequencing
+- Volume envelopes (need to add some generic functions!)
 - FX? (not yet?)
 */
 
 var context = new AudioContext(); // = new AudioContext();
-var amp;
+var amp = context.createGain();
+amp.connect(context.destination);
 
 // Initialize things after the page loads
 $(function(){
@@ -16,8 +16,8 @@ $(function(){
 	
 	// set up some audio stuff
 	// this will all get moved
-	amp = context.createGain()
-	amp.connect(context.destination)
+	//amp = context.createGain()
+	//amp.connect(context.destination)
 	
 	// connect the buttons
 	$("#play").click(start);
@@ -40,6 +40,7 @@ $(function(){
 	$("#switchPattern").click(function() {
 		switchDrumPattern($("#switch").val());
 	});
+	$("#addToSequence").click(addToSequenceList);
 	
 	// build the interface...
 	initInterface();

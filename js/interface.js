@@ -22,6 +22,17 @@ function initInterface()
 		drumPatterns[currentDrumPattern].volumes[row][col] = $(this).val() / 100;
 		return false;
 	});
+	
+	// set up the sequencer inputs
+	$("#sequence").on("change", "input", function() {
+		//console.log($(this).val(), $(this).index("#sequence input"));
+		sequence[$(this).index("#sequence input")] = $(this).val();
+	});
+	
+	$("#sequenceMode").click(function() {
+		mode = mode == "sequence" ? "loop" : "sequence";
+		$(this).text(mode);
+	});
 }
 
 function showDrumPattern(i)
@@ -42,4 +53,10 @@ function updateDrumPatternList(name, index)
 	option.val(index);
 	option.text(name);
 	$("#switch").append(option);
+}
+
+function addToSequenceList()
+{
+	$("#sequence").append($("<input type='text'>"));
+	addToSequence();	
 }

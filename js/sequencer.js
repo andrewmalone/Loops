@@ -16,6 +16,13 @@ var NUMSTEPS = BEATS_PER_MEASURE * STEPS_PER_BEAT;
 // create a default empty drum pattern
 var drumPatterns = [];
 
+// mode for switching loop/sequence
+var mode = "loop";
+
+// initialize the sequence
+var sequence = [0];
+var sequencePosition = 0;
+
 // set the current pattern to the default
 var currentDrumPattern = 0;
 
@@ -60,6 +67,13 @@ function start()
 	volume.connect(context.destination);
 	s.start(0);
 	nextStepTime = context.currentTime;
+	
+	// switch to the first sequence position if in sequence mode...
+	if (mode == "sequence")
+	{
+		sequencePosition = 0;
+		switchDrumPattern(sequence[0]);
+	}
 	looper = requestAnimFrame(loop);
 }
 
@@ -149,6 +163,17 @@ function loop()
 		currentStep++;
 		if (currentStep == NUMSTEPS) {
 			currentStep = 0;
+			// switch patterns if in sequence mode
+			if (mode == "sequence")
+			{
+				sequencePosition = (sequencePosition + 1) % sequence.length;
+				if (sequence[sequencePosition] == null)
+				{
+					sequencePosition = 0;
+				}
+				// currentDrumPattern = sequence[sequencePosition];
+				switchDrumPattern(sequence[sequencePosition]);
+			}
 		}
 	}
 }
@@ -208,4 +233,15 @@ function copyDrumPattern(name)
 	var pattern = $.extend(true,{},drumPatterns[currentDrumPattern]);
 	pattern.name = name;
 	addDrumPattern(name, pattern);
+}
+
+function addToSequence()
+{
+	sequence.push(null);
+	// updateSequenceList();
+}
+
+function removeFromSequence(i)
+{
+
 }
