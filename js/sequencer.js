@@ -184,10 +184,14 @@ function createDrumPattern(name)
 	return pattern;
 }
 
-// add a pattern and switch to it...
-function addDrumPattern(name)
+// add a pattern to the patterns array and switch to it...
+function addDrumPattern(name, pattern)
 {
-	var i = drumPatterns.push(createDrumPattern(name));
+	if (!pattern)
+	{
+		pattern = createDrumPattern(name);
+	}
+	var i = drumPatterns.push(pattern);
 	updateDrumPatternList(name, i - 1);
 	switchDrumPattern(i - 1);
 }
@@ -196,4 +200,12 @@ function switchDrumPattern(i)
 {
 	currentDrumPattern = i;
 	showDrumPattern(i);
+}
+
+// copies the current pattern into a new pattern with a new name
+function copyDrumPattern(name)
+{
+	var pattern = $.extend(true,{},drumPatterns[currentDrumPattern]);
+	pattern.name = name;
+	addDrumPattern(name, pattern);
 }

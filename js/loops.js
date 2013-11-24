@@ -1,18 +1,17 @@
 /*
-- Add volumes to playback and interface
 - Add row volumes to playback and interface
 - copy pattern to new
 - sequencing
 - FX? (not yet?)
 */
 
-var context; // = new AudioContext();
+var context = new AudioContext(); // = new AudioContext();
 var amp;
 
 // Initialize things after the page loads
 $(function(){
 	// load the sounds
-	context = new AudioContext();
+	// context = new AudioContext();
 	loadSounds();
 	
 	// set up some audio stuff
@@ -26,10 +25,16 @@ $(function(){
 	$("#addPattern").click(function() {
 		// @todo - prevent duplicate names
 		var name = $("#newPatternName").val();
-		console.log(name);
 		if (name != "")
 		{
 			addDrumPattern(name);
+		}
+	});
+	$("#copyPattern").click(function() {
+		var name = $("#newPatternName").val();
+		if (name != "")
+		{
+			copyDrumPattern(name);
 		}
 	});
 	$("#switchPattern").click(function() {
@@ -41,5 +46,4 @@ $(function(){
 	
 	// add a default pattern
 	addDrumPattern("p1")
-	
 });
