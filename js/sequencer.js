@@ -3,25 +3,33 @@
  *
  * functions for looping and audio playback
  */
- 
+
+// @todo - THINK ABOUT SEQUENCER DATA STRUCTURES!
+
 // set some global variables
 // number of steps
 // @todo Add better comments here
-var NUMSTEPS = 16;
-var steps = [];
-steps = [
-	[1,0,1,0,0,0,0,0,1,0,1,0,0,0,0,0],
-	[0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],
-	[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-	[1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0],
-	[0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0],
-	[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-]
-var volumes = [];
-var rowVolumes = [];
+var BEATS_PER_MEASURE = 4;
+var STEPS_PER_BEAT = 4;
+var NUMSTEPS = BEATS_PER_MEASURE * STEPS_PER_BEAT;
+
+// create a default empty drum pattern
+var drumPatterns = [];
+
+// mode for switching loop/sequence
+var mode = "loop";
+
+// initialize the sequence
+var sequence = [0];
+var sequencePosition = 0;
+
+// set the current pattern to the default
+var currentDrumPattern = 0;
+
 var currentStep = 0;
 var scheduleAhead = .1 // buffer in seconds, to set ahead 
-var looper = null; // TODO: rename (this is the animation timeout variable)
+// variable used for requestAnimate
+var looper = null;
 var tempo = 120;
 var nextStepTime = 0;
 //var queue = []; // used to match up the drawing timing with the sound
@@ -49,8 +57,24 @@ window.cancelAnimFrame = (function(){
  */
 function start()
 {
+	// INIT FOR iOS
+	// @todo - see if this can be refactored
+	var s = context.createBufferSource();
+	s.buffer = buffers[SOUNDS[0].name];
+	var volume = context.createGain();
+	volume.gain.value = 0;
+	s.connect(volume);
+	volume.connect(context.destination);
+	s.start(0);
 	nextStepTime = context.currentTime;
-	looper = requestAnimFrame(loop)	;
+	
+	// switch to the first sequence position if in sequence mode...
+	if (mode == "sequence")
+	{
+		sequencePosition = 0;
+		switchDrumPattern(sequence[0]);
+	}
+	looper = requestAnimFrame(loop);
 }
 
 /**
@@ -60,7 +84,7 @@ function stop()
 {
 	cancelAnimFrame(looper);
 	currentStep = 0;
-	// @todo cleanup up any scheduled nodes?
+	scheduledSounds = [];
 }
 
 /**
@@ -72,13 +96,13 @@ function playSound(buffer, time, volume)
 	var source = context.createBufferSource();
 	source.buffer = buffer;
 	
-	// var v = context.createGainNode();
-	// v.gain.value = exp_volume(volume);
-
-	source.connect(amp);
-	// v.connect(context.destination)
-	// v.connect(amp)
-	source.noteOn(time);
+	var v = context.createGain();
+	v.gain.value = volume;
+	// @todo - Figure out exponential volume curve!
+	
+	source.connect(v);
+	v.connect(amp)
+	source.start(time);
 	scheduledSounds.push(source);	
 }
 
@@ -88,8 +112,11 @@ function playSound(buffer, time, volume)
 function loop()
 {
 	looper = requestAnimFrame(loop);
+	var steps = drumPatterns[currentDrumPattern].steps;
+	var volumes = drumPatterns[currentDrumPattern].volumes;
 	
 	// clean up the scheduledSounds array for anything that has finished playing...
+	// @todo refactor so this makes sense - also remove the duplicate length calls
 	for (var i = scheduledSounds.length;i-- > 0;) 
 	{
 		if (scheduledSounds[i].playbackState == 3) 
@@ -101,7 +128,7 @@ function loop()
 	// schedule any upcoming sounds
 	while (nextStepTime < context.currentTime + scheduleAhead) 
 	{	
-		for (var i = 0,len = steps.length; i < len; i++) 
+		for (var i = 0, len_i = SOUNDS.length; i < len_i; i++) 
 		{
 			var name = SOUNDS[i].name;
 			if (steps[i][currentStep] == 1) 
@@ -111,18 +138,19 @@ function loop()
 				if (buffers[name]._mute != null) 
 				{
 				
-					for (var j = 0; j < scheduledSounds.length; j++) 
+					for (var j = 0, len_j = scheduledSounds.length; j < len_j; j++) 
 					{
 						if (scheduledSounds[j].buffer._mute == buffers[name]._mute) 
 						{
-							scheduledSounds[j].noteOff(nextStepTime);
+							scheduledSounds[j].stop(nextStepTime + 5/tempo);
+							// @todo is this extra time padding needed?	
 						}
 					}
 				}
 				
 				// schedule the sound
 				// playSound(buffers[name], nextStepTime, volumes[i][currentStep] * rowVolumes[i]);
-				playSound(buffers[name], nextStepTime, 75)
+				playSound(buffers[name], nextStepTime, volumes[i][currentStep]);
 			}
 		}
 		
@@ -133,9 +161,87 @@ function loop()
 		var stepTime = 15/tempo; 
 		nextStepTime += stepTime; 
 		currentStep++;
-		if (currentStep == 16) {
+		if (currentStep == NUMSTEPS) {
 			currentStep = 0;
+			// switch patterns if in sequence mode
+			if (mode == "sequence")
+			{
+				sequencePosition = (sequencePosition + 1) % sequence.length;
+				if (sequence[sequencePosition] == null)
+				{
+					sequencePosition = 0;
+				}
+				// currentDrumPattern = sequence[sequencePosition];
+				switchDrumPattern(sequence[sequencePosition]);
+			}
 		}
 	}
+}
+
+/**
+* creates and returns a measure object for the sequencer to use
+* currently only for steps...
+*/
+function createDrumMeasure()
+{
+	var measure = [];
+	for (var i = 0, len = SOUNDS.length; i < len; i++)
+	{
+		var row = [];
+		for (j = 0; j < NUMSTEPS; j++)
+		{
+			row[j] = 0;
+		}
+		measure[i] = row;
+	}
+	return measure;
+}
+
+function createDrumPattern(name)
+{
+	// create a new object...
+	var pattern = {
+		name: name,
+		steps: createDrumMeasure(),
+		volumes: createDrumMeasure(),
+		rowVolumes: []
+	}
+	return pattern;
+}
+
+// add a pattern to the patterns array and switch to it...
+function addDrumPattern(name, pattern)
+{
+	if (!pattern)
+	{
+		pattern = createDrumPattern(name);
+	}
+	var i = drumPatterns.push(pattern);
+	updateDrumPatternList(name, i - 1);
+	switchDrumPattern(i - 1);
+}
+
+function switchDrumPattern(i)
+{
+	currentDrumPattern = i;
+	showDrumPattern(i);
+}
+
+// copies the current pattern into a new pattern with a new name
+function copyDrumPattern(name)
+{
+	var pattern = $.extend(true,{},drumPatterns[currentDrumPattern]);
+	pattern.name = name;
+	addDrumPattern(name, pattern);
+}
+
+function addToSequence()
+{
+	sequence.push(null);
+	// updateSequenceList();
+}
+
+function removeFromSequence(i)
+{
 
 }
