@@ -90,8 +90,7 @@ function stop()
 /**
  *	Schedules an individual sound for playback
  */
-// @todo add duration here (for bass)?
-function playSound(buffer, time, volume)
+function playDrumSound(buffer, time, volume)
 {
 	var source = context.createBufferSource();
 	source.buffer = buffer;
@@ -104,6 +103,21 @@ function playSound(buffer, time, volume)
 	v.connect(amp)
 	source.start(time);
 	scheduledSounds.push(source);	
+}
+
+function playBassSound(buffer, time, volume, duration, pitch, tune)
+{
+	// var now = context.currentTime;
+	var source = context.createBufferSource();
+	source.buffer = buffer;
+	var v = context.createGain();
+	v.gain.value = volume;
+	v.gain.setTargetAtTime(0, time + duration, .1);
+	source.connect(v);
+	v.connect(amp);
+	var step = .059463094359295;
+	source.playbackRate.value = 1 + (step/100 * tune) + (step * pitch);
+	source.start(time);
 }
 
 /**
@@ -128,12 +142,12 @@ function loop()
 	// schedule any upcoming sounds
 	while (nextStepTime < context.currentTime + scheduleAhead) 
 	{	
+		// Drum sounds
 		for (var i = 0, len_i = SOUNDS.length; i < len_i; i++) 
 		{
 			var name = SOUNDS[i].name;
 			if (steps[i][currentStep] == 1) 
-			{
-				
+			{				
 				// check for mute groups
 				if (buffers[name]._mute != null) 
 				{
@@ -150,7 +164,7 @@ function loop()
 				
 				// schedule the sound
 				// playSound(buffers[name], nextStepTime, volumes[i][currentStep] * rowVolumes[i]);
-				playSound(buffers[name], nextStepTime, volumes[i][currentStep]);
+				playDrumSound(buffers[name], nextStepTime, volumes[i][currentStep]);
 			}
 		}
 		
