@@ -22,6 +22,7 @@ $(function(){
 	// connect the buttons
 	$("#play").click(start);
 	$("#stop").click(stop);
+	
 	$("#addPattern").click(function() {
 		// @todo - prevent duplicate names
 		var name = $("#newPatternName").val();
@@ -47,4 +48,5 @@ $(function(){
 	
 	// add a default pattern
 	addDrumPattern("p1")
+
 });

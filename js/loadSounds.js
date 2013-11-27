@@ -1,5 +1,5 @@
-// global array to hold the loaded sounds
-var buffers = [];
+// global object to hold the loaded sounds
+var buffers = {};
 
 function loadSounds() 
 {
@@ -8,20 +8,28 @@ function loadSounds()
 	SOUNDS.forEach(function(sound) {
 		loadSound(sound);
 	});
+	
+	BASS_SOUNDS.forEach(function(sound) {
+		loadSound({name: sound, source: "Samples/" + sound})
+	});
 }
 
-function loadSound(sound) 
+function loadSound(sound, type) 
 {
+	var callback = function(buffer)
+	{
+		if (sound.mute != undefined)
+		{
+			buffer._mute = sound.mute;
+		}
+		buffers[sound.name] = buffer;
+	};
+	
 	var request = new XMLHttpRequest();
-	request.open('GET',sound.source, true);
+	request.open('GET', sound.source, true);
 	request.responseType = 'arraybuffer';
 	request.onload = function() {
-		context.decodeAudioData(request.response,function(buffer){
-			buffer._mute = sound.mute;
-			buffers[sound.name] = buffer;
-		}, function() {
-			console.log("Error")
-		});
+		context.decodeAudioData(request.response, callback);
 	}
 	request.send();
 }
