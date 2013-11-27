@@ -4,8 +4,6 @@
  * functions for looping and audio playback
  */
 
-// @todo - THINK ABOUT SEQUENCER DATA STRUCTURES!
-
 // set some global variables
 // number of steps
 // @todo Add better comments here
@@ -15,6 +13,8 @@ var NUMSTEPS = BEATS_PER_MEASURE * STEPS_PER_BEAT;
 
 // create a default empty drum pattern
 var drumPatterns = [];
+var bassPatterns = [];
+bassPatterns[0] = createBassPattern();
 
 // mode for switching loop/sequence
 var mode = "loop";
@@ -25,6 +25,7 @@ var sequencePosition = 0;
 
 // set the current pattern to the default
 var currentDrumPattern = 0;
+var currentBassPattern = 0;
 
 var currentStep = 0;
 var scheduleAhead = .1 // buffer in seconds, to set ahead 
@@ -128,6 +129,8 @@ function loop()
 	looper = requestAnimFrame(loop);
 	var steps = drumPatterns[currentDrumPattern].steps;
 	var volumes = drumPatterns[currentDrumPattern].volumes;
+	var bass = bassPatterns[currentBassPattern];
+	var stepTime = (60 / STEPS_PER_BEAT) / tempo;
 	
 	// clean up the scheduledSounds array for anything that has finished playing...
 	// @todo refactor so this makes sense - also remove the duplicate length calls
@@ -168,11 +171,31 @@ function loop()
 			}
 		}
 		
+		// check for the bass...
+		if (bass[currentStep].note != 0)
+		{
+			// play the note...
+			var note = BASS_MAPPING[bass[currentStep].note];
+			playBassSound(
+				buffers[note.sample],
+				nextStepTime,
+				bass[currentStep].volume,
+				bass[currentStep].duration * stepTime,
+				note.pitch,
+				note.tune
+			);
+		}
+		
 		
 		// move to the next step
 		// queue.push({note:currentStep,time:nextStepTime})
+		// beats/minute
+		// how long is a beat?
+		// 60/tempo
+		// how long is a measure?
+		// (60/tempo)*4
 		// calculate the next step based on the current tempo...
-		var stepTime = 15/tempo; 
+		 
 		nextStepTime += stepTime; 
 		currentStep++;
 		if (currentStep == NUMSTEPS) {
@@ -258,4 +281,19 @@ function addToSequence()
 function removeFromSequence(i)
 {
 
+}
+
+function createBassPattern()
+{
+	var pattern = [];
+	// need objects for... volume, duration, note
+	for (var i = 0; i < NUMSTEPS; i++)
+	{
+		pattern[i] = {
+			note: 0,
+			volume: .75,
+			duration: 2
+		}
+	}
+	return pattern;
 }

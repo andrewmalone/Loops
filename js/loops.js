@@ -46,19 +46,6 @@ $(function(){
 	// build the interface...
 	initInterface();
 	
-	// test bass sounds...
-	for (var i = 25; i <= 50; i++)
-	{
-		var b = $("<button>");
-		b.text(i);
-		b.click(function() {
-			var note = BASS_MAPPING[$(this).text()];
-			// console.log(note.sample);
-			playBassSound(buffers[note.sample], context.currentTime, .75, .5, note.pitch, note.tune)
-		});
-		$("#bass").append(b);
-	}
-	
 	// add a default pattern
 	addDrumPattern("p1")
 

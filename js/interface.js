@@ -23,6 +23,32 @@ function initInterface()
 		return false;
 	});
 	
+	// create a table for bass...
+	table = $("#bseq");
+	var keys = Object.keys(BASS_MAPPING)
+	for (var i = 0, len = keys.length; i < len; i++)
+	{
+		var tr = $("<tr>");
+		var th = $("<th>").text(keys[i]);
+		tr.append(th);
+		for (var j = 0; j < NUMSTEPS; j++)
+		{
+			var td = $("<td>");
+			var input = $("<input type='number'>");
+			input.val(0);
+			td.append(input);
+			tr.append(td);
+		}
+		table.append(tr);
+	}
+	
+	table.on("change", "input", function() {
+		var row = $(this).parent().prevAll("th").text();
+		var col = $(this).parentsUntil("tr").index() - 1; // this is ugly!
+		// console.log(row, col);
+		bassPatterns[0][col].note = row;
+	});
+	
 	// set up the sequencer inputs
 	$("#sequence").on("change", "input", function() {
 		//console.log($(this).val(), $(this).index("#sequence input"));
