@@ -1,8 +1,47 @@
-input[type=number] {
-	width:3em;
-	text-align:center;
+@import "flex.scss";
+$border-color: #666;
+$border-light: 1px solid lighten($border-color, 20%);
+$border: 2px solid $border-color;
+
+* {
+	@include box-sizing(border-box);
 }
 
-#sequence input {
-	width:3em;
+body {
+	font-family: 'Source Sans Pro', Arial;
+	padding: .5em;
+	margin: 0;
+}
+
+#drumseq {
+    @include flexbox;
+    font-size:.8em;
+    padding:.2em;
+}
+#drum-grid {
+    @include flex(1);
+    border: $border;
+}
+.row {
+    @include flexbox;
+    border-bottom: $border-light;
+    height: 2em;
+}
+.row:last-child {
+	border-bottom-width: 0;
+}
+.label {
+    height: 2em;
+    text-align: right;
+    padding-right:.2em;
+}
+.cell {
+    @include flex(1);
+	border-left: $border-light;
+}
+.cell:nth-of-type(4n + 1) {
+	border-left: $border;
+}
+.cell:first-child {
+	border-left-width: 0;
 }

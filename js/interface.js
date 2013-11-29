@@ -1,20 +1,25 @@
 function initInterface()
 {
-	// create a table for drums...
-	var table = $("#drumseq");
+	// create a grid for drums...
+	var seq = $("#drumseq");
+	var labels = $("<div id='drum-labels'>");
+	var grid = $("<div id='drum-grid'>");
 	for (var i = 0, len = SOUNDS.length; i < len; i++)
 	{
-		var tr = $("<tr>");
+		var row = $("<div class='row'>");
+		var label = $("<div class='label'>").text(SOUNDS[i].name);
+		labels.append(label);
 		for (var j = 0; j < NUMSTEPS; j++)
 		{
-			var td = $("<td>");
-			var input = $("<input type='number' min='0' max='100' step='1'>");
-			td.append(input);
-			tr.append(td);
+			var cell = $("<div class='cell'><div class='cell-inner'></div></div>");
+			row.append(cell);
 		}
-		table.append(tr);
+		grid.append(row);
 	}
+	seq.append(labels).append(grid);
 	
+	
+	/*
 	table.on("change", "input", function() {
 		var row = $(this).parentsUntil("table","tr").index();
 		var col = $(this).parentsUntil("tr").index();
@@ -22,7 +27,9 @@ function initInterface()
 		drumPatterns[currentDrumPattern].volumes[row][col] = $(this).val() / 100;
 		return false;
 	});
+	*/
 	
+	/*
 	// create a table for bass...
 	table = $("#bseq");
 	var keys = Object.keys(BASS_MAPPING)
@@ -59,6 +66,7 @@ function initInterface()
 		mode = mode == "sequence" ? "loop" : "sequence";
 		$(this).text(mode);
 	});
+	*/
 }
 
 function showDrumPattern(i)
