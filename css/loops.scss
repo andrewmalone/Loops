@@ -13,12 +13,12 @@ body {
 	margin: 0;
 }
 
-#drumseq {
+#drumseq, #bseq {
     @include flexbox;
     font-size:.8em;
     padding:.2em;
 }
-#drum-grid {
+#drum-grid, #bass-grid {
     @include flex(1);
     border: $border;
 }

@@ -29,6 +29,24 @@ function initInterface()
 	});
 	*/
 	
+	// interactions...
+	
+	var bass = $("#bseq");
+	labels = $("<div id='bass-labels'>");
+	grid = $("<div id='bass-grid'>");
+	for (var i = 40; i <= 52; i++)
+	{
+		var row = $("<div class='row'>");
+		var label = $("<div class='label'>").text(i);
+		labels.append(label);
+		for (var j = 0; j < NUMSTEPS; j++)
+		{
+			var cell = $("<div class='cell'></div>");
+			row.append(cell);
+		}
+		grid.append(row);
+	}
+	bass.append(labels).append(grid);
 	/*
 	// create a table for bass...
 	table = $("#bseq");
