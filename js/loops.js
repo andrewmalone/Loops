@@ -20,8 +20,13 @@ $(function(){
 	//amp.connect(context.destination)
 	
 	// connect the buttons
-	$("#play").click(start);
-	$("#stop").click(stop);
+	$("#play").addInteraction({
+		click: start
+	});
+	
+	$("#stop").addInteraction({
+		click: stop
+	});
 	/*
 	$("#addPattern").click(function() {
 		// @todo - prevent duplicate names
