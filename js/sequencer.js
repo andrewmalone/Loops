@@ -113,7 +113,7 @@ function playBassSound(buffer, time, volume, duration, pitch, tune)
 	source.buffer = buffer;
 	var v = context.createGain();
 	v.gain.value = volume;
-	v.gain.setTargetAtTime(0, time + duration, .01);
+	v.gain.setTargetAtTime(0, time + duration, .005);
 	source.connect(v);
 	v.connect(amp);
 	// @todo - comment this formula (or move to a constant);
@@ -242,7 +242,7 @@ function createDrumPattern(name)
 	var pattern = {
 		name: name,
 		steps: createDrumMeasure(0),
-		volumes: createDrumMeasure(.2),
+		volumes: createDrumMeasure(.8),
 		rowVolumes: []
 	}
 	return pattern;

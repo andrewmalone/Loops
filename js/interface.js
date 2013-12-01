@@ -81,7 +81,7 @@ function initInterface()
 		labels.append(label);
 		for (var j = 0; j < NUMSTEPS; j++)
 		{
-			var cell = $("<div class='cell'><div class='cell-inner'></div></div>");
+			var cell = $("<div class='cell'><div class='cell-inner'><div class='note'></div></div></div>");
 			row.append(cell);
 		}
 		grid.append(row);
@@ -112,11 +112,17 @@ function initInterface()
 			if (note != row)
 			{
 				// turn it on!
+				if (bassPatterns[currentBassPattern][col].note != 0)
+				{
+					// remove the existing note from the grid...
+					var currNote = (BASS_MAX - bassPatterns[currentBassPattern][col].note) * NUMSTEPS + col;
+					$("#bseq .cell-inner").eq(currNote).css("right", 0).removeClass("on");
+				}
 				bassPatterns[currentBassPattern][col].note = row;
+				bassPatterns[currentBassPattern][col].duration = duration;
+				bassPatterns[currentBassPattern][col].volume = .8;
 				isTurningOn = true;
 				element.addClass("on");
-				element.append("<div class='note'></div>");
-				// @todo - remove anything else that's on in the column
 			}
 			return {
 				row: row,
@@ -129,7 +135,8 @@ function initInterface()
 				prev: prev,
 				prevWidth: prevWidth,
 				prevSnap: prevSnap,
-				isTurningOn: isTurningOn
+				isTurningOn: isTurningOn,
+				startV: volume
 			};
 		},
 		drag: function(data) {
@@ -166,47 +173,35 @@ function initInterface()
 				data.prevWidth -= data.prev.outerWidth();
 				bassPatterns[currentBassPattern][data.col].duration = data.duration;
 			}
+			
+			var vol = calcVolume(data.startV, data.deltaY);
+			// console.log(vol);
+			requestAnimFrame(function() {
+				data.element.children(".note").css("opacity", vol);
+			});
+			bassPatterns[currentBassPattern][data.col].volume = vol;
+			//drumPatterns[currentDrumPattern].volumes[data.row][data.col] = vol
 		},
 		click: function(data) {
 			// toggle the note...
+			// w("click");
 			if (data.isTurningOn == false)
 			{
 				// turn it off
+				// @todo - figure out the delay here on iOS (so frustating!)
 				data.element.removeClass("on");
-				data.element.children().remove();
+				
+				//var note = data.element.children(".note")[0];
+				//note.parentNode.removeChild(note);
 				data.element.css("right", 0);
 				bassPatterns[currentBassPattern][data.col].duration = 1;
 				bassPatterns[currentBassPattern][data.col].note = 0;
+				bassPatterns[currentBassPattern][data.col].volume = .8;
 			}
 		}
 	});
+	
 	/*
-	// create a table for bass...
-	table = $("#bseq");
-	var keys = Object.keys(BASS_MAPPING)
-	for (var i = 0, len = keys.length; i < len; i++)
-	{
-		var tr = $("<tr>");
-		var th = $("<th>").text(keys[i]);
-		tr.append(th);
-		for (var j = 0; j < NUMSTEPS; j++)
-		{
-			var td = $("<td>");
-			var input = $("<input type='number'>");
-			input.val(0);
-			td.append(input);
-			tr.append(td);
-		}
-		table.append(tr);
-	}
-	
-	table.on("change", "input", function() {
-		var row = $(this).parent().prevAll("th").text();
-		var col = $(this).parentsUntil("tr").index() - 1; // this is ugly!
-		// console.log(row, col);
-		bassPatterns[0][col].note = row;
-	});
-	
 	// set up the sequencer inputs
 	$("#sequence").on("change", "input", function() {
 		//console.log($(this).val(), $(this).index("#sequence input"));
