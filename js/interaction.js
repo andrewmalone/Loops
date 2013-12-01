@@ -5,7 +5,6 @@ $.fn.addInteraction = function(selector, cb)
 		cb = selector;
 		selector = undefined;
 	}
-	
 	this.on("mousedown touchstart", selector, function(e) {
 		// Add interaction functions here...
 		// init(?), click, drag, up
@@ -13,7 +12,6 @@ $.fn.addInteraction = function(selector, cb)
 		var data = {};
 		if (cb.init)
 		{
-			console.log("init");
 			data = cb.init($(this))
 		}
 		data.startX = e.pageX;
@@ -24,8 +22,11 @@ $.fn.addInteraction = function(selector, cb)
 			.on("mousemove touchmove", function(e) {
 				if (cb.drag) {
 					e = touchify(e);
-					data.deltaX = data.startX - e.pageX;
+					// to the right is positive change, left is negative
+					data.deltaX = e.pageX - data.startX;
+					// up is positive change, down is negative
 					data.deltaY = data.startY - e.pageY;
+					data.currX = e.pageX;
 					cb.drag(data);
 				}
 				return false;
@@ -68,8 +69,11 @@ function addInteraction(target, cb) {
 				e = touchify(e);
 				// get the mousemove deltas...
 				if (cb.drag) {
-					data.deltaX = data.startX - e.pageX;
+					// to the right is positive change, left is negative
+					data.deltaX = e.pageX - data.startX;
+					// up is positive change, down is negative
 					data.deltaY = data.startY - e.pageY;
+					console.log(e.pageX, data.startX);
 					cb.drag(data);
 				}	
 				return false;				
