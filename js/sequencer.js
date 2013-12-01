@@ -113,12 +113,14 @@ function playBassSound(buffer, time, volume, duration, pitch, tune)
 	source.buffer = buffer;
 	var v = context.createGain();
 	v.gain.value = volume;
-	v.gain.setTargetAtTime(0, time + duration, .1);
+	v.gain.setTargetAtTime(0, time + duration, .01);
 	source.connect(v);
 	v.connect(amp);
+	// @todo - comment this formula (or move to a constant);
 	var step = .059463094359295;
 	source.playbackRate.value = 1 + (step/100 * tune) + (step * pitch);
 	source.start(time);
+	source.stop(time + duration + .1);
 }
 
 /**
@@ -219,7 +221,7 @@ function loop()
 * creates and returns a measure object for the sequencer to use
 * currently only for steps...
 */
-function createDrumMeasure()
+function createDrumMeasure(initValue)
 {
 	var measure = [];
 	for (var i = 0, len = SOUNDS.length; i < len; i++)
@@ -227,7 +229,7 @@ function createDrumMeasure()
 		var row = [];
 		for (j = 0; j < NUMSTEPS; j++)
 		{
-			row[j] = 0;
+			row[j] = initValue;
 		}
 		measure[i] = row;
 	}
@@ -239,8 +241,8 @@ function createDrumPattern(name)
 	// create a new object...
 	var pattern = {
 		name: name,
-		steps: createDrumMeasure(),
-		volumes: createDrumMeasure(),
+		steps: createDrumMeasure(0),
+		volumes: createDrumMeasure(.2),
 		rowVolumes: []
 	}
 	return pattern;
@@ -292,7 +294,7 @@ function createBassPattern()
 		pattern[i] = {
 			note: 0,
 			volume: .75,
-			duration: 2
+			duration: 1
 		}
 	}
 	return pattern;
