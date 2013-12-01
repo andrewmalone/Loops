@@ -1,3 +1,6 @@
+var BASS_MAX = 52;
+var BASS_MIN = 40;
+var BASS_RANGE = BASS_MAX - BASS_MIN;
 function initInterface()
 {
 	// create a grid for drums...
@@ -18,35 +21,165 @@ function initInterface()
 	}
 	seq.append(labels).append(grid);
 	
-	
-	/*
-	table.on("change", "input", function() {
-		var row = $(this).parentsUntil("table","tr").index();
-		var col = $(this).parentsUntil("tr").index();
-		drumPatterns[currentDrumPattern].steps[row][col] = $(this).val() > 0 ? 1 : 0;
-		drumPatterns[currentDrumPattern].volumes[row][col] = $(this).val() / 100;
-		return false;
+	// interactions for drums
+	seq.addInteraction(".cell-inner", {
+		init: function(element) {
+			// get the row/column...
+			var index = element.index("#drumseq .cell-inner");
+			var row = Math.floor(index / NUMSTEPS);
+			var col = index % NUMSTEPS;
+			var vol = drumPatterns[currentDrumPattern].volumes[row][col];
+			var isTurningOn = false;
+			var cellValue = drumPatterns[currentDrumPattern].steps[row][col];
+			if (cellValue == 0)
+			{
+				// turn on the cell!
+				isTurningOn = true;
+				requestAnimFrame(function() {			
+					element.css("opacity", vol);
+					element.addClass("on");
+				});		
+				drumPatterns[currentDrumPattern].steps[row][col] = 1;
+			}
+			return {
+				row: row,
+				col: col,
+				isTurningOn: isTurningOn,
+				startV: vol
+			};
+		},
+		drag: function(data) {
+			// set the volume and opacity...
+			var vol = calcVolume(data.startV, data.deltaY);
+			// console.log(vol);
+			requestAnimFrame(function() {
+				data.element.css("opacity", vol);
+			});
+			
+			drumPatterns[currentDrumPattern].volumes[data.row][data.col] = vol
+		},
+		click: function(data) {
+			if (data.isTurningOn == false) {
+				// turn the cell off
+				drumPatterns[currentDrumPattern].steps[data.row][data.col] = 0;
+				data.element.removeClass("on");
+				//s();
+			}
+		},
+		up: function(data) {
+			
+		}
 	});
-	*/
-	
-	// interactions...
 	
 	var bass = $("#bseq");
 	labels = $("<div id='bass-labels'>");
 	grid = $("<div id='bass-grid'>");
-	for (var i = 40; i <= 52; i++)
+	for (var i = BASS_MAX; i >= BASS_MIN; i--)
 	{
 		var row = $("<div class='row'>");
 		var label = $("<div class='label'>").text(i);
 		labels.append(label);
 		for (var j = 0; j < NUMSTEPS; j++)
 		{
-			var cell = $("<div class='cell'></div>");
+			var cell = $("<div class='cell'><div class='cell-inner'></div></div>");
 			row.append(cell);
 		}
 		grid.append(row);
 	}
 	bass.append(labels).append(grid);
+	
+	bass.addInteraction(".cell-inner", {
+		init: function(element) {
+			// get the row/column...
+			
+			var index = element.index("#bseq .cell-inner");
+			var row = BASS_MIN + (BASS_RANGE - Math.floor(index / NUMSTEPS));
+			var col = index % NUMSTEPS;
+			var note = bassPatterns[currentBassPattern][col].note;
+			var duration = bassPatterns[currentBassPattern][col].duration;
+			var volume = bassPatterns[currentBassPattern][col].volume;
+			var isTurningOn = false;
+			var right = parseFloat(element.css("right"));
+			var next = $("#bseq .cell").eq(index + duration); // element.parent().next();
+			var nextWidth = next.outerWidth();
+			var nextSnap = nextWidth / 2;
+			var prev = $("#bseq .cell").eq(index + duration - 1);
+			var prevWidth = prev.outerWidth() * -1;
+			var prevSnap = duration == 1 ? 0 : prevWidth / 2;
+			// var prev = element.parent().prev();
+			// prevSnap = 1/2 of the current cell width...
+			// console.log(duration, next.index("#bseq .cell"), element.parent().next().index("#bseq .cell"));
+			if (note != row)
+			{
+				// turn it on!
+				bassPatterns[currentBassPattern][col].note = row;
+				isTurningOn = true;
+				element.addClass("on");
+				element.append("<div class='note'></div>");
+				// @todo - remove anything else that's on in the column
+			}
+			return {
+				row: row,
+				col: col,
+				right: right,
+				next: next,
+				duration: duration,
+				nextWidth: nextWidth,
+				nextSnap: nextSnap,
+				prev: prev,
+				prevWidth: prevWidth,
+				prevSnap: prevSnap,
+				isTurningOn: isTurningOn
+			};
+		},
+		drag: function(data) {
+			// adjust the duration - move left/right
+			//console.log(data.deltaX, data.nextSnap);
+			if (data.nextSnap != 0 && data.deltaX > data.nextSnap)
+			{
+
+						
+				data.element.css("right", data.right - data.nextWidth);
+				data.prevWidth = data.nextWidth - data.next.outerWidth();
+				data.prev = data.next;
+				data.prevSnap = data.nextSnap;
+				data.next = data.next.next();
+				data.nextSnap = data.nextWidth + data.next.outerWidth() / 2;
+				data.nextWidth += data.next.outerWidth();
+				data.duration++;
+				bassPatterns[currentBassPattern][data.col].duration = data.duration;
+				//console.log(data.prevWidth);			
+			}
+			else if (data.prevSnap != 0 && data.deltaX < data.prevSnap)
+			{
+				// console.log("snap back! to " + (data.right - data.prevWidth));
+				data.element.css("right", data.right - data.prevWidth);
+				data.duration--;
+				
+				data.next = data.prev;
+				data.nextSnap = data.prevSnap;
+				data.nextWidth = data.prevWidth + data.prev.outerWidth();
+				
+				data.prev = data.prev.prev();
+				data.prevSnap = data.duration == 1 ? 0 : data.prevWidth - data.prev.outerWidth() / 2;
+				// console.log(data.deltaX, data.prevSnap);
+				data.prevWidth -= data.prev.outerWidth();
+				bassPatterns[currentBassPattern][data.col].duration = data.duration;
+			}
+		},
+		click: function(data) {
+			// toggle the note...
+			if (data.isTurningOn == false)
+			{
+				// turn it off
+				data.element.removeClass("on");
+				data.element.children().remove();
+				data.element.css("right", 0);
+				bassPatterns[currentBassPattern][data.col].duration = 1;
+				bassPatterns[currentBassPattern][data.col].note = 0;
+			}
+		}
+	});
 	/*
 	// create a table for bass...
 	table = $("#bseq");
@@ -111,4 +244,13 @@ function addToSequenceList()
 {
 	$("#sequence").append($("<input type='text'>"));
 	addToSequence();	
+}
+
+function calcVolume(startV, deltaY) 
+{
+	var vol = parseFloat(startV) + (deltaY/100);
+	if (vol > 1) vol = 1;
+	if (vol < 0) vol = 0;
+	vol = Math.round(vol*100)/100;
+	return vol;
 }
