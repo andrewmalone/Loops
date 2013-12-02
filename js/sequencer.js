@@ -293,7 +293,7 @@ function createBassPattern()
 	{
 		pattern[i] = {
 			note: 0,
-			volume: .75,
+			volume: .8,
 			duration: 1
 		}
 	}

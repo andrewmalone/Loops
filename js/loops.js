@@ -2,6 +2,19 @@
 - Add row volumes to playback and interface
 - Volume envelopes (need to add some generic functions!)
 - FX? (not yet?)
+
+NEXT: Sequencing to interface, separate sequencing for bass
+
+THEN:
+	Master FX
+	Track FX
+	Drum FX
+	WAV export
+	Volume envelopes
+	
+ALSO:
+	Tempo controls
+	sharing (save to server)
 */
 
 var context = new AudioContext(); // = new AudioContext();
