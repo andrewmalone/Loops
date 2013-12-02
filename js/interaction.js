@@ -1,3 +1,35 @@
+interact = function(element, selector, cb)
+{
+	if (cb == null)
+	{
+		cb = selector;
+		selector = undefined;
+	}
+	var start = function(e)
+	{
+		w("start");
+		e.preventDefault();
+		//e.stopPropogation();
+		return false;
+	}
+	var stop = function(e)
+	{
+		w("stop");
+		//e.preventDefault();
+		//e.stopPropogation();
+		//return false;
+	}
+	
+	element[0].addEventListener("mousedown", start)
+	element[0].addEventListener("touchstart", start)
+	element[0].addEventListener("touchend", stop)
+	element[0].addEventListener("mouseup", stop)
+	
+	/*
+	this.on("mousedown touchstart", start);
+	this.on("mouseup touchend", stop);
+	*/
+}
 $.fn.addInteraction = function(selector, cb)
 {
 	if (cb == null)
@@ -5,15 +37,14 @@ $.fn.addInteraction = function(selector, cb)
 		cb = selector;
 		selector = undefined;
 	}
-	
 	this.on("mousedown touchstart", selector, function(e) {
 		// Add interaction functions here...
 		// init(?), click, drag, up
 		e = touchify(e);
 		var data = {};
+		// w("init");
 		if (cb.init)
 		{
-			console.log("init");
 			data = cb.init($(this))
 		}
 		data.startX = e.pageX;
@@ -22,9 +53,13 @@ $.fn.addInteraction = function(selector, cb)
 		
 		$(document)
 			.on("mousemove touchmove", function(e) {
+				//w("dragging");
 				if (cb.drag) {
+					
 					e = touchify(e);
-					data.deltaX = data.startX - e.pageX;
+					// to the right is positive change, left is negative
+					data.deltaX = e.pageX - data.startX;
+					// up is positive change, down is negative
 					data.deltaY = data.startY - e.pageY;
 					cb.drag(data);
 				}
@@ -35,8 +70,11 @@ $.fn.addInteraction = function(selector, cb)
 				$(document).off("mousemove touchmove mouseup touchend");
 				if (e.pageY == data.startY && e.pageX == data.startX)
 				{
+					//w("click");
 					if (cb.click)
 					{
+						// console.log("click!");
+						
 						cb.click(data);
 					}
 				}
@@ -68,8 +106,11 @@ function addInteraction(target, cb) {
 				e = touchify(e);
 				// get the mousemove deltas...
 				if (cb.drag) {
-					data.deltaX = data.startX - e.pageX;
+					// to the right is positive change, left is negative
+					data.deltaX = e.pageX - data.startX;
+					// up is positive change, down is negative
 					data.deltaY = data.startY - e.pageY;
+					console.log(e.pageX, data.startX);
 					cb.drag(data);
 				}	
 				return false;				
@@ -127,4 +168,9 @@ function touchify(e) {
 		return new_event;
 	}
 	else return e;
+}
+function w(text)
+{
+	$("#text").text(text);
+	//console.log(text)
 }

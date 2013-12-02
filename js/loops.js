@@ -2,6 +2,19 @@
 - Add row volumes to playback and interface
 - Volume envelopes (need to add some generic functions!)
 - FX? (not yet?)
+
+NEXT: Sequencing to interface, separate sequencing for bass
+
+THEN:
+	Master FX
+	Track FX
+	Drum FX
+	WAV export
+	Volume envelopes
+	
+ALSO:
+	Tempo controls
+	sharing (save to server)
 */
 
 var context = new AudioContext(); // = new AudioContext();
@@ -20,9 +33,14 @@ $(function(){
 	//amp.connect(context.destination)
 	
 	// connect the buttons
-	$("#play").click(start);
-	$("#stop").click(stop);
+	$("#play").addInteraction({
+		click: start
+	});
 	
+	$("#stop").addInteraction({
+		click: stop
+	});
+	/*
 	$("#addPattern").click(function() {
 		// @todo - prevent duplicate names
 		var name = $("#newPatternName").val();
@@ -42,7 +60,7 @@ $(function(){
 		switchDrumPattern($("#switch").val());
 	});
 	$("#addToSequence").click(addToSequenceList);
-	
+	*/
 	// build the interface...
 	initInterface();
 	

@@ -6,17 +6,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 <!-- @reload -->
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro' rel='stylesheet' type='text/css'>
 <!-- @javascript AudioContextMonkeyPatch -->
 <!-- @javascript js/* -->
 <!-- @stylesheet loops -->
 </head>
 <body>
-<button id="play">play</button>
-<button id="stop">stop</button>
-<div>
-	<table id="drumseq">
-	</table>
+<div id="controls">
+	<button id="play">play</button>
+	<button id="stop">stop</button>
 </div>
+<div>
+	<div id="drumseq">
+	</div>
+</div>
+<!--
 <div>
 	<input type="text" id="newPatternName">
 	<button id="addPattern">Add new pattern</button>
@@ -30,9 +34,11 @@
 	<button id="addToSequence">Add</button><br>
 	<input type="text" value="0">
 </div>
+-->
 <div>
-	<table id="bseq">
-	</table>
+	<div id="bseq">
+	</div>
 </div>
+
 </body>
 </html>
