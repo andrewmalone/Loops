@@ -61,7 +61,7 @@ $.fn.addInteraction = function(selector, cb)
 					data.deltaX = e.pageX - data.startX;
 					// up is positive change, down is negative
 					data.deltaY = data.startY - e.pageY;
-					cb.drag(data);
+					cb.drag(data, e);
 				}
 				return false;
 			})
