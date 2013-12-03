@@ -15,9 +15,13 @@
 <div id="controls">
 	<button id="play">play</button>
 	<button id="stop">stop</button>
+	<button id="bass-btn">Bass</button>
+	<button id="drum-btn">Drum</button>
 </div>
-<div>
+<div class="panel" id="drum-panel">
 	<div id="drumseq">
+	</div>
+	<div id="drum-patterns" class="patterns">
 	</div>
 </div>
 <!--
@@ -35,8 +39,10 @@
 	<input type="text" value="0">
 </div>
 -->
-<div>
+<div class="panel active" id="bass-panel">
 	<div id="bseq">
+	</div>
+	<div id="bass-patterns" class="patterns">
 	</div>
 </div>
 

@@ -10,11 +10,16 @@
 var BEATS_PER_MEASURE = 4;
 var STEPS_PER_BEAT = 4;
 var NUMSTEPS = BEATS_PER_MEASURE * STEPS_PER_BEAT;
+var NUMPATTERNS = 8;
 
 // create a default empty drum pattern
 var drumPatterns = [];
 var bassPatterns = [];
-bassPatterns[0] = createBassPattern();
+for (var i = 0; i < NUMPATTERNS; i++)
+{
+	drumPatterns.push(createDrumPattern());
+	bassPatterns.push(createBassPattern());
+}
 
 // mode for switching loop/sequence
 var mode = "loop";
@@ -240,24 +245,11 @@ function createDrumPattern(name)
 {
 	// create a new object...
 	var pattern = {
-		name: name,
 		steps: createDrumMeasure(0),
 		volumes: createDrumMeasure(.8),
 		rowVolumes: []
 	}
 	return pattern;
-}
-
-// add a pattern to the patterns array and switch to it...
-function addDrumPattern(name, pattern)
-{
-	if (!pattern)
-	{
-		pattern = createDrumPattern(name);
-	}
-	var i = drumPatterns.push(pattern);
-	updateDrumPatternList(name, i - 1);
-	switchDrumPattern(i - 1);
 }
 
 function switchDrumPattern(i)

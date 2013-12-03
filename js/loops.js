@@ -40,6 +40,16 @@ $(function(){
 	$("#stop").addInteraction({
 		click: stop
 	});
+	$("#bass-btn").addInteraction({
+		click: function() {
+			switchPanel("bass-panel")
+		}
+	});
+	$("#drum-btn").addInteraction({
+		click: function() {
+			switchPanel("drum-panel")
+		}
+	});
 	/*
 	$("#addPattern").click(function() {
 		// @todo - prevent duplicate names
@@ -64,7 +74,5 @@ $(function(){
 	// build the interface...
 	initInterface();
 	
-	// add a default pattern
-	addDrumPattern("p1")
 
 });
