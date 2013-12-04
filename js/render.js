@@ -34,6 +34,10 @@ function render()
 	context.startRendering();
 }
 
+
+/**
+* Wave rendering functions adapted from  https://github.com/mattdiamond/Recorderjs
+*/
 forceDownload = function(blob, filename){
 	// console.log(blob)
     var url = (window.URL || window.webkitURL).createObjectURL(blob);
