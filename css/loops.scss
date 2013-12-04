@@ -1,4 +1,4 @@
-@import "flex.scss";
+@import "flex";
 $border-color: #666;
 $border-light: 1px solid lighten($border-color, 20%);
 $border: 2px solid $border-color;
@@ -91,15 +91,35 @@ body {
 .panel.active {
 	display:block;
 }
-.patterns {
+@mixin pattern() {
+	@include square(1.2em);
+	border: $border-light;
+	padding:0 .2em;
+	text-align:center;
+	margin-right:.5em;
+	line-height: 1.2em;
+}
+.patterns, .sequence {
+	clear:left;
+	margin-bottom:.5em;
+	overflow:hidden;
 	div {
 		float:left;
 	}
 	.pattern {
-		@include square(1.2em);
-		border: $border-light;
+		@include pattern;
 	}
 	.pattern.active {
 		border: $border;
 	}
+	.pattern.over {
+		border-color:red;
+	}
+}
+.pattern.shadow {
+	@include pattern;
+	position:absolute;
+	background:#eee;
+	top:0;
+	left:0;
 }

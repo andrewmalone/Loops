@@ -45,7 +45,7 @@ $.fn.addInteraction = function(selector, cb)
 		// w("init");
 		if (cb.init)
 		{
-			data = cb.init($(this))
+			data = cb.init($(this), e)
 		}
 		data.startX = e.pageX;
 		data.startY = e.pageY;
@@ -75,12 +75,12 @@ $.fn.addInteraction = function(selector, cb)
 					{
 						// console.log("click!");
 						
-						cb.click(data);
+						cb.click(data, e);
 					}
 				}
 				else if (cb.up)
 				{
-					cb.up(data);
+					cb.up(data, e);
 				}
 				return false;
 			})

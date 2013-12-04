@@ -11,6 +11,7 @@ var BEATS_PER_MEASURE = 4;
 var STEPS_PER_BEAT = 4;
 var NUMSTEPS = BEATS_PER_MEASURE * STEPS_PER_BEAT;
 var NUMPATTERNS = 8;
+var SEQUENCE_LENGTH = 16;
 
 // create a default empty drum pattern
 var drumPatterns = [];
@@ -21,12 +22,15 @@ for (var i = 0; i < NUMPATTERNS; i++)
 	bassPatterns.push(createBassPattern());
 }
 
-// mode for switching loop/sequence
-var mode = "loop";
+// modes for switching loop/sequence
+var bassMode = "loop";
+var drumMode = "loop";
 
-// initialize the sequence
-var sequence = [0];
-var sequencePosition = 0;
+// initialize the sequences
+var drumSequence = [0];
+var drumSequencePosition = 0;
+var bassSequence = [0];
+var bassSequencePosition = 0;
 
 // set the current pattern to the default
 var currentDrumPattern = 0;
@@ -75,10 +79,17 @@ function start()
 	nextStepTime = context.currentTime;
 	
 	// switch to the first sequence position if in sequence mode...
-	if (mode == "sequence")
+	if (drumMode == "sequence")
 	{
-		sequencePosition = 0;
-		switchDrumPattern(sequence[0]);
+		drumSequencePosition = 0;
+		setActiveSequence(0, "drum");
+		switchActivePattern(drumSequence[0], "drum");
+	}
+	if (bassMode == "sequence")
+	{
+		bassSequencePosition = 0;
+		setActiveSequence(0, "bass");
+		switchActivePattern(bassSequence[0], "bass");
 	}
 	looper = requestAnimFrame(loop);
 }
@@ -91,6 +102,7 @@ function stop()
 	cancelAnimFrame(looper);
 	currentStep = 0;
 	scheduledSounds = [];
+	$(".sequence .active").removeClass("active");
 }
 
 /**
@@ -208,15 +220,28 @@ function loop()
 		if (currentStep == NUMSTEPS) {
 			currentStep = 0;
 			// switch patterns if in sequence mode
-			if (mode == "sequence")
+			if (drumMode == "sequence")
 			{
-				sequencePosition = (sequencePosition + 1) % sequence.length;
-				if (sequence[sequencePosition] == null)
+				drumSequencePosition = (drumSequencePosition + 1) % drumSequence.length;
+				if (drumSequence[drumSequencePosition] == null)
 				{
-					sequencePosition = 0;
+					drumSequencePosition = 0;
 				}
 				// currentDrumPattern = sequence[sequencePosition];
-				switchDrumPattern(sequence[sequencePosition]);
+				setActiveSequence(drumSequencePosition, "drum");
+				switchActivePattern(drumSequence[drumSequencePosition], "drum");
+			}
+			
+			if (bassMode == "sequence")
+			{
+				bassSequencePosition = (bassSequencePosition + 1) % bassSequence.length;
+				if (bassSequence[bassSequencePosition] == null)
+				{
+					bassSequencePosition = 0;
+				}
+				// currentDrumPattern = sequence[sequencePosition];
+				setActiveSequence(bassSequencePosition, "bass");
+				switchActivePattern(bassSequence[bassSequencePosition], "bass");
 			}
 		}
 	}
@@ -250,12 +275,6 @@ function createDrumPattern(name)
 		rowVolumes: []
 	}
 	return pattern;
-}
-
-function switchDrumPattern(i)
-{
-	currentDrumPattern = i;
-	showDrumPattern(i);
 }
 
 // copies the current pattern into a new pattern with a new name

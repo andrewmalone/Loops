@@ -159,3 +159,111 @@ function bassInteractions()
 		}
 	};
 }
+
+function bassPatternInteractions()
+{
+	return {
+	    init: function(element)
+	    {
+	        var data = {}
+	        //data.shadow = element.clone().addClass("shadow").appendTo(document.body)
+	        data.offsetX = element.offset().left
+	        data.offsetY = element.offset().top
+	        //data.shadow.css({left: data.offsetX+"px", top: data.offsetY+"px"})
+	        data.isOver = false;
+	        // get the drop zones...
+	        data.drops = []
+	        element.siblings(".pattern").add(element.parent().next().children(".pattern.open")).each(function() {
+	            var left = $(this).offset().left
+	            var top = $(this).offset().top
+	            var right = left + $(this).outerWidth()
+	            var bottom = top + $(this).outerHeight()
+	            data.drops.push([[left, right],[top, bottom], $(this)])
+	        })
+	        return data
+	    },
+	    click: function(data) 
+	    {
+	    	switchActivePattern(data.element, "bass");
+		},
+	    drag: function(data, e)
+	    {
+	    	if (!data.shadow)
+	    	{
+		    	data.shadow = data.element.clone().addClass("shadow").appendTo(document.body)
+	    	}
+	        var px = data.offsetX + data.deltaX
+	        var py = data.offsetY - data.deltaY
+	        var x = e.pageX
+		    var y = e.pageY
+	        requestAnimFrame(function() {
+	            data.shadow.css({left: px+"px", top: py+"px"})
+	        });
+	        // look for drop zones...
+	        if (data.isOver === false)
+	        {
+		        for (var i = 0, len = data.drops.length; i < len; i++)
+		        {
+		            var drop = data.drops[i];
+		            if (x > drop[0][0] && x < drop[0][1] && y > drop[1][0] && y < drop[1][1])
+		            {
+		                // can this be optimized?
+		                // we have an over here!
+		                data.isOver = i;
+		                drop[2].addClass("over");
+		                break;
+		            }
+		        }
+		    }
+		    else
+		    {
+			    // check if we are outside of the current drop zone
+			    var drop = data.drops[data.isOver];
+			    if (x < drop[0][0] || x > drop[0][1] || y < drop[1][0] || y > drop[1][1])
+			    {
+				    // not over anymore!
+				    drop[2].removeClass("over");
+				    data.isOver = false;
+			    }
+		    }
+	    },
+	    up: function(data)
+	    {
+	    	if (data.isOver !== false)
+	    	{
+	    		var drop = data.drops[data.isOver][2]
+		    	drop.removeClass("over");
+		    	// we had a drop! (what do we do now?)
+		    	var i = drop.siblings(".pattern").addBack().index(drop);
+		    	var type = data.element.parent().attr("id").split("-")[0];
+		    	if (drop.parent().hasClass("patterns"))
+		    	{
+			    	var typeUpper = type[0].toUpperCase() + type.slice(1);
+			    	window[type + "Patterns"][i] = $.extend(true, {}, window[type + "Patterns"][window["current" + typeUpper + "Pattern"]]);
+			    	switchActivePattern(drop, type);
+		    	}
+		    	else if (drop.parent().hasClass("sequence"))
+		    	{
+			    	// add the number
+			    	drop.text(data.element.text());
+			    	// set the next one to open
+			    	drop.next().addClass("open").removeClass("closed");
+			    	// add to the sequence
+			    	//var index = data.element.siblings(".pattern").addBack().index(data.element);
+			    	window[type + "Sequence"][i] = data.element.siblings(".pattern").addBack().index(data.element);
+		    	}
+	    	}
+	        data.shadow.remove()
+	    }	
+	};
+}
+
+function drumPatternInteractions()
+{
+	var fn = bassPatternInteractions();
+	fn.click = function(data)
+    {
+		switchActivePattern(data.element, "drum")
+	}
+	return fn;
+}

@@ -1,6 +1,11 @@
 var BASS_MAX = 52;
 var BASS_MIN = 40;
 var BASS_RANGE = BASS_MAX - BASS_MIN;
+
+/**
+* Initialize the interface - dynamically creates the drum grid, bass grid,
+* pattern switchers, and sequencers
+*/
 function initInterface()
 {
 	// create a grid for drums...
@@ -22,6 +27,7 @@ function initInterface()
 	seq.append(labels).append(grid);
 	seq.addInteraction(".cell-inner", drumInteractions());
 	
+	// create a grid for the bass
 	var bass = $("#bseq");
 	labels = $("<div id='bass-labels'>");
 	grid = $("<div id='bass-grid'>");
@@ -40,11 +46,11 @@ function initInterface()
 	bass.append(labels).append(grid);
 	bass.addInteraction(".cell-inner", bassInteractions());
 	
-	// build a list for the patterns...
+	// build the patterns for both the drum and bass
 	var plist = $(".patterns");
 	var label = $("<div class='label'>").text("patterns");
 	plist.append(label);
-	for (var i = 0; i < 8; i++)
+	for (var i = 0; i < NUMPATTERNS; i++)
 	{
 		var div = $("<div class='pattern'>").text(i + 1);
 		if (i == 0)
@@ -54,49 +60,35 @@ function initInterface()
 		plist.append(div);
 	}
 	
-	$("#drum-patterns").addInteraction(".pattern", {
-		click: function(data) {
-			if (!data.element.hasClass("active"))
-			{
-				$("#drum-patterns .pattern.active").removeClass("active");
-				data.element.addClass("active");
-				var i = data.element.index("#drum-patterns .pattern");
-				currentDrumPattern = i;
-				drawCurrentDrumPattern();
-			}
+	$("#drum-patterns").addInteraction(".pattern", drumPatternInteractions());	
+	$("#bass-patterns").addInteraction(".pattern", bassPatternInteractions());
+	
+	var sequence = $(".sequence")
+	var label = $("<div class='label'>").text("sequence");
+	sequence.append(label);
+	for (var i = 0; i < SEQUENCE_LENGTH; i++)
+	{
+		var div = $("<div class='pattern'>");
+		if (i == 0)
+		{
+			div.addClass("open");
+		}
+		else
+		{
+			div.addClass("closed");
+		}
+		sequence.append(div);
+	}
+	var button = $("<button>").text("loop");
+	button.addInteraction({
+		click: function(data)
+		{
+			var type = data.element.parent().attr("id").split("-")[0];
+			window[type + "Mode"] = window[type + "Mode"] == "sequence" ? "loop" : "sequence";
+			data.element.text(window[type + "Mode"]);
 		}
 	});
-	
-	$("#bass-patterns").addInteraction(".pattern", {
-		click: function(data) {
-			if (!data.element.hasClass("active"))
-			{
-				$("#bass-patterns .pattern.active").removeClass("active");
-				data.element.addClass("active");
-				var i = data.element.index("#bass-patterns .pattern");
-				currentBassPattern = i;
-				drawCurrentBassPattern();
-			}
-		}
-	})
-	/*
-	// set up the sequencer inputs
-	$("#sequence").on("change", "input", function() {
-		//console.log($(this).val(), $(this).index("#sequence input"));
-		sequence[$(this).index("#sequence input")] = $(this).val();
-	});
-	
-	$("#sequenceMode").click(function() {
-		mode = mode == "sequence" ? "loop" : "sequence";
-		$(this).text(mode);
-	});
-	*/
-}
-
-function showDrumPattern(i)
-{
-	// load the pattern into the interface
-	// loop through all the steps...
+	sequence.append(button);
 }
 
 function drawCurrentDrumPattern()
@@ -203,4 +195,34 @@ function getRow(index)
 function getCol(index)
 {
 	return index % NUMSTEPS;
+}
+
+function switchActivePattern(index, type)
+{
+	if (typeof(index) == "number")
+	{
+		element = $("#" + type + "-patterns .pattern").eq(index);	
+	}
+	else
+	{
+		element = index;
+		index = element.siblings(".pattern").addBack().index(element);
+	}
+	if (!element.hasClass("active"))
+	{
+		element.siblings(".active").removeClass("active");
+		element.addClass("active");
+		window["current" + type[0].toUpperCase() + type.slice(1) + "Pattern"] = index;
+		window["drawCurrent" + type[0].toUpperCase() + type.slice(1) + "Pattern"]();
+	}
+}
+
+function setActiveSequence(index, type)
+{
+	element = $("#" + type + "-sequence .pattern").eq(index);
+	if (!element.hasClass("active"))
+	{
+		element.siblings(".active").removeClass("active");
+		element.addClass("active");
+	}
 }

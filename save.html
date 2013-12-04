@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<title>Save?</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width" />
+<script src="rw.js"></script>
+
+</head>
+
+<body>
+stuff
+<script>
+var wav
+function loadSound(sound) {
+	// TODO: is there any advantage to using jquery for the XHR here?
+//	if (!audio) return;
+// https://github.com/mattdiamond/Recorderjs
+	var request = new XMLHttpRequest();
+	request.open('GET',sound.source,true);
+	request.responseType = 'arraybuffer';
+	request._mute = sound.mute;
+	request._name = sound.name;
+	request.onload = function(){
+		context.decodeAudioData(request.response,function(buffer){
+			buffer._mute = request._mute;
+			buffer._name = request._name;
+			buffers[request._name] = buffer;
+		})
+	}
+	request.send();
+}
+function playSound(context,buffer,time,volume) {
+	var source = context.createBufferSource();
+	source.buffer = buffer;
+	
+	var v = context.createGainNode();
+	v.gain.value = volume; //exp_volume(volume);
+
+	source.connect(v);
+	v.connect(context.destination)
+	source.noteOn(time);
+	//nodes.push(source);
+}
+var sounds = [ // TODO: add colors here?
+	{
+		name:"kick",
+		source:"Ruffrider/Kick 3.mp3",
+		mute:null
+	},
+	{
+		name:"snare",
+		source:"Ruffrider/Snare base 4.mp3",
+		mute:null
+	},
+	{
+		name:"rim",
+		source:"Ruffrider/Snare rim 3.mp3",
+		mute:null
+	},
+	{
+		name:"cl hat",
+		source:"Ruffrider/hihat base 3.mp3",
+		mute:1
+	},
+	{
+		name:"op hat",
+		source:"Ruffrider/hihat open 3.mp3",
+		mute:1
+	},
+	{
+		name:"ride",
+		source:"Ruffrider/ride 3.mp3",
+		mute:2
+	}
+]
+var buffers = {}
+context = new webkitAudioContext();
+//x = new webkitOfflineAudioContext();
+loadSound(sounds[0]);
+var n = setInterval(function(){
+	if (Object.keys(buffers).length == 0) {
+		return
+	}
+	else {
+		//console.log(Object.keys(buffers).length)
+		clearInterval(n)
+		offlineContext = new webkitAudioContext(2, 2 * 44100, 44100);
+		offlineContext.oncomplete = function(event) {
+			//buffers["new"] = event.renderedBuffer;
+			//var source = context.createBufferSource();
+			//source.buffer = event.renderedBuffer;
+			//source.connect(context.destination);
+			//source.noteOn(0);
+			var buffer = event.renderedBuffer;
+			console.log(buffer.getChannelData(0))
+			var interleaved = interleave(buffer.getChannelData(0),buffer.getChannelData(1));
+			//console.log(interleaved)
+			var dataview = encodeWAV(interleaved);
+			//console.log(dataview)
+			var audioBlob = new Blob([dataview], {type: 'audio/wav'});
+			//FastBase64.Init();
+			//wav = new RIFFWAVE(buffer.getChannelData(0))
+			//wav.Make(interleaved)
+			//console.log(buffer.getChannelData(0))
+			//var dataUrl = wav.dataURI;
+			//console.log(dataview)
+			//var link = document.createElement('a');
+			//link.href = dataUrl;
+			//link.appendChild(document.createTextNode("test"))
+			//document.body.appendChild(link);
+			//var audioBlob = new Blob(["Hello world!"], { type: "text/plain" });
+			forceDownload(audioBlob)
+			//saveAs(audioBlob,"test.txt")
+      	};
+		playSound(offlineContext,buffers["kick"],0,1);
+		playSound(offlineContext,buffers["kick"],.5,1);
+		playSound(offlineContext,buffers["kick"],.75,1);
+		playSound(offlineContext,buffers["kick"],1.25,1);
+		playSound(offlineContext,buffers["kick"],1.5,1);
+		playSound(offlineContext,buffers["kick"],1.6,1);
+		playSound(offlineContext,buffers["kick"],1.8,1);
+		offlineContext.startRendering();
+	}
+}, 10)
+// http://codebase.es/riffwave/
+forceDownload = function(blob, filename){
+	console.log(blob)
+    var url = (window.URL || window.webkitURL).createObjectURL(blob);
+    var link = document.createElement('a');
+    link.href = url;
+    //var dataUrl = 
+    link.download = filename || 'output.wav';
+    link.appendChild(document.createTextNode("test"))
+    document.body.appendChild(link);
+    
+    //var click = document.createEvent("Event");
+    //click.initEvent("click", true, true);
+    //link.dispatchEvent(click);
+}
+
+function exportWAV(type){
+  var bufferL = mergeBuffers(recBuffersL, recLength);
+  var bufferR = mergeBuffers(recBuffersR, recLength);
+  var interleaved = interleave(bufferL, bufferR);
+  var dataview = encodeWAV(interleaved);
+  var audioBlob = new Blob([dataview], { type: type });
+
+  this.postMessage(audioBlob);
+}
+
+function getBuffer() {
+  var buffers = [];
+  buffers.push( mergeBuffers(recBuffersL, recLength) );
+  buffers.push( mergeBuffers(recBuffersR, recLength) );
+  this.postMessage(buffers);
+}
+
+function clear(){
+  recLength = 0;
+  recBuffersL = [];
+  recBuffersR = [];
+}
+
+function mergeBuffers(recBuffers, recLength){
+  var result = new Float32Array(recLength);
+  var offset = 0;
+  for (var i = 0; i < recBuffers.length; i++){
+    result.set(recBuffers[i], offset);
+    offset += recBuffers[i].length;
+  }
+  return result;
+}
+
+function interleave(inputL, inputR){
+  var length = inputL.length + inputR.length;
+  var result = new Float32Array(length);
+
+  var index = 0,
+    inputIndex = 0;
+
+  while (index < length){
+    result[index++] = inputL[inputIndex];
+    result[index++] = inputR[inputIndex];
+    inputIndex++;
+  }
+  return result;
+}
+
+function floatTo16BitPCM(output, offset, input){
+  for (var i = 0; i < input.length; i++, offset+=2){
+    var s = Math.max(-1, Math.min(1, input[i]));
+    output.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+  }
+}
+
+function writeString(view, offset, string){
+  for (var i = 0; i < string.length; i++){
+    view.setUint8(offset + i, string.charCodeAt(i));
+  }
+}
+
+function encodeWAV(samples){
+	var sampleRate = 44100;
+  var buffer = new ArrayBuffer(44 + samples.length * 2);
+  var view = new DataView(buffer);
+
+  /* RIFF identifier */
+  writeString(view, 0, 'RIFF');
+  /* file length */
+  view.setUint32(4, 32 + samples.length * 2, true);
+  /* RIFF type */
+  writeString(view, 8, 'WAVE');
+  /* format chunk identifier */
+  writeString(view, 12, 'fmt ');
+  /* format chunk length */
+  view.setUint32(16, 16, true);
+  /* sample format (raw) */
+  view.setUint16(20, 1, true);
+  /* channel count */
+  view.setUint16(22, 2, true);
+  /* sample rate */
+  view.setUint32(24, sampleRate, true);
+  /* byte rate (sample rate * block align) */
+  view.setUint32(28, sampleRate * 4, true);
+  /* block align (channel count * bytes per sample) */
+  view.setUint16(32, 4, true);
+  /* bits per sample */
+  view.setUint16(34, 16, true);
+  /* data chunk identifier */
+  writeString(view, 36, 'data');
+  /* data chunk length */
+  view.setUint32(40, samples.length * 2, true);
+
+  floatTo16BitPCM(view, 44, samples);
+
+  return view;
+}
+
+</script>
+</body>
+
+</html>
