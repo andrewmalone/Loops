@@ -234,20 +234,11 @@ function bassPatternInteractions()
 	    		var drop = data.drops[data.isOver][2]
 		    	drop.removeClass("over");
 		    	// we had a drop! (what do we do now?)
-		    	// console.log(data.element.parent().attr("id"));
-		    	var i = drop.add(drop.siblings(".pattern")).index(drop);
-		    	data.element.siblings(".active").removeClass("active");
-				data.element.addClass("active");
-		    	switch (data.element.parent().attr("id").split("-")[0])
-		    	{
-			    	case "bass":
-			    		bassPatterns[i] = $.extend(true,{},bassPatterns[currentBassPattern]);
-			    		currentBassPattern = i;
-			    		drawCurrentBassPattern();
-			    		break;
-			    	case "drum":
-			    		break;
-		    	}
+		    	var i = drop.siblings(".pattern").addBack().index(drop);
+		    	var type = data.element.parent().attr("id").split("-")[0];
+		    	var typeUpper = type[0].toUpperCase() + type.slice(1);
+		    	window[type + "Patterns"][i] = $.extend(true, {}, window[type + "Patterns"][window["current" + typeUpper + "Pattern"]]);
+		    	switchActivePattern(drop, type);
 	    	}
 	        data.shadow.remove()
 	    }	
