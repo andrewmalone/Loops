@@ -178,3 +178,23 @@ function getCol(index)
 {
 	return index % NUMSTEPS;
 }
+
+function switchActivePattern(index, type)
+{
+	if (typeof(index) == "number")
+	{
+		element = $("#" + type + "-patterns .pattern").eq(index);	
+	}
+	else
+	{
+		element = index;
+		index = element.siblings(".pattern").addBack().index(element);
+	}
+	if (!element.hasClass("active"))
+	{
+		element.siblings(".active").removeClass("active");
+		element.addClass("active");
+		window["current" + type[0].toUpperCase() + type.slice(1) + "Pattern"] = index;
+		window["drawCurrent" + type[0].toUpperCase() + type.slice(1) + "Pattern"]();
+	}
+}

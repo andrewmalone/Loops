@@ -173,7 +173,7 @@ function bassPatternInteractions()
 	        data.isOver = false;
 	        // get the drop zones...
 	        data.drops = []
-	        element.siblings().each(function() {
+	        element.siblings(".pattern").each(function() {
 	            var left = $(this).offset().left
 	            var top = $(this).offset().top
 	            var right = left + $(this).outerWidth()
@@ -184,14 +184,7 @@ function bassPatternInteractions()
 	    },
 	    click: function(data) 
 	    {
-			if (!data.element.hasClass("active"))
-			{
-				data.element.siblings(".active").removeClass("active");
-				data.element.addClass("active");
-				var i = data.element.add(data.element.siblings(".pattern")).index(data.element);
-				currentBassPattern = i;
-				drawCurrentBassPattern();
-			}
+	    	switchActivePattern(data.element, "bass");
 		},
 	    drag: function(data, e)
 	    {
@@ -241,6 +234,20 @@ function bassPatternInteractions()
 	    		var drop = data.drops[data.isOver][2]
 		    	drop.removeClass("over");
 		    	// we had a drop! (what do we do now?)
+		    	// console.log(data.element.parent().attr("id"));
+		    	var i = drop.add(drop.siblings(".pattern")).index(drop);
+		    	data.element.siblings(".active").removeClass("active");
+				data.element.addClass("active");
+		    	switch (data.element.parent().attr("id").split("-")[0])
+		    	{
+			    	case "bass":
+			    		bassPatterns[i] = $.extend(true,{},bassPatterns[currentBassPattern]);
+			    		currentBassPattern = i;
+			    		drawCurrentBassPattern();
+			    		break;
+			    	case "drum":
+			    		break;
+		    	}
 	    	}
 	        data.shadow.remove()
 	    }	
@@ -252,14 +259,7 @@ function drumPatternInteractions()
 	var fn = bassPatternInteractions();
 	fn.click = function(data)
     {
-		if (!data.element.hasClass("active"))
-		{
-			data.element.siblings(".active").removeClass("active");
-			data.element.addClass("active");
-			var i = data.element.add(data.element.siblings(".pattern")).index(data.element);
-			currentDrumPattern = i;
-			drawCurrentDrumPattern();
-		}
+		switchActivePattern(data.element, "drum")
 	}
 	return fn;
 }
