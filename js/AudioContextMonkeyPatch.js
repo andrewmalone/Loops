@@ -133,5 +133,12 @@ BiquadFilterNode.type and OscillatorNode.type.
       };
     }
   }
+  
+  if (window.hasOwnProperty('webkitOfflineAudioContext') && 
+      !window.hasOwnProperty('OfflineAudioContext')) {
+    window.OfflineAudioContext = webkitOfflineAudioContext;
+	}
 }(window));
+
+
 

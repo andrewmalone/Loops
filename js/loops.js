@@ -18,20 +18,45 @@ ALSO:
 */
 
 var context = new AudioContext(); // = new AudioContext();
+//var offlineContext = new OfflineAudioContext(2, 2 * 44100, 44100);
 var amp = context.createGain();
 amp.connect(context.destination);
+
+function render()
+{
+	var tmpContext = context;
+	// get the length
+	context = new OfflineAudioContext(2, ((60/tempo)*4) * 44100, 44100);
+	amp = context.createGain();
+	amp.connect(context.destination);
+	var stepTime = (60 / STEPS_PER_BEAT) / tempo;
+	var steps = drumPatterns[currentDrumPattern].steps;
+	var time = 0;
+	
+	for (var i = 0; i < 16; i++)
+	{
+		if (steps[0][i] == 1)
+		{
+			playDrumSound(buffers[SOUNDS[0].name], time, .8);
+		}
+		time += stepTime;
+	}
+	
+	context.oncomplete = function(event) {
+		console.log("done!", event);
+		context = tmpContext;
+		amp = context.createGain();
+		amp.connect(context.destination);
+	}
+	
+	context.startRendering();
+}
 
 // Initialize things after the page loads
 $(function(){
 	// load the sounds
-	// context = new AudioContext();
 	loadSounds();
-	
-	// set up some audio stuff
-	// this will all get moved
-	//amp = context.createGain()
-	//amp.connect(context.destination)
-	
+
 	// connect the buttons
 	$("#play").addInteraction({
 		click: start
@@ -50,29 +75,7 @@ $(function(){
 			switchPanel("drum-panel")
 		}
 	});
-	/*
-	$("#addPattern").click(function() {
-		// @todo - prevent duplicate names
-		var name = $("#newPatternName").val();
-		if (name != "")
-		{
-			addDrumPattern(name);
-		}
-	});
-	$("#copyPattern").click(function() {
-		var name = $("#newPatternName").val();
-		if (name != "")
-		{
-			copyDrumPattern(name);
-		}
-	});
-	$("#switchPattern").click(function() {
-		switchDrumPattern($("#switch").val());
-	});
-	$("#addToSequence").click(addToSequenceList);
-	*/
+
 	// build the interface...
 	initInterface();
-	
-
 });

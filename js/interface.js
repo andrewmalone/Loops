@@ -89,20 +89,6 @@ function initInterface()
 		}
 	});
 	sequence.append(button);
-	// build the sequencer
-	//var slist = $(".")
-	/*
-	// set up the sequencer inputs
-	$("#sequence").on("change", "input", function() {
-		//console.log($(this).val(), $(this).index("#sequence input"));
-		sequence[$(this).index("#sequence input")] = $(this).val();
-	});
-	
-	$("#sequenceMode").click(function() {
-		mode = mode == "sequence" ? "loop" : "sequence";
-		$(this).text(mode);
-	});
-	*/
 }
 
 function drawCurrentDrumPattern()
