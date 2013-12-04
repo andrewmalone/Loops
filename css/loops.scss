@@ -99,7 +99,10 @@ body {
 	margin-right:.5em;
 	line-height: 1.2em;
 }
-.patterns {
+.patterns, .sequence {
+	clear:left;
+	margin-bottom:.5em;
+	overflow:hidden;
 	div {
 		float:left;
 	}
