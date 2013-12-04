@@ -7,9 +7,7 @@
 <!-- @reload -->
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 <script src="js/interaction.js"></script>
-<!-- @javascript AudioContextMonkeyPatch -->
-<!-- @javascript js/* -->
-<!-- @stylesheet loops -->
+
 <style>
 .pattern {
     width:1.2em;
@@ -17,6 +15,7 @@
     border:1px solid black;
     float:left;
     margin-right:1em;
+    cursor: default;
 }
 .pattern.over {
     border:1px solid red;
@@ -34,6 +33,21 @@
 </div>
 
 <script>
+window.requestAnimFrame = (function(){
+    return  window.requestAnimationFrame ||
+    window.webkitRequestAnimationFrame ||
+    window.mozRequestAnimationFrame ||
+    window.oRequestAnimationFrame ||
+    window.msRequestAnimationFrame ||
+    function( callback ){
+        window.setTimeout(callback, 1000 / 60);
+    };
+})();
+window.cancelAnimFrame = (function(){
+	return window.cancelAnimationFrame ||
+	window.webkitCancelAnimationFrame;
+})();
+
 var div = $("#patterns")
 for (var i = 0; i < 8; i++)
 {
@@ -47,9 +61,10 @@ div.addInteraction(".pattern", {
         data.offsetX = element.offset().left
         data.offsetY = element.offset().top
         data.shadow.css({left: data.offsetX+"px", top: data.offsetY+"px"})
+        data.isOver = false;
         // get the drop zones...
         data.drops = []
-        element.siblings().each(function() {
+        element.siblings(".pattern").each(function() {
             var left = $(this).offset().left
             var top = $(this).offset().top
             var right = left + $(this).outerWidth()
@@ -60,26 +75,50 @@ div.addInteraction(".pattern", {
     },
     drag: function(data, e)
     {
-        var x = data.offsetX + data.deltaX
-        var y = data.offsetY - data.deltaY
-        requestAnimationFrame(function() {
-            data.shadow.css({left: x+"px", top: y+"px"})
+        var px = data.offsetX + data.deltaX
+        var py = data.offsetY - data.deltaY
+        var x = e.pageX
+	    var y = e.pageY
+        requestAnimFrame(function() {
+            data.shadow.css({left: px+"px", top: py+"px"})
+            //console.log(data.shadow.css("left"));
         });
         // look for drop zones...
-        for (var i = 0, len = data.drops.length; i < len; i++)
+        if (data.isOver === false)
         {
-            var drop = data.drops[i];
-            var x = e.pageX
-            var y = e.pageY
-            if (x > drop[0][0] && x < drop[0][1] && y > drop[1][0] && y < drop[1][1])
-            {
-                // can this be optimized?
-                // we have an over here!
-            }
-        }
+	        for (var i = 0, len = data.drops.length; i < len; i++)
+	        {
+	            var drop = data.drops[i];
+	            if (x > drop[0][0] && x < drop[0][1] && y > drop[1][0] && y < drop[1][1])
+	            {
+	                // can this be optimized?
+	                // we have an over here!
+	                data.isOver = i;
+	                drop[2].addClass("over");
+	                break;
+	            }
+	        }
+	    }
+	    else
+	    {
+		    // check if we are outside of the current drop zone
+		    var drop = data.drops[data.isOver];
+		    if (x < drop[0][0] || x > drop[0][1] || y < drop[1][0] || y > drop[1][1])
+		    {
+			    // not over anymore!
+			    drop[2].removeClass("over");
+			    data.isOver = false;
+		    }
+	    }
     },
     up: function(data)
     {
+    	if (data.isOver !== false)
+    	{
+    		var drop = data.drops[data.isOver][2]
+	    	drop.removeClass("over");
+	    	// we had a drop! (what do we do now?)
+    	}
         data.shadow.remove()
     }
 })

@@ -252,12 +252,6 @@ function createDrumPattern(name)
 	return pattern;
 }
 
-function switchDrumPattern(i)
-{
-	currentDrumPattern = i;
-	showDrumPattern(i);
-}
-
 // copies the current pattern into a new pattern with a new name
 function copyDrumPattern(name)
 {

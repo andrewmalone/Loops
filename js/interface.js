@@ -54,31 +54,11 @@ function initInterface()
 		plist.append(div);
 	}
 	
-	$("#drum-patterns").addInteraction(".pattern", {
-		click: function(data) {
-			if (!data.element.hasClass("active"))
-			{
-				$("#drum-patterns .pattern.active").removeClass("active");
-				data.element.addClass("active");
-				var i = data.element.index("#drum-patterns .pattern");
-				currentDrumPattern = i;
-				drawCurrentDrumPattern();
-			}
-		}
-	});
+	$("#drum-patterns").addInteraction(".pattern", drumPatternInteractions());	
+	$("#bass-patterns").addInteraction(".pattern", bassPatternInteractions());
 	
-	$("#bass-patterns").addInteraction(".pattern", {
-		click: function(data) {
-			if (!data.element.hasClass("active"))
-			{
-				$("#bass-patterns .pattern.active").removeClass("active");
-				data.element.addClass("active");
-				var i = data.element.index("#bass-patterns .pattern");
-				currentBassPattern = i;
-				drawCurrentBassPattern();
-			}
-		}
-	})
+	// build the sequencer
+	//var slist = $(".")
 	/*
 	// set up the sequencer inputs
 	$("#sequence").on("change", "input", function() {
@@ -91,12 +71,6 @@ function initInterface()
 		$(this).text(mode);
 	});
 	*/
-}
-
-function showDrumPattern(i)
-{
-	// load the pattern into the interface
-	// loop through all the steps...
 }
 
 function drawCurrentDrumPattern()

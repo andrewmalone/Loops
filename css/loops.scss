@@ -91,15 +91,32 @@ body {
 .panel.active {
 	display:block;
 }
+@mixin pattern() {
+	@include square(1.2em);
+	border: $border-light;
+	padding:0 .2em;
+	text-align:center;
+	margin-right:.5em;
+	line-height: 1.2em;
+}
 .patterns {
 	div {
 		float:left;
 	}
 	.pattern {
-		@include square(1.2em);
-		border: $border-light;
+		@include pattern;
 	}
 	.pattern.active {
 		border: $border;
 	}
+	.pattern.over {
+		border-color:red;
+	}
+}
+.pattern.shadow {
+	@include pattern;
+	position:absolute;
+	background:#eee;
+	top:0;
+	left:0;
 }
