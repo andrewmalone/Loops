@@ -11,78 +11,35 @@
 <!-- @javascript js/* -->
 <!-- @stylesheet loops -->
 <style>
-.pattern {
-    width:1.2em;
-    height:1.2em;
-    border:1px solid black;
-    float:left;
-    margin-right:1em;
-}
-.pattern.over {
-    border:1px solid red;
-}
-.pattern.shadow {
+::-moz-range-track {
+    height:20px;
     background:#ccc;
-    position:absolute;
-    top:0;
-    left:0;
+}
+::-moz-range-thumb {
+    height:20px;
+    width:10px;
+    background:red;
+    border-width:0;
+    border-radius:0;
+}
+
+input[type=range] {
+    -webkit-appearance: none;
+    height: 20px;
+    background:#ccc;
+}
+::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 20px;
+    width:10px;
+    background:red;
 }
 </style>
 </head>
 <body>
-<div id="patterns">
+<input type="range" class="test" name="s">
+<div class="test">
+    test
 </div>
-
-<script>
-var div = $("#patterns")
-for (var i = 0; i < 8; i++)
-{
-    div.append($("<div class='pattern'>").text(i+1).attr("id","p"+i))
-}
-div.addInteraction(".pattern", {
-    init: function(element, e)
-    {
-        var data = {}
-        data.shadow = element.clone().addClass("shadow").appendTo(document.body)
-        data.offsetX = element.offset().left
-        data.offsetY = element.offset().top
-        data.shadow.css({left: data.offsetX+"px", top: data.offsetY+"px"})
-        // get the drop zones...
-        data.drops = []
-        element.siblings().each(function() {
-            var left = $(this).offset().left
-            var top = $(this).offset().top
-            var right = left + $(this).outerWidth()
-            var bottom = top + $(this).outerHeight()
-            data.drops.push([[left, right],[top, bottom], $(this)])
-        })
-        return data
-    },
-    drag: function(data, e)
-    {
-        var x = data.offsetX + data.deltaX
-        var y = data.offsetY - data.deltaY
-        requestAnimationFrame(function() {
-            data.shadow.css({left: x+"px", top: y+"px"})
-        });
-        // look for drop zones...
-        for (var i = 0, len = data.drops.length; i < len; i++)
-        {
-            var drop = data.drops[i];
-            var x = e.pageX
-            var y = e.pageY
-            if (x > drop[0][0] && x < drop[0][1] && y > drop[1][0] && y < drop[1][1])
-            {
-                // can this be optimized?
-                // we have an over here!
-            }
-        }
-    },
-    up: function(data)
-    {
-        data.shadow.remove()
-    }
-})
-</script>
 </body>
 </html>
