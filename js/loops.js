@@ -28,13 +28,9 @@ $(function(){
 	loadSounds();
 
 	// connect the buttons
-	$("#play").addInteraction({
-		click: start
-	});
-	
-	$("#stop").addInteraction({
-		click: stop
-	});
+	$("#play").addInteraction({click: start});
+	$("#stop").addInteraction({click: stop});
+	$("#render").addInteraction({click: render})
 	
 	$("[id$='-btn']").addInteraction({
 		click: function(data)

@@ -1,35 +1,109 @@
 function render()
 {
-	var tmpContext = context;
-	// get the length
-	context = new OfflineAudioContext(2, ((60/tempo)*4) * 44100, 44100);
+	// stop playback
+	stop();
+	
+	// @todo calculate length based on sequence modes
+	var bassLength = bassMode == "loop" ? 1 : bassSequence.length;
+	var drumLength = drumMode == "loop" ? 1 : drumSequence.length;
+	var measures = Math.max(bassLength, drumLength);	
+	
+	context = new OfflineAudioContext(2, ((60 / tempo) * (BEATS_PER_MEASURE * measures)) * context.sampleRate, context.sampleRate);
 	context.graph = createAudioGraph();
 	// set all params based on current values...
 	$(".param").each(function() {
 		setParam(params[$(this).attr("name")], $(this).val());
 	});
-
+	
+	
 	var stepTime = (60 / STEPS_PER_BEAT) / tempo;
 	var steps = drumPatterns[currentDrumPattern].steps;
 	var time = 0;
 	
-	for (var i = 0; i < 16; i++)
+	// set the starting patterns...
+	if (drumMode == "sequence")
 	{
-		if (steps[0][i] == 1)
-		{
-			playDrumSound(buffers[SOUNDS[0].name], time, .8);
-		}
-		time += stepTime;
+		drumSequencePosition = 0;
+		currentDrumPattern = drumSequence[0];
+	}
+	if (bassMode == "sequence")
+	{
+		bassSequencePosition = 0;
+		currentDrumPattern = bassSequence[0];
 	}
 	// @todo - add all drum/bass sounds and choke groups
+	// loop through the measures
+	for (var measureCount = 0; measureCount < measures; measureCount++)
+	{
+		var steps = drumPatterns[currentDrumPattern].steps;
+		var volumes = drumPatterns[currentDrumPattern].volumes;
+		var bass = bassPatterns[currentBassPattern];
+		
+		// loop through the steps
+		for (var step = 0; step < NUMSTEPS; step++)
+		{
+			// loop through the drum sounds
+			for (i = 0; i < SOUNDS.length; i++)
+			{
+				if (steps[i][step] == 1)
+				{
+					var name = SOUNDS[i].name;
+					for (var j = 0, len_j = scheduledSounds.length; j < len_j; j++) 
+					{
+						if (scheduledSounds[j].buffer._mute == buffers[name]._mute) 
+						{
+							scheduledSounds[j].stop(time + 5/tempo);
+							// @todo is this extra time padding needed?	
+						}
+					}
+					playDrumSound(buffers[name], time, volumes[i][step]);
+				}
+			}
+			
+			// check for bass
+			if (bass[step].note != 0)
+			{
+			// play the note...
+				var note = BASS_MAPPING[bass[step].note];
+				playBassSound(
+					buffers[note.sample],
+					time,
+					bass[step].volume,
+					bass[step].duration * stepTime,
+					note.pitch,
+					note.tune
+				);
+			}
+			time += stepTime;	
+		}
+		
+		if (drumMode == "sequence")
+		{
+			drumSequencePosition = (drumSequencePosition + 1) % drumSequence.length;
+			if (drumSequence[drumSequencePosition] == null)
+			{
+				drumSequencePosition = 0;
+			}
+			currentDrumPattern = drumSequence[drumSequencePosition];
+		}
+		if (bassMode == "sequence")
+		{
+			bassSequencePosition = (bassSequencePosition + 1) % bassSequence.length;
+			if (bassSequence[bassSequencePosition] == null)
+			{
+				bassSequencePosition = 0;
+			}
+			currentBassPattern = bassSequence[bassSequencePosition];
+		}
+	}
 	
 	context.oncomplete = function(event) {
-		// console.log("done!", event);
-		context = tmpContext;
+		context = new AudioContext();
 		context.graph = createAudioGraph();
 		$(".param").each(function() {
 			setParam(params[$(this).attr("name")], $(this).val());
 		});
+		scheduledSounds = [];
 		var buffer = event.renderedBuffer;
 		var interleaved = interleave(buffer.getChannelData(0),buffer.getChannelData(1));
 		var dataview = encodeWAV(interleaved);
@@ -51,12 +125,12 @@ forceDownload = function(blob, filename){
     link.href = url;
     //var dataUrl = 
     link.download = filename || 'output.wav';
-    //link.appendChild(document.createTextNode("test"))
-    //document.body.appendChild(link);
+    link.appendChild(document.createTextNode("test"))
+    document.body.appendChild(link);
     // @todo - work on some cross browser stuff here...
-    var click = document.createEvent("Event");
-    click.initEvent("click", true, true);
-    link.dispatchEvent(click);
+    //var click = document.createEvent("Event");
+    //click.initEvent("click", true, true);
+    //link.dispatchEvent(click);
 }
 
 function interleave(inputL, inputR){
