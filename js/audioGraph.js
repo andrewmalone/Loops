@@ -39,6 +39,7 @@ function createFx(name)
 
 function createFilter(name)
 {
+	// node setup
 	var fx = {
 		in: context.createGain(),
 		filter: context.createBiquadFilter(),
@@ -47,15 +48,19 @@ function createFilter(name)
 		out: context.createGain()
 	}
 	
+	// initial values
 	fx.filter.frequency.value = context.sampleRate / 2;
 	fx.wet.gain.value = 1;
 	fx.dry.gain.value = 0;
+
+	// connections
 	fx.in.connect(fx.filter);
 	fx.in.connect(fx.dry);
 	fx.filter.connect(fx.wet);
 	fx.dry.connect(fx.out);
 	fx.wet.connect(fx.out);
 	
+	// parameters
 	params[name + "-filter-frequency"] = {
 		min: 10,
 		max: context.sampleRate / 2,
@@ -81,6 +86,56 @@ function createFilter(name)
 		}
 	}
 	
+	return fx;
+}
+
+function createDelay(name)
+{
+	// node setup
+	fx = {
+		in: context.createGain(),
+		out: context.createGain(),
+		wet: context.createGain(),
+		dry: context.createGain(),
+		feedback: context.createGain(),
+		delay: context.createDelay(10)
+	}
+
+	// initial values
+	fx.feedback.gain.value = 0;
+	fx.delay.delayTime.value = 0;
+	fx.wet.gain.value = 0;
+
+	// connections
+	fx.in.connect(fx.delay);
+	fx.in.connect(fx.dry);
+	fx.delay.connect(fx.wet);
+	fx.delay.connect(fx.feedback);
+	fx.feedback.connect(fx.delay);
+	fx.wet.connect(fx.out);
+	fx.dry.connect(fx.out);
+
+	// params
+	params[name + "-delay-time"] = {
+		// @todo - tempo synced params
+	}
+
+	params[name + "-delay-feedback"] = {
+		min: 0,
+		max: 1,
+		step: .1,
+		value: fx.feedback.gain.value,
+		param: fx.feedback.gain
+	}
+
+	params[name + "-delay-level"] = {
+		min: 0,
+		max: 1,
+		step: .1,
+		value: fx.wet.gain.value,
+		param: fx.wet.gain
+	}
+
 	return fx;
 }
 
