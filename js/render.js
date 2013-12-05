@@ -3,8 +3,12 @@ function render()
 	var tmpContext = context;
 	// get the length
 	context = new OfflineAudioContext(2, ((60/tempo)*4) * 44100, 44100);
-	amp = context.createGain();
-	amp.connect(context.destination);
+	context.graph = createAudioGraph();
+	// set all params based on current values...
+	$(".param").each(function() {
+		setParam(params[$(this).attr("name")], $(this).val());
+	});
+
 	var stepTime = (60 / STEPS_PER_BEAT) / tempo;
 	var steps = drumPatterns[currentDrumPattern].steps;
 	var time = 0;
@@ -22,8 +26,10 @@ function render()
 	context.oncomplete = function(event) {
 		// console.log("done!", event);
 		context = tmpContext;
-		amp = context.createGain();
-		amp.connect(context.destination);
+		context.graph = createAudioGraph();
+		$(".param").each(function() {
+			setParam(params[$(this).attr("name")], $(this).val());
+		});
 		var buffer = event.renderedBuffer;
 		var interleaved = interleave(buffer.getChannelData(0),buffer.getChannelData(1));
 		var dataview = encodeWAV(interleaved);

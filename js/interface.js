@@ -89,6 +89,40 @@ function initInterface()
 		}
 	});
 	sequence.append(button);
+	
+	// slider setup
+	$(".param").attr({
+		min: function() {return getParam($(this), "min")},
+		max: function() {return getParam($(this), "max")},
+		step: function() {return getParam($(this), "step")},
+		value: function() {return getParam($(this), "value")}
+	}).on("change", function() {
+		// set the value!!!
+		setParam(params[$(this).attr("name")], $(this).val());
+		return false;
+		
+	});
+}
+
+function getParam(element, param)
+{
+	var name = element.attr("name");
+	if (params[name] && params[name][param])
+	{
+		return params[name][param];
+	}
+}
+
+function setParam(p, value)
+{
+	if (typeof(p.param) == "function")
+	{
+		p.param(value);
+	}
+	else
+	{
+		p.param.value = value;
+	}
 }
 
 function drawCurrentDrumPattern()

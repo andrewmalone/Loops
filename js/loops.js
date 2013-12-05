@@ -18,14 +18,13 @@ ALSO:
 */
 
 var context = new AudioContext(); // = new AudioContext();
-//var offlineContext = new OfflineAudioContext(2, 2 * 44100, 44100);
-var amp = context.createGain();
-amp.connect(context.destination);
 
+//var offlineContext = new OfflineAudioContext(2, 2 * 44100, 44100);
 
 // Initialize things after the page loads
 $(function(){
 	// load the sounds
+	context.graph = createAudioGraph();
 	loadSounds();
 
 	// connect the buttons
@@ -36,16 +35,13 @@ $(function(){
 	$("#stop").addInteraction({
 		click: stop
 	});
-	$("#bass-btn").addInteraction({
-		click: function() {
-			switchPanel("bass-panel")
+	
+	$("[id$='-btn']").addInteraction({
+		click: function(data)
+		{
+			switchPanel(data.element.attr("id").split("-")[0] + "-panel");
 		}
-	});
-	$("#drum-btn").addInteraction({
-		click: function() {
-			switchPanel("drum-panel")
-		}
-	});
+	})
 
 	// build the interface...
 	initInterface();

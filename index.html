@@ -17,11 +17,48 @@
 	<button id="stop">stop</button>
 	<button id="bass-btn">Bass</button>
 	<button id="drum-btn">Drum</button>
+	<button id="masterfx-btn">FX</button>
 </div>
-<div class="panel" id="drum-panel">
+<div class="panel active" id="drum-panel">
+	<h3>Drums</h3>
+	<div class="panel-controls">
+		
+	</div>
 	<div id="drumseq"></div>
 	<div id="drum-patterns" class="patterns"></div>
 	<div id="drum-sequence" class="sequence"></div>
+</div>
+<div class="panel" id="masterfx-panel">
+	<h3>Master</h3>
+	<div>
+		<label>Frequency</label><input type="range" class="param" name="master-filter-frequency">
+	</div>
+	<div>
+		<label>Q</label><input type="range" class="param" name="master-filter-q">
+	</div>
+	<div>
+		<label>Mix</label><input type="range" class="param" name="master-filter-mix">
+	</div>
+	<h3>Drum</h3>
+	<div>
+		<label>Frequency</label><input type="range" class="param" name="drum-filter-frequency">
+	</div>
+	<div>
+		<label>Q</label><input type="range" class="param" name="drum-filter-q">
+	</div>
+	<div>
+		<label>Mix</label><input type="range" class="param" name="drum-filter-mix">
+	</div>
+	<h3>Bass</h3>
+	<div>
+		<label>Frequency</label><input type="range" class="param" name="bass-filter-frequency">
+	</div>
+	<div>
+		<label>Q</label><input type="range" class="param" name="bass-filter-q">
+	</div>
+	<div>
+		<label>Mix</label><input type="range" class="param" name="bass-filter-mix">
+	</div>
 </div>
 <!--
 <div>
@@ -38,7 +75,7 @@
 	<input type="text" value="0">
 </div>
 -->
-<div class="panel active" id="bass-panel">
+<div class="panel" id="bass-panel">
 	<div id="bseq"></div>
 	<div id="bass-patterns" class="patterns"></div>
 	<div id="bass-sequence" class="sequence"></div>

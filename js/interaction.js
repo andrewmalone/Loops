@@ -1,35 +1,3 @@
-interact = function(element, selector, cb)
-{
-	if (cb == null)
-	{
-		cb = selector;
-		selector = undefined;
-	}
-	var start = function(e)
-	{
-		w("start");
-		e.preventDefault();
-		//e.stopPropogation();
-		return false;
-	}
-	var stop = function(e)
-	{
-		w("stop");
-		//e.preventDefault();
-		//e.stopPropogation();
-		//return false;
-	}
-	
-	element[0].addEventListener("mousedown", start)
-	element[0].addEventListener("touchstart", start)
-	element[0].addEventListener("touchend", stop)
-	element[0].addEventListener("mouseup", stop)
-	
-	/*
-	this.on("mousedown touchstart", start);
-	this.on("mouseup touchend", stop);
-	*/
-}
 $.fn.addInteraction = function(selector, cb)
 {
 	if (cb == null)
