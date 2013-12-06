@@ -14,7 +14,8 @@ function drumInteractions()
 				// turn on the cell!
 				isTurningOn = true;
 				requestAnimFrame(function() {			
-					element.css("opacity", vol);
+					//element.css("opacity", vol);
+					element.children(".note").css("opacity", vol)
 					element.addClass("on");
 				});		
 				drumPatterns[currentDrumPattern].steps[row][col] = 1;
@@ -31,7 +32,8 @@ function drumInteractions()
 			var vol = calcVolume(data.startV, data.deltaY);
 			// console.log(vol);
 			requestAnimFrame(function() {
-				data.element.css("opacity", vol);
+				//data.element.css("opacity", vol);
+				data.element.children(".note").css("opacity", vol)
 			});
 			
 			drumPatterns[currentDrumPattern].volumes[data.row][data.col] = vol
@@ -87,6 +89,7 @@ function bassInteractions()
 				bassPatterns[currentBassPattern][col].volume = .8;
 				isTurningOn = true;
 				element.addClass("on");
+				element.children(".note").css("opacity", volume);
 			}
 			return {
 				row: row,

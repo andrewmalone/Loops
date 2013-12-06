@@ -36,7 +36,7 @@ function drawCurrentDrumPattern()
 			{
 				$(this).addClass("on");
 			}
-			$(this).css("opacity", vol);
+			$(this).children("note").css("opacity", vol);
 		}
 		else
 		{
@@ -64,7 +64,7 @@ function drawCurrentBassPattern()
 			{
 				$(this).addClass("on");
 			}
-			$(this).children(".note").opacity = volume;
+			$(this).children(".note").css("opacity", volume);
 			var width = 0;
 			var element = $(this).parent();
 			for (var i = 0; i < duration - 1; i++)
@@ -84,20 +84,6 @@ function drawCurrentBassPattern()
 			}
 		}
 	});
-}
-function updateDrumPatternList(name, index)
-{
-	// add the last item to the option group...
-	var option = $("<option>");
-	option.val(index);
-	option.text(name);
-	$("#switch").append(option);
-}
-
-function addToSequenceList()
-{
-	$("#sequence").append($("<input type='text'>"));
-	addToSequence();	
 }
 
 function calcVolume(startV, deltaY) 

@@ -20,7 +20,7 @@ function initDrumGrid()
 		labels.append(label);
 		for (var j = 0; j < NUMSTEPS; j++)
 		{
-			var cell = $("<div class='cell'><div class='cell-inner'></div></div>");
+			var cell = $("<div class='cell'><div class='cell-inner'><div class='note'></div></div>");
 			row.append(cell);
 		}
 		grid.append(row);
