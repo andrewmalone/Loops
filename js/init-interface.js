@@ -121,7 +121,7 @@ function initSliders()
 	{
 		//console.log(param);
 		// get the three components...
-		param = parameter.split("-");
+		var param = parameter.split("-");
 		if (!(param[0] in fxlist))
 		{
 			fxlist[param[0]] = {}
