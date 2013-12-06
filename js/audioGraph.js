@@ -83,7 +83,8 @@ function createFilter(name)
 		max: 1,
 		step: .1,
 		value: 1,
-		param: function(value) {
+		param: function(value) 
+		{
 			crossfade(fx.wet.gain, fx.dry.gain, value);
 		}
 	}
@@ -94,7 +95,7 @@ function createFilter(name)
 function createDelay(name)
 {
 	// node setup
-	fx = {
+	var fx = {
 		in: context.createGain(),
 		out: context.createGain(),
 		wet: context.createGain(),
@@ -118,9 +119,18 @@ function createDelay(name)
 	fx.dry.connect(fx.out);
 
 	// params
-	//params[name + "-delay-time"] = {
-		// @todo - tempo synced params
-	//}
+	params[name + "-delay-time"] = {
+		min: "0",
+		max: 15,
+		step: 1,
+		value: "0",
+		param: function(value)
+		{
+			console.log(value, 15/tempo * value);
+			fx.delay.delayTime.value = 15/tempo * value;
+			console.log(fx.delay.delayTime, fx.delay.delayTime.value)
+		}
+	}
 
 	params[name + "-delay-feedback"] = {
 		min: "0",
