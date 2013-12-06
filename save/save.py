@@ -8,15 +8,15 @@ form = cgi.FieldStorage()
 string = form.getvalue('data')
 
 # get the current file count...
-with open("save/count.txt") as file:
+with open("count.txt") as file:
     count = int(file.read()) + 1
 
 # create the new file
-with open("save/%s.json" % count, "w") as file:
+with open("%s.json" % count, "w") as file:
     file.write(string)
 
 # increment the file count
-with open("save/count.txt", "w") as file:
+with open("count.txt", "w") as file:
     file.write(str(count))
 
 # send a response back

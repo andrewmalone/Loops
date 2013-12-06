@@ -241,8 +241,7 @@ function bassPatternInteractions()
 		    	var type = data.element.parent().attr("id").split("-")[0];
 		    	if (drop.parent().hasClass("patterns"))
 		    	{
-			    	var typeUpper = type[0].toUpperCase() + type.slice(1);
-			    	window[type + "Patterns"][i] = $.extend(true, {}, window[type + "Patterns"][window["current" + typeUpper + "Pattern"]]);
+			    	window[type + "Patterns"][i] = $.extend(true, {}, window[type + "Patterns"][window["current" + initCap(type) + "Pattern"]]);
 			    	switchActivePattern(drop, type);
 		    	}
 		    	else if (drop.parent().hasClass("sequence"))
@@ -250,7 +249,7 @@ function bassPatternInteractions()
 			    	// add the number
 			    	drop.text(data.element.text());
 			    	// set the next one to open
-			    	drop.next().addClass("open").removeClass("closed");
+			    	drop.next(".pattern").addClass("open").removeClass("closed");
 			    	// add to the sequence
 			    	//var index = data.element.siblings(".pattern").addBack().index(data.element);
 			    	window[type + "Sequence"][i] = data.element.siblings(".pattern").addBack().index(data.element);

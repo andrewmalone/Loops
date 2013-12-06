@@ -95,14 +95,6 @@ function calcVolume(startV, deltaY)
 	return vol;
 }
 
-function switchPanel(panel)
-{
-	requestAnimFrame(function(){
-		$(".panel.active").removeClass("active");
-		$("#" + panel).addClass("active")
-	});
-}
-
 function getRow(index)
 {
 	return Math.floor(index / NUMSTEPS);

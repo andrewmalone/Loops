@@ -40,7 +40,7 @@ $(function(){
 	initInterface();
 	
 	// load a pattern depending on url params
-	if (location.search != "")
+	if (location.hash != "")
 	{
 		load();
 	}
