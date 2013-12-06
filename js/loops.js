@@ -31,6 +31,7 @@ $(function(){
 	$("#play").addInteraction({click: start});
 	$("#stop").addInteraction({click: stop});
 	$("#render").addInteraction({click: render})
+	$("#save").addInteraction({click: save})
 	
 	$("[id$='-btn']").addInteraction({
 		click: function(data)
@@ -41,4 +42,10 @@ $(function(){
 
 	// build the interface...
 	initInterface();
+	
+	// load a pattern depending on url params
+	if (location.search != "")
+	{
+		load();
+	}
 });

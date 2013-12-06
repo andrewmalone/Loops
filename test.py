@@ -1,4 +1,4 @@
-#!c:/Python27/python.exe
+#!/usr/bin/python
 # -*- coding: UTF-8 -*-
 
 # enable debugging
