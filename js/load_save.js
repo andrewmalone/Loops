@@ -12,18 +12,24 @@ function load()
 			// load the data
 			for (var i in data)
 			{
-			   window[i] = data[i];
+			   if (i != "fxParams")
+			   {
+				   window[i] = data[i];
+			   }
 			}
+			// deal with the fx params and sliders...
+			
+			for (var param in data.fxParams)
+			{
+				// update the slider...
+				$(".param[name=" + param + "]").val(data.fxParams[param]);
+				
+				// update the param
+				setParam(params[param], data.fxParams[param]);	
+			}
+
+			
 			// update the interface!
-			
-			// drum grid
-			//drawCurrentDrumPattern();
-			
-			// bass grid
-			//drawCurrentBassPattern();
-			
-			// switch pattern indicators...
-			//switchActivePatter
 			// deactivate any patterns
 			$(".pattern.active").removeClass("active");
 			
@@ -84,7 +90,11 @@ function save()
 		data[element] = window[element]
 	});
 	
-	// @todo = get fx params!
+	// get fx params
+	data.fxParams = {};
+	$(".param").each(function() {
+		data.fxParams[$(this).attr("name")] = $(this).val();
+	});
 	data = JSON.stringify(data);
 	
 	// make the ajax call
