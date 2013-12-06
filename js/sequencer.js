@@ -11,7 +11,7 @@ var BEATS_PER_MEASURE = 4;
 var STEPS_PER_BEAT = 4;
 var NUMSTEPS = BEATS_PER_MEASURE * STEPS_PER_BEAT;
 var NUMPATTERNS = 8;
-var SEQUENCE_LENGTH = 16;
+var SEQUENCE_LENGTH = 8;
 
 // create a default empty drum pattern
 var drumPatterns = [];

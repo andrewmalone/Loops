@@ -2,15 +2,24 @@ function load()
 {
 	var num = location.search.slice(1);
 	// @todo - verify this is really an int...
-	
-    $.getJSON("save/" + num + ".json", function(data) {
-    	console.log(data);
+
 /*
         for (i in data)
         {
             window[i] = data[i]
         }
 */
+
+    
+    $.ajax({
+	   dataType: "json",
+	   url: "save/" + num + ".json",
+	   success: function(data) {
+		   console.log(data);
+	   },
+	   error: function(error) {
+		   console.log("error!");
+	   }
     });
 }
 

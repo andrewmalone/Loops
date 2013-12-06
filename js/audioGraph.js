@@ -28,12 +28,14 @@ function createAudioGraph(offline)
 
 function createFx(name)
 {
-	fx = {
-		filter: createFilter(name)
+	var fx = {
+		filter: createFilter(name),
+		delay: createDelay(name)
 	}
 	
 	fx.in = fx.filter.in;
-	fx.out = fx.filter.out;
+	fx.filter.out.connect(fx.delay.in);
+	fx.out = fx.delay.out;
 	return fx;
 }
 
@@ -116,23 +118,23 @@ function createDelay(name)
 	fx.dry.connect(fx.out);
 
 	// params
-	params[name + "-delay-time"] = {
+	//params[name + "-delay-time"] = {
 		// @todo - tempo synced params
-	}
+	//}
 
 	params[name + "-delay-feedback"] = {
-		min: 0,
-		max: 1,
-		step: .1,
-		value: fx.feedback.gain.value,
+		min: "0",
+		max: "1",
+		step: ".1",
+		value: "0",
 		param: fx.feedback.gain
 	}
 
 	params[name + "-delay-level"] = {
-		min: 0,
-		max: 1,
-		step: .1,
-		value: fx.wet.gain.value,
+		min: "0",
+		max: "1",
+		step: ".1",
+		value: "0",
 		param: fx.wet.gain
 	}
 

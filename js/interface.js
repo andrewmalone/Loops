@@ -6,112 +6,8 @@ var BASS_RANGE = BASS_MAX - BASS_MIN;
 * Initialize the interface - dynamically creates the drum grid, bass grid,
 * pattern switchers, and sequencers
 */
-function initInterface()
-{
-	// create a grid for drums...
-	var seq = $("#drumseq");
-	var labels = $("<div id='drum-labels'>");
-	var grid = $("<div id='drum-grid'>");
-	for (var i = 0, len = SOUNDS.length; i < len; i++)
-	{
-		var row = $("<div class='row'>");
-		var label = $("<div class='label'>").text(SOUNDS[i].name);
-		labels.append(label);
-		for (var j = 0; j < NUMSTEPS; j++)
-		{
-			var cell = $("<div class='cell'><div class='cell-inner'></div></div>");
-			row.append(cell);
-		}
-		grid.append(row);
-	}
-	seq.append(labels).append(grid);
-	seq.addInteraction(".cell-inner", drumInteractions());
-	
-	// create a grid for the bass
-	var bass = $("#bseq");
-	labels = $("<div id='bass-labels'>");
-	grid = $("<div id='bass-grid'>");
-	for (var i = BASS_MAX; i >= BASS_MIN; i--)
-	{
-		var row = $("<div class='row'>");
-		var label = $("<div class='label'>").text(i);
-		labels.append(label);
-		for (var j = 0; j < NUMSTEPS; j++)
-		{
-			var cell = $("<div class='cell'><div class='cell-inner'><div class='note'></div></div></div>");
-			row.append(cell);
-		}
-		grid.append(row);
-	}
-	bass.append(labels).append(grid);
-	bass.addInteraction(".cell-inner", bassInteractions());
-	
-	// build the patterns for both the drum and bass
-	var plist = $(".patterns");
-	var label = $("<div class='label'>").text("patterns");
-	plist.append(label);
-	for (var i = 0; i < NUMPATTERNS; i++)
-	{
-		var div = $("<div class='pattern'>").text(i + 1);
-		if (i == 0)
-		{
-			div.addClass("active");
-		}
-		plist.append(div);
-	}
-	
-	$("#drum-patterns").addInteraction(".pattern", drumPatternInteractions());	
-	$("#bass-patterns").addInteraction(".pattern", bassPatternInteractions());
-	
-	var sequence = $(".sequence")
-	var label = $("<div class='label'>").text("sequence");
-	sequence.append(label);
-	for (var i = 0; i < SEQUENCE_LENGTH; i++)
-	{
-		var div = $("<div class='pattern'>");
-		if (i == 0)
-		{
-			div.addClass("open");
-		}
-		else
-		{
-			div.addClass("closed");
-		}
-		sequence.append(div);
-	}
-	var button = $("<button>").text("loop");
-	button.addInteraction({
-		click: function(data)
-		{
-			var type = data.element.parent().attr("id").split("-")[0];
-			window[type + "Mode"] = window[type + "Mode"] == "sequence" ? "loop" : "sequence";
-			data.element.text(window[type + "Mode"]);
-		}
-	});
-	sequence.append(button);
-	
-	// slider setup
-	$(".param").attr({
-		min: function() {return getParam($(this), "min")},
-		max: function() {return getParam($(this), "max")},
-		step: function() {return getParam($(this), "step")},
-		value: function() {return getParam($(this), "value")}
-	}).on("change", function() {
-		// set the value!!!
-		setParam(params[$(this).attr("name")], $(this).val());
-		return false;
-		
-	});
-}
 
-function getParam(element, param)
-{
-	var name = element.attr("name");
-	if (params[name] && params[name][param])
-	{
-		return params[name][param];
-	}
-}
+
 
 function setParam(p, value)
 {
@@ -231,6 +127,11 @@ function getCol(index)
 	return index % NUMSTEPS;
 }
 
+function initCap(string)
+{
+	return string[0].toUpperCase() + string.slice(1);
+}
+
 function switchActivePattern(index, type)
 {
 	if (typeof(index) == "number")
@@ -244,10 +145,11 @@ function switchActivePattern(index, type)
 	}
 	if (!element.hasClass("active"))
 	{
+		//type = initCap(type);
 		element.siblings(".active").removeClass("active");
 		element.addClass("active");
-		window["current" + type[0].toUpperCase() + type.slice(1) + "Pattern"] = index;
-		window["drawCurrent" + type[0].toUpperCase() + type.slice(1) + "Pattern"]();
+		window["current" + initCap(type) + "Pattern"] = index;
+		window["drawCurrent" + initCap(type) + "Pattern"]();
 	}
 }
 
