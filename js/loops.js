@@ -32,13 +32,9 @@ $(function(){
 	$("#stop").addInteraction({click: stop});
 	$("#render").addInteraction({click: render})
 	$("#save").addInteraction({click: save})
-	
-	$("[id$='-btn']").addInteraction({
-		click: function(data)
-		{
-			switchPanel(data.element.attr("id").split("-")[0] + "-panel");
-		}
-	})
+	$("#fx").addInteraction({click: function() {
+		$("#fx-panel").toggleClass("active");
+	}})
 
 	// build the interface...
 	initInterface();

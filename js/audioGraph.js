@@ -79,7 +79,7 @@ function createFilter(name)
 	}
 	
 	params[name + "-filter-mix"] = {
-		min: 0,
+		min: "0",
 		max: 1,
 		step: .1,
 		value: 1,
@@ -124,16 +124,16 @@ function createDelay(name)
 
 	params[name + "-delay-feedback"] = {
 		min: "0",
-		max: "1",
-		step: ".1",
+		max: 1,
+		step: .1,
 		value: "0",
 		param: fx.feedback.gain
 	}
 
 	params[name + "-delay-level"] = {
 		min: "0",
-		max: "1",
-		step: ".1",
+		max: 1,
+		step: .1,
 		value: "0",
 		param: fx.wet.gain
 	}

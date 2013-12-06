@@ -143,9 +143,10 @@ function initSliders()
 			$("<h5>").text(initCap(fx)).appendTo(sectionDiv);
 			for (var i in fxlist[section][fx])
 			{
-				$("<label>").text(i).appendTo(sectionDiv);
-				$("<input class='param' type='range'>").attr("name", fxlist[section][fx][i]).appendTo(sectionDiv)
-				$("<br>").appendTo(sectionDiv);
+				var slider = $("<div>")
+				$("<label>").text(i).appendTo(slider);
+				$("<input class='param' type='range'>").attr("name", fxlist[section][fx][i]).appendTo(slider);
+				slider.appendTo(sectionDiv);
 			}
 			
 		}

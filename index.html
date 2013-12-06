@@ -8,9 +8,10 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro' rel='stylesheet' type='text/css'>
 <!-- @todo load fonts locally -->
+<!-- @stylesheet loops -->
 <!-- @javascript AudioContextMonkeyPatch -->
 <!-- @javascript js/* -->
-<!-- @stylesheet loops -->
+
 </head>
 <body>
 
@@ -19,18 +20,24 @@
 	<button id="stop">stop</button>
 	<button id="save">save</button>
 	<button id="render">render</button>
-	<button id="masterfx-btn">FX</button>
+	<button id="fx">FX</button>
 </div>
 
 <div class="panel" id="drum-panel">
-	<h3>Drums</h3>
+	<header>
+		<h3>Drums</h3>
+		<p>Click to toggle notes on/off, drag up/down to adjust note volume.</p>
+	</header>
 	<div id="drumseq"></div>
 	<div id="drum-patterns" class="patterns"></div>
 	<div id="drum-sequence" class="sequence"></div>
 </div>
 
 <div class="panel" id="bass-panel">
-	<h3>Bass</h3>
+	<header>
+		<h3>Bass</h3>
+		<p>Click to toggle notes on/off, drag up/down to adjust note volume, drag left/right to adjust note length.</p>
+	</header>
 	<div id="bseq"></div>
 	<div id="bass-patterns" class="patterns"></div>
 	<div id="bass-sequence" class="sequence"></div>
@@ -38,5 +45,6 @@
 
 <div class="panel" id="fx-panel">
 </div>
+
 </body>
 </html>
