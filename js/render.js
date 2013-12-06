@@ -108,7 +108,16 @@ function render()
 		var interleaved = interleave(buffer.getChannelData(0),buffer.getChannelData(1));
 		var dataview = encodeWAV(interleaved);
 		var audioBlob = new Blob([dataview], {type: 'audio/wav'});
-		forceDownload(audioBlob);
+		// var audioBlob = new Blob([dataview]);
+		// forceDownload(audioBlob);
+		// saveAs(audioBlob, "maybe.wav");
+		var reader = new FileReader();
+		reader.onloadend = function()
+		{
+			// @todo - update this method for the interface, also maybe some instructions for safari
+			$("<a>").attr("href", reader.result).attr("download", "Export.wav").text("Download").appendTo($(document.body));
+		}
+		reader.readAsDataURL(audioBlob);
 	}
 	
 	context.startRendering();
@@ -118,8 +127,12 @@ function render()
 /**
 * Wave rendering functions adapted from  https://github.com/mattdiamond/Recorderjs
 */
+var globalBlob;
 forceDownload = function(blob, filename){
 	// console.log(blob)
+	//console.log()
+	globalBlob = blob;
+	return;
     var url = (window.URL || window.webkitURL).createObjectURL(blob);
     var link = document.createElement('a');
     link.href = url;
