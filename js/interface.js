@@ -1,15 +1,15 @@
-var BASS_MAX = 52;
-var BASS_MIN = 36;
-var BASS_RANGE = BASS_MAX - BASS_MIN;
+/**
+* interface.js
+* Interface update functions
+*/
+
+// @todo - finish comments
+// global variable for pattern name
 var saveName = "";
 
 /**
-* Initialize the interface - dynamically creates the drum grid, bass grid,
-* pattern switchers, and sequencers
+* Sets an fx paramater (usually called when a slider changes)
 */
-
-
-
 function setParam(p, value)
 {
 	if (typeof(p.param) == "function")
@@ -22,21 +22,27 @@ function setParam(p, value)
 	}
 }
 
+/**
+* Draw the current drum pattern into the drum grid
+*/
 function drawCurrentDrumPattern()
 {
 	$("#drumseq .cell-inner").each(function(index) {
 		var row = getRow(index);
 		var col = getCol(index);
+		
 		// get the value and volume...
 		var step = drumPatterns[currentDrumPattern].steps[row][col];
 		var vol = drumPatterns[currentDrumPattern].volumes[row][col];
 		
 		if (step == 1)
 		{
+			// turn the cell on
 			if (!$(this).hasClass("on"))
 			{
 				$(this).addClass("on");
 			}
+			// set the opacity
 			$(this).children("note").css("opacity", vol);
 		}
 		else
@@ -49,11 +55,12 @@ function drawCurrentDrumPattern()
 	});
 }
 
+/**
+* Draw the current bass pattern into the bass grid
+*/
 function drawCurrentBassPattern()
 {
 	$("#bseq .cell-inner").each(function(index) {
-		// @todo - think about refactoring.
-		// we don't need to go through each cell here
 		var row = (BASS_RANGE - getRow(index)) + BASS_MIN;
 		var col = getCol(index);
 		var note = bassPatterns[currentBassPattern][col].note;
@@ -70,7 +77,6 @@ function drawCurrentBassPattern()
 			var element = $(this).parent();
 			for (var i = 0; i < duration - 1; i++)
 			{
-				// add to the width
 				element = element.next();
 				width -= element.outerWidth();
 			}
@@ -87,32 +93,50 @@ function drawCurrentBassPattern()
 	});
 }
 
+/**
+* Utility function to calculate a volume based on mouse movement
+* Translates pixel variance to 0-1 volume range
+*/
 function calcVolume(startV, deltaY) 
 {
-	var vol = parseFloat(startV) + (deltaY/100);
+	var vol = parseFloat(startV) + (deltaY / 100);
 	if (vol > 1) vol = 1;
 	if (vol < 0) vol = 0;
-	vol = Math.round(vol*100)/100;
+	vol = Math.round(vol * 100) / 100;
 	return vol;
 }
 
+/**
+* Utility function to get a row value based on a cell's index
+*/
 function getRow(index)
 {
 	return Math.floor(index / NUMSTEPS);
 }
 
+/**
+* Utility function to get a column value based on a cell's index
+*/
 function getCol(index)
 {
 	return index % NUMSTEPS;
 }
 
+/**
+* Utility function to convert the first character of a string to upper case
+*/
 function initCap(string)
 {
 	return string[0].toUpperCase() + string.slice(1);
 }
 
+/**
+* Switches a pattern (for drum or bass) - updates the pattern list display
+* and the pattern grid
+*/
 function switchActivePattern(index, type)
 {
+	var element;
 	if (typeof(index) == "number")
 	{
 		element = $("#" + type + "-patterns .pattern").eq(index);	
@@ -134,7 +158,7 @@ function switchActivePattern(index, type)
 
 function setActiveSequence(index, type)
 {
-	element = $("#" + type + "-sequence .pattern").eq(index);
+	var element = $("#" + type + "-sequence .pattern").eq(index);
 	if (!element.hasClass("active"))
 	{
 		element.siblings(".active").removeClass("active");

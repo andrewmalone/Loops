@@ -37,7 +37,7 @@ Each instrument also has a sequencer with 8 slots to chain patterns together. To
 The playback mode button controls whether the sequencer is on or off. In loop mode, only the active pattern is played. In sequence mode, each step of the sequence is played in order before looping back to the beginning of the sequence.
 
 ### Effects
-The bass and drum tracks each have their own effects section, and there is also a master effects section. Each effects section has a filter, delay, and distortion effect.
+The bass and drum tracks each have their own effects section, and each drum sound also has its own effects section. There's also a set of master effects that applies to the final combined output. Each effects section has a filter, delay, and distortion effect.
 
 #### Filter
 The filter has three parameters:
@@ -82,6 +82,8 @@ Loops has not been tested in Opera or Android browsers, but it might work.
 
 ## Credits
 Loops was created by Andrew Malone. Please let me know if you make something cool with it.
+
+[Loops on GitHub](https://github.com/andrewmalone/Loops)
 
 * email: <andrew@andrewmalone.com>
 * twitter: [@andrewmalone](https://twitter.com/andrewmalone)

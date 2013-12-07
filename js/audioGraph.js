@@ -1,7 +1,8 @@
+// @todo - comments
 var params = {}
 var shaperCurves = createShaperCurves();
 
-function createAudioGraph(offline)
+function createAudioGraph()
 {
 	var g = {};
 	g.in = {

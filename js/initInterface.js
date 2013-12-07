@@ -1,3 +1,14 @@
+/*
+* init-interface.js
+* Initializes the interface. Dynamically draws the pattern grids, creates the pattern and
+* sequence rows, and creates all the parameter sliders
+*/
+
+// @todo - comments
+var BASS_MAX = 52;
+var BASS_MIN = 36;
+var BASS_RANGE = BASS_MAX - BASS_MIN;
+
 function initInterface()
 {
 	initDrumGrid();

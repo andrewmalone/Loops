@@ -1,4 +1,9 @@
-// @todo - double check for correct scope
+/**
+* loops.js
+* Contains the document load function that is fired when the page first loads
+*/
+
+// global variable for the audio context
 var context;
 
 // Initialize things after the page loads
@@ -10,7 +15,7 @@ $(function(){
 	// load the sounds
 	loadSounds();
 
-	// connect the buttons
+	// set up all the buttons
 	$("#play").addInteraction({click: start});
 	$("#stop").addInteraction({click: stop});
 	$("#render").addInteraction({click: render})
@@ -32,6 +37,7 @@ $(function(){
 	$(".sub-panel").addInteraction({click: function() {
 		$("#sub-panel").toggleClass("active");
 	}});
+	
 	// build the interface...
 	initInterface();
 	
