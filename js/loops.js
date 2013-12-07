@@ -15,10 +15,10 @@ $(function(){
 	$("#stop").addInteraction({click: stop});
 	$("#render").addInteraction({click: render})
 	$("#save").addInteraction({click: save})
-	$("#fx").addInteraction({click: function() {
+	$("#fx").addInteraction({click: function(data) {
 		$("#fx-panel").toggleClass("active");
-		var text = $(this).text() == "SHOW FX" ? "HIDE FX" : "SHOW FX";
-		$(this).text(text);
+		var text = data.element.text() == "SHOW FX" ? "HIDE FX" : "SHOW FX";
+		data.element.text(text);
 	}})
 	
 	$("#tempo").on("change", function() {
