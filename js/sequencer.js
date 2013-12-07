@@ -74,7 +74,7 @@ function start()
 	var volume = context.createGain();
 	volume.gain.value = 0;
 	s.connect(volume);
-	volume.connect(context.graph.in["drum"]);
+	volume.connect(context.destination);
 	s.start(0);
 	nextStepTime = context.currentTime;
 	
@@ -118,7 +118,7 @@ function playDrumSound(buffer, time, volume)
 	// @todo - Figure out exponential volume curve!
 	
 	source.connect(v);
-	v.connect(context.graph.in["drum"])
+	v.connect(context.graph.in["drum"][buffer._name])
 	source.start(time);
 	scheduledSounds.push(source);	
 }

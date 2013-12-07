@@ -18,6 +18,7 @@ function loadSound(sound, type)
 {
 	var callback = function(buffer)
 	{
+		buffer._name = sound.name;
 		if (sound.mute != undefined)
 		{
 			buffer._mute = sound.mute;

@@ -22,7 +22,7 @@ function load()
 			for (var param in data.fxParams)
 			{
 				// update the slider...
-				$(".param[name=" + param + "]").val(data.fxParams[param]);
+				$(".param[name='" + param + "']").val(data.fxParams[param]);
 				
 				// update the param
 				setParam(params[param], data.fxParams[param]);	

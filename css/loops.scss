@@ -166,6 +166,7 @@ $pattern-background: #eee;
     height: calc(100% - 2em);
     overflow:hidden;
     z-index:2;
+    @include flexbox;
     @include transform(translate3d(101%,0,0));
     @include transition-property(transform);
     @include transition-duration(.4s);
@@ -178,7 +179,8 @@ $pattern-background: #eee;
 }
 
 .fx-section {
-    float: left;
+    //float: left;
+    @include flex(1);
     margin: 1em;
     padding:.5em 1em;
     h4 {

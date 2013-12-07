@@ -128,6 +128,12 @@ function initSliders()
 		//console.log(param);
 		// get the three components...
 		var param = parameter.split("-");
+		// skip individual drum fx for now
+		// @todo - Add individual drum fx to interface
+		if (["drum","bass","master"].indexOf(param[0]) == -1)
+		{
+			continue;
+		}
 		if (!(param[0] in fxlist))
 		{
 			fxlist[param[0]] = {}

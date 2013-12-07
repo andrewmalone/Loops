@@ -5,17 +5,30 @@ function createAudioGraph(offline)
 {
 	var g = {};
 	g.in = {
-		drum: context.createGain(),
+		drum: {},
 		bass: context.createGain()
 	}
+	g.drumFx = [];
+	
 	g.out = context.createGain();
 	g.master = context.createGain();
-	g.drumFx = createFx("drum");
+	g.drumMaster = context.createGain();
+	g.drumMasterFx = createFx("drum");
 	g.bassFx = createFx("bass");
 	g.masterFx = createFx("master");
 	
-	g.in.drum.connect(g.drumFx.in);
-	g.drumFx.out.connect(g.master);
+	//g.in.drum.connect(g.drumFx.in);
+	//g.drumFx.out.connect(g.master);
+	
+	SOUNDS.forEach(function(sound, index) {
+		g.in.drum[sound.name] = context.createGain();
+		g.drumFx[index] = createFx(sound.name);
+		g.in.drum[sound.name].connect(g.drumFx[index].in);
+		g.drumFx[index].out.connect(g.drumMaster);
+	});
+	
+	g.drumMaster.connect(g.drumMasterFx.in);
+	g.drumMasterFx.out.connect(g.master);
 	
 	g.in.bass.connect(g.bassFx.in);
 	g.bassFx.out.connect(g.master);
