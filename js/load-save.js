@@ -63,6 +63,9 @@ function load()
 					$("#" + name + "-sequence button").text(window[name + "Mode"]);				
 				}
 			});
+			
+			// set the name
+			updateName();
 		},
 		error: function(error) 
 		{
@@ -71,12 +74,28 @@ function load()
 	});
 }
 
+function setupSave()
+{
+	var content = $("<div>");
+    $("<p>").text("Give your pattern a name (optional)").appendTo(content);
+	$("<input type='text' name='saveName'>").appendTo(content);
+	$("<button type='submit'>").text("Generate url").appendTo(content).addInteraction({click: save});
+	showModal(content);
+}
+
 function save()
 {
+	// @todo add version number for future compatibilty
+	// @todo allow users to name saved patterns
+	
 	// define all the data to save...
+	// set the name
+	updateName($("[name=saveName]").val());
+	
 	var data = {};
 	var objects = [
 		"tempo",
+		"saveName",
 		"drumPatterns",
 		"bassPatterns",
 		"drumSequence",
@@ -107,7 +126,7 @@ function save()
       type: 'POST',
       success: function(data) {
         var url = location.origin + location.pathname + "#" + data.data.num;
-        console.log(data, url);
+        location.hash = data.data.num;
         var content = $("<div>");
         $("<p>").text("Unique url for this pattern:").appendTo(content);
         $("<a>").attr("href", url).text(url).click(function(){

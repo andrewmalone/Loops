@@ -1,6 +1,7 @@
 var BASS_MAX = 52;
 var BASS_MIN = 36;
 var BASS_RANGE = BASS_MAX - BASS_MIN;
+var saveName = "";
 
 /**
 * Initialize the interface - dynamically creates the drum grid, bass grid,
@@ -152,4 +153,17 @@ function announce(text)
 {
 	var p = $("<p>").text(text);
 	showModal(p);
+}
+
+function updateName(text)
+{
+	if (!text)
+	{
+		text = saveName;
+	}
+	else
+	{
+		saveName = text;
+	}
+	$("h2.name").text(text);
 }

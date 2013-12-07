@@ -14,7 +14,7 @@ $(function(){
 	$("#play").addInteraction({click: start});
 	$("#stop").addInteraction({click: stop});
 	$("#render").addInteraction({click: render})
-	$("#save").addInteraction({click: save})
+	$("#save").addInteraction({click: setupSave})
 	$("#fx").addInteraction({click: function(data) {
 		$("#fx-panel").toggleClass("active");
 		var text = data.element.text() == "SHOW FX" ? "HIDE FX" : "SHOW FX";

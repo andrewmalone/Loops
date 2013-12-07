@@ -2,7 +2,7 @@
 $border-color: #666;
 $border-light: 1px solid lighten($border-color, 20%);
 $border: 2px solid $border-color;
-$control-height: 2em;
+$control-height: 2.5rem;
 
 @mixin square($size) {
 	width: $size;
@@ -23,6 +23,15 @@ body {
 	height:100%
 }
 
+h2.name {
+	position:absolute;
+	top: $control-height;
+	margin: 0;
+	width: 100%;
+	text-align: center;
+	font-size: 1.3em;
+	font-weight: normal;
+}
 #drumseq, #bseq {
     @include flexbox;
     font-size:.8em;
@@ -212,7 +221,6 @@ $pattern-background: #eee;
 		display:inline;
 	}
 	h2 {
-		font-size:1.2em;
 		display:inline-block;
 		padding: {
 			left:.5em;
@@ -229,7 +237,7 @@ $pattern-background: #eee;
 
 #modal {
 	position:absolute;
-	top: $control-height + 1em;
+	top: $control-height + 1rem;
 	left:50%;
 	width: 30em;
 	min-height:10em;
