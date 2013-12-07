@@ -1,30 +1,13 @@
-/*
-- Add row volumes to playback and interface
-- Volume envelopes (need to add some generic functions!)
-- FX? (not yet?)
-
-NEXT: Sequencing to interface, separate sequencing for bass
-
-THEN:
-	Master FX
-	Track FX
-	Drum FX
-	WAV export
-	Volume envelopes
-	
-ALSO:
-	Tempo controls
-	sharing (save to server)
-*/
-
-var context = new AudioContext(); // = new AudioContext();
-
-//var offlineContext = new OfflineAudioContext(2, 2 * 44100, 44100);
+// @todo - double check for correct scope
+var context;
 
 // Initialize things after the page loads
 $(function(){
-	// load the sounds
+	
+	context = new AudioContext();
 	context.graph = createAudioGraph();
+	
+	// load the sounds
 	loadSounds();
 
 	// connect the buttons
@@ -34,7 +17,17 @@ $(function(){
 	$("#save").addInteraction({click: save})
 	$("#fx").addInteraction({click: function() {
 		$("#fx-panel").toggleClass("active");
+		var text = $(this).text() == "SHOW FX" ? "HIDE FX" : "SHOW FX";
+		$(this).text(text);
 	}})
+	
+	$("#tempo").on("change", function() {
+		setTempo($(this).val());
+	});
+	
+	$("#modal-close").addInteraction({click: function() {
+		$("#modal").removeClass("active");
+	}});
 
 	// build the interface...
 	initInterface();

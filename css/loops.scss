@@ -83,11 +83,7 @@ $note-color: #5E7FD6;
 	opacity: .8;	
 }
 
-#bass-grid .row:nth-child(3),
-#bass-grid .row:nth-child(5),
-#bass-grid .row:nth-child(7),
-#bass-grid .row:nth-child(10),
-#bass-grid .row:nth-child(12),
+#bass-grid .row.blackNote
 {
 	background:#eee;
 }
@@ -97,17 +93,20 @@ $note-color: #5E7FD6;
 }
 h3 {
 	margin: 0;
-	padding: .2em 0;
+	padding: .2em 0 .1em 0;
 }
 header {
 	padding-left:1em;
-	p {
+}
+.panel p {
 		margin:0;
 		padding-bottom: .2em;
 		font-size: .75em;
-	}
+		padding:.5em;
 }
-
+#pattern-copy {
+	margin-top: -1.2em;
+}
 $pattern-background: #eee;
 
 @mixin pattern() {
@@ -203,6 +202,59 @@ $pattern-background: #eee;
 #controls {
 	height: $control-height;
 	border-bottom: $border;
+	div {
+		margin: {
+			left: .5em;
+			right: 3em;
+		}
+		display:inline;
+	}
+	h2 {
+		font-size:1.2em;
+		display:inline-block;
+		padding: {
+			left:.5em;
+			right:1em;
+		}
+		background:#ccc;
+		height:100%;
+		margin:0;
+		border-right: $border;
+	}
 }
 
 // slider styles
+
+#modal {
+	position:absolute;
+	top: $control-height + 1em;
+	left:50%;
+	width: 30em;
+	min-height:10em;
+	background: $pattern-background;
+	border: $border-light;
+	margin:0 -15em;
+	padding:1em;
+	text-align:center;
+	box-shadow:1px 1px 1px #bbb;
+	border-radius:.2em;
+	opacity:0;
+	@include transform(translateX(500%));
+	@include transition-property(transform, opacity);
+	@include transition-duration(0,.2s);
+	@include transition-delay(.2s,0);
+	z-index:2;
+}
+
+#modal.active {
+	opacity:1;
+	@include transform(translateX(0));
+	@include transition-delay(0,0);
+}
+
+button {
+	@include button(#d5d5d5);
+	font-size:.7em;
+	padding:.2em .8em;
+	font-weight: normal;
+}

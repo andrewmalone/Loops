@@ -16,19 +16,31 @@
 <body>
 
 <div id="controls">
-	<button id="play">play</button>
-	<button id="stop">stop</button>
-	<button id="save">save</button>
-	<button id="render">render</button>
-	<button id="fx">FX</button>
+	<h2>LOOPS</h2>
+	<div>
+	<button id="play">PLAY</button>
+	<button id="stop">STOP</button>
+	</div>
+	<div>
+	<label>Tempo</label><input type="range" id="tempo" value="120" max="220" min="40" step="1">
+	<button id="fx">SHOW FX</button>
+	</div>
+	<div>
+	<button id="save">SAVE</button>
+	<button id="render">RENDER</button>
+	</div>
+	<div id="help">
+	<a href="documentation.html">about</a>
+	</div>
 </div>
 
 <div class="panel" id="drum-panel">
 	<header>
 		<h3>Drums</h3>
-		<p>Click to toggle notes on/off, drag up/down to adjust note volume.</p>
+		<p>Click to toggle notes on/off. Drag up/down on notes to adjust the volume.</p>
 	</header>
 	<div id="drumseq"></div>
+	<p id="pattern-copy">Click to switch patterns. Duplicate a pattern by dragging and dropping. Patterns can also be dropped into the sequence row.</p>
 	<div id="drum-patterns" class="patterns"></div>
 	<div id="drum-sequence" class="sequence"></div>
 </div>
@@ -36,7 +48,7 @@
 <div class="panel" id="bass-panel">
 	<header>
 		<h3>Bass</h3>
-		<p>Click to toggle notes on/off, drag up/down to adjust note volume, drag left/right to adjust note length.</p>
+		<p>Click to toggle notes on/off. Drag up/down on notes to adjust the volume. Drag left/right to adjust note length.</p>
 	</header>
 	<div id="bseq"></div>
 	<div id="bass-patterns" class="patterns"></div>
@@ -44,6 +56,11 @@
 </div>
 
 <div class="panel" id="fx-panel">
+</div>
+
+<div id="modal">
+<div id="modal-content"></div>
+<button id="modal-close">Close</button>
 </div>
 
 </body>

@@ -115,7 +115,20 @@ function render()
 		reader.onloadend = function()
 		{
 			// @todo - update this method for the interface, also maybe some instructions for safari
-			$("<a>").attr("href", reader.result).attr("download", "Export.wav").text("Download").appendTo($(document.body));
+			var content = $("<div>");
+			var text = "";
+			// detect if download attr will work
+			if ("download" in document.createElement("a"))
+			{
+				text = "Click to download .wav file.";
+			}
+			else
+			{
+				text = "Right click and 'download as..' to save .wav file";
+			}
+			$("<p>").text(text).appendTo(content);
+			$("<a>").attr("href", reader.result).attr("download", "loops_export.wav").text("loops_export.wav").appendTo(content);
+			showModal(content);
 		}
 		reader.readAsDataURL(audioBlob);
 	}

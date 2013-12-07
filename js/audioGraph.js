@@ -233,3 +233,14 @@ function createShaperCurves()
 	}
 	return curves;
 }
+
+function setTempo(val)
+{
+	// set the tempo
+	tempo = val;
+	
+	// set all the delays...
+	$(".param[name$=delay-time]").each(function() {
+		setParam(params[$(this).attr("name")], $(this).val());
+	})
+}

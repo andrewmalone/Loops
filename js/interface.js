@@ -1,5 +1,5 @@
 var BASS_MAX = 52;
-var BASS_MIN = 40;
+var BASS_MIN = 36;
 var BASS_RANGE = BASS_MAX - BASS_MIN;
 
 /**
@@ -139,4 +139,17 @@ function setActiveSequence(index, type)
 		element.siblings(".active").removeClass("active");
 		element.addClass("active");
 	}
+}
+
+function showModal(content)
+{
+	var div = $("#modal-content");
+	div.html("").append(content);
+	$("#modal").addClass("active");
+}
+
+function announce(text)
+{
+	var p = $("<p>").text(text);
+	showModal(p);
 }

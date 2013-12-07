@@ -38,7 +38,13 @@ function initBassGrid()
 	for (var i = BASS_MAX; i >= BASS_MIN; i--)
 	{
 		var row = $("<div class='row'>");
-		var label = $("<div class='label'>").text(i);
+		// http://stackoverflow.com/questions/712679/convert-midi-note-numbers-to-name-and-octave
+		var notename = "C C#D D#E F F#G G#A A#B ".substr((i % 12) * 2, 2);
+		if (notename.indexOf("#") != -1)
+		{
+			row.addClass("blackNote");
+		}
+		var label = $("<div class='label'>").text(notename);
 		labels.append(label);
 		for (var j = 0; j < NUMSTEPS; j++)
 		{
@@ -163,7 +169,6 @@ function initSliders()
 	}).on("change", function() {
 		// set the value!!!
 		setParam(params[$(this).attr("name")], $(this).val());
-		return false;
-		
+		return false;	
 	});
 }
