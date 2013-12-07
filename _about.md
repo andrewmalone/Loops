@@ -1,4 +1,4 @@
-# Loops
+# About Loops
 [Loops](./) is an audio loop builder built using the [Web Audio API][api], created as a final project for [CS50][cs50].
 
 ## Features
@@ -37,16 +37,51 @@ Each instrument also has a sequencer with 8 slots to chain patterns together. To
 The playback mode button controls whether the sequencer is on or off. In loop mode, only the active pattern is played. In sequence mode, each step of the sequence is played in order before looping back to the beginning of the sequence.
 
 ### Effects
+The bass and drum tracks each have their own effects section, and there is also a master effects section. Each effects section has a filter, delay, and distortion effect.
 
-### Examples
+#### Filter
+The filter has three parameters:
+
+* **frequency** - frequency cutoff of the filter
+
+*  **q** - filter resonance
+
+* **mix** - crossfades between the dry and filtered signal
+
+#### Delay
+The delay is tempo synced to 16th notes, and has three parameters:
+
+* **time** - how much time between the dry and delayed signal
+
+* **feedback** - how much the delay signal feeds back into itself (higher values will give more repeats to the delay)
+
+* **level** - how much of the delayed signal to mix with the dry signal
+
+#### Distortion
+The distortion is a waveshaper with two parameters:
+
+* **amount** - how much distortion is applied
+
+* **mix** - crossfades between the distorted signal and the dry signal
+
+
+### Saving and rendering
+Patterns can be saved to the server and shared through a url, or rendered to a .wav file for download.
+
+When saving, a unique url is generated that will reload the current set of patterns, sequences, and effects.
+
+When rendering, the length of the .wav file depends on the playback mode - if either track is in sequence mode, the .wav file will contain all patterns in the sequence.  
 
 ## Browser support
+Loops should run in most modern browsers with support for the Web Audio API. It has been tested in the latest versions of Chrome, Firefox, Safari, and Mobile Safari (iOS). All features work in all browsers except rendering on iOS.
+
+Loops has not been tested in Opera or Android browsers, but it might work.
 
 ## Implementation details
 [Technical and implementation details for Loops](design.html)
 
 ## Credits
-Loops was created by Andrew Malone.
+Loops was created by Andrew Malone. Please let me know if you make something cool with it.
 
 * email: <andrew@andrewmalone.com>
 * twitter: [@andrewmalone](https://twitter.com/andrewmalone)
@@ -59,7 +94,7 @@ Audio samples used:
 
 
 [cs50]: http://cs50.net
-[api]: https://dvcs.w3.org/hg/audio/raw-file/tip/webaudio/specification.html
+[api]: http://www.w3.org/TR/webaudio/
 [ruffrider]: http://www.michaelkingston.fi/kingstondrums/ruffrider.html
 [kvr]: http://www.kvraudio.com/
 [bass]: http://bedroomproducersblog.com/2012/05/18/free-rickenbacker-4001-bass-guitar-sample-pack-by-project16/

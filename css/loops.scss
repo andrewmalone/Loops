@@ -166,7 +166,7 @@ $pattern-background: #eee;
 	height:2em;
 	line-height:2em;
 }
-#fx-panel {
+#fx-panel, #sub-panel {
     position: absolute;
     top: $control-height;
     left: 0;
@@ -181,10 +181,22 @@ $pattern-background: #eee;
     @include transition-duration(.4s);
 }
 
-#fx-panel.active {
+#fx-panel.active, #sub-panel.active {
 	@include transform(translate3d(0,0,0));
 	@include transition-property(transform);
     @include transition-duration(.4s);
+}
+
+#sub-panel {
+	top: 0;
+	.fx-section {
+		padding: 0;
+		margin-top: 1.5em;
+	}
+}
+
+#fx-panel button, #sub-panel button {
+	position:absolute;
 }
 
 .fx-section {
@@ -234,6 +246,9 @@ $pattern-background: #eee;
 }
 
 // slider styles
+.param {
+	width:9em;
+}
 
 #modal {
 	position:absolute;

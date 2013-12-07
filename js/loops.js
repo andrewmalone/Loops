@@ -29,6 +29,9 @@ $(function(){
 		$("#modal").removeClass("active");
 	}});
 
+	$(".sub-panel").addInteraction({click: function() {
+		$("#sub-panel").toggleClass("active");
+	}});
 	// build the interface...
 	initInterface();
 	

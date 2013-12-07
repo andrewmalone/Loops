@@ -121,6 +121,7 @@ function initSliders()
 	
 	// add some sliders to the fx panel
 	var fxPanel = $("#fx-panel");
+	var subPanel = $("#sub-panel");
 	// check the params...
 	var fxlist = {};
 	for (var parameter in params)
@@ -130,10 +131,6 @@ function initSliders()
 		var param = parameter.split("-");
 		// skip individual drum fx for now
 		// @todo - Add individual drum fx to interface
-		if (["drum","bass","master"].indexOf(param[0]) == -1)
-		{
-			continue;
-		}
 		if (!(param[0] in fxlist))
 		{
 			fxlist[param[0]] = {}
@@ -147,7 +144,7 @@ function initSliders()
 	
 	for (var section in fxlist)
 	{
-		sectionDiv = $("<div class='fx-section'>");
+		sectionDiv = $("<div class='fx-section'>").attr("name", section);
 		$("<h4>").text(initCap(section)).appendTo(sectionDiv);
 		
 		for (var fx in fxlist[section])
@@ -162,9 +159,17 @@ function initSliders()
 			}
 			
 		}
-		
-		fxPanel.append(sectionDiv);
+	
+		if (["drum","bass","master"].indexOf(section) == -1)
+		{
+			subPanel.append(sectionDiv);
+		}
+		else {
+			fxPanel.append(sectionDiv);
+		}
 	}
+	
+	// add a button to the drum fx section
 	
 	// slider setup
 	$(".param").attr({

@@ -25,6 +25,13 @@ function createAudioGraph(offline)
 		g.drumFx[index] = createFx(sound.name);
 		g.in.drum[sound.name].connect(g.drumFx[index].in);
 		g.drumFx[index].out.connect(g.drumMaster);
+		params[sound.name + "-master-level"] = {
+			max: 1,
+			min: "0",
+			value: 1,
+			step: .01,
+			param: g.in.drum[sound.name].gain
+		}
 	});
 	
 	g.drumMaster.connect(g.drumMasterFx.in);
@@ -37,6 +44,23 @@ function createAudioGraph(offline)
 	g.masterFx.out.connect(g.out);
 	
 	g.out.connect(context.destination);
+	
+	params["drum-master-level"] = {
+		max: 1,
+		min: "0",
+		value: 1,
+		step: .01,
+		param: g.drumMaster.gain
+	};
+	
+	params["bass-master-level"] = {
+		max: 1,
+		min: "0",
+		value: 1,
+		step: .01,
+		param: g.in.bass.gain
+	}
+	
 	return g;
 }
 
@@ -142,6 +166,7 @@ function createDelay(name)
 		value: 1,
 		param: function(value)
 		{
+			console.log(value, 15/tempo * value);
 			fx.delay.delayTime.value = 15/tempo * value;
 		}
 	}
