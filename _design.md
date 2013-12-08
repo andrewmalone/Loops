@@ -26,18 +26,27 @@ The code is organized into the following files:
 
 * **loadSounds.js** - functions to load sound files into buffers for use in playback
 
+***
 
 The heart of the application is the sequencer loop and the audio graph. 
 
 ## Audio graph
+Here is a visual representation of the audio routing used in the application. All audio nodes are standard web audio nodes.
+![Audio Graph](img/audioGraph.png)
+![Effects Graph](img/fxGraph.png)
 
 ## Sequencer loop
+The sequencer loop is what keeps all the timing in sync. The basic method used is outlined in [this article][timing]. The loop runs using the `getAnimationFrame` method (60 frames/second), and uses a lookahead time of .1 seconds to schedule sounds for future playback.
 
 ## Loading/saving
+Patterns are saved to the server using an ajax call to a very simple python script. There's a `count.txt` file which keeps track of how many patterns have been saved so far, so the next pattern is saved as `count + 1`. Saved parameters are passed to the python script as json, so no processing has to be done in python, only writing to a file.
+
+To load patterns, the application simply does an ajax call to load one of the saved json files directly.
 
 ## Rendering
+Rendering to .wav is accomplished using the offline rendering mode of the web audio api. Once the rendered audio data exists, .wav header file information is added to it, and it is converted to a data URI using javascript's Blob and FileReader APIs.
 
-## External scripts/libraries
+## External scripts/libraries used
 * [jQuery][jquery]
 
 * [Audio context monkey patch][monkeypatch] - this useful script normalizes the vendor prefixes for the web audio api to make cross browser support easier.
