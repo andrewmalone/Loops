@@ -43,7 +43,7 @@ function drawCurrentDrumPattern()
 				$(this).addClass("on");
 			}
 			// set the opacity
-			$(this).children("note").css("opacity", vol);
+			$(this).children(".note").css("opacity", vol);
 		}
 		else
 		{
