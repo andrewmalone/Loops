@@ -167,7 +167,6 @@ function createDelay(name)
 		value: 1,
 		param: function(value)
 		{
-			console.log(value, 15/tempo * value);
 			fx.delay.delayTime.value = 15/tempo * value;
 		}
 	}

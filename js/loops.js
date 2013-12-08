@@ -12,9 +12,12 @@ $(function(){
 	context = new AudioContext();
 	context.graph = createAudioGraph();
 	
-	// load the sounds
+	// load the sounds	
 	loadSounds();
+});
 
+function continueSetup()
+{
 	// set up all the buttons
 	$("#play").addInteraction({click: start});
 	$("#stop").addInteraction({click: stop});
@@ -46,4 +49,4 @@ $(function(){
 	{
 		load();
 	}
-});
+}

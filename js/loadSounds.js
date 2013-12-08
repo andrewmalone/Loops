@@ -4,15 +4,45 @@ var buffers = {};
 
 function loadSounds() 
 {
-	// @todo create some sort of loader, to prevent playback from starting before all sounds are loaded
-	// @todo think about error handling for file types
+	// test for supported file types
+	var type;
+	var audioTest = new Audio();
+	if (audioTest.canPlayType("audio/ogg") != "")
+	{
+		type = ".ogg";
+	}
+	else if (audioTest.canPlayType("audio/mp3") != "")
+	{
+		type = ".mp3";
+	}
+	else
+	{
+		type = ".wav";
+	}
+	
+	
 	SOUNDS.forEach(function(sound) {
+		sound.source += type;
 		loadSound(sound);
 	});
 	
 	BASS_SOUNDS.forEach(function(sound) {
-		loadSound({name: sound, source: "Samples/" + sound})
+		loadSound({name: sound, source: "Samples/" + sound + type})
 	});
+	
+	// wait for all sounds to be loaded before returning
+	var soundCount = SOUNDS.length + BASS_SOUNDS.length;
+	$("#modal-close").css("display", "none");
+	announce("Loading sounds...");
+	var loadCheck = setInterval(function() {
+		if (Object.keys(buffers).length == soundCount)
+		{
+			clearInterval(loadCheck);
+			$("#modal").removeClass("active");
+			$("#modal-close").css("display", "inline-block");
+			continueSetup();
+		}
+	}, 50)	
 }
 
 function loadSound(sound, type) 
