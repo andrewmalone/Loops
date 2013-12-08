@@ -43,6 +43,8 @@ Patterns are saved to the server using an ajax call to a very simple python scri
 
 To load patterns, the application simply does an ajax call to load one of the saved json files directly.
 
+The python script uses no external modules, and should run in Python 2.6 or 2.7.
+
 ## Rendering
 Rendering to .wav is accomplished using the offline rendering mode of the web audio api. Once the rendered audio data exists, .wav header file information is added to it, and it is converted to a data URI using javascript's Blob and FileReader APIs.
 
@@ -53,6 +55,8 @@ Rendering to .wav is accomplished using the offline rendering mode of the web au
 
 ## Tools and technology used
 * [Coda][coda] for code editing.
+
+* [MAMP][mamp] for local webserver development
 
 * [Hammer][hammer] for compiling html and css files locally. This is a very cool utility for building static websites - it allows for html includes and lots of little touches to ease development. It allowed me to keep all my javascript in individual files, and then automatically combine them into one file for publishing.
 
@@ -70,3 +74,4 @@ Rendering to .wav is accomplished using the offline rendering mode of the web au
 [timing]: http://www.html5rocks.com/en/tutorials/audio/scheduling/
 [api]: http://www.w3.org/TR/webaudio/
 [markdown]: http://daringfireball.net/projects/markdown/
+[mamp]: http://www.mamp.info/en/index.html
