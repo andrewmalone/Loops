@@ -3,7 +3,6 @@
  * global declaration of sounds to use for the application
  */
  
-// @todo - remove extenstions for file type fallbacks
 var SOUNDS = [
 	{
 		name:"kick",

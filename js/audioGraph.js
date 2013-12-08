@@ -1,26 +1,35 @@
-// @todo - comments
+/**
+* audioGraph.js
+* Creates the audio nodes, fx and routing
+*/
+
+// set up global variables
 var params = {}
+// curves to use for the waveshaper;
 var shaperCurves = createShaperCurves();
 
+
+/**
+* Build the audio graph
+*/
 function createAudioGraph()
 {
-	var g = {};
-	g.in = {
-		drum: {},
-		bass: context.createGain()
-	}
-	g.drumFx = [];
+	// set up the main nodes
+	var g = {
+		in: {
+			drum: {},
+			bass: context.createGain()
+		},
+		drumFx: [],
+		out: context.createGain(),
+		master: context.createGain(),
+		drumMaster: context.createGain(),
+		drumMasterFx: createFx("drum"),
+		bassFx: createFx("bass"),
+		masterFx: createFx("master")
+	};
 	
-	g.out = context.createGain();
-	g.master = context.createGain();
-	g.drumMaster = context.createGain();
-	g.drumMasterFx = createFx("drum");
-	g.bassFx = createFx("bass");
-	g.masterFx = createFx("master");
-	
-	//g.in.drum.connect(g.drumFx.in);
-	//g.drumFx.out.connect(g.master);
-	
+	// create the input nodes and effects for each drum sound
 	SOUNDS.forEach(function(sound, index) {
 		g.in.drum[sound.name] = context.createGain();
 		g.drumFx[index] = createFx(sound.name);
@@ -35,6 +44,7 @@ function createAudioGraph()
 		}
 	});
 	
+	// build connections
 	g.drumMaster.connect(g.drumMasterFx.in);
 	g.drumMasterFx.out.connect(g.master);
 	
@@ -46,6 +56,7 @@ function createAudioGraph()
 	
 	g.out.connect(context.destination);
 	
+	// master level parameters
 	params["drum-master-level"] = {
 		max: 1,
 		min: "0",
@@ -65,6 +76,9 @@ function createAudioGraph()
 	return g;
 }
 
+/**
+* Creates and returns an fx group
+*/
 function createFx(name)
 {
 	var fx = {
@@ -80,6 +94,9 @@ function createFx(name)
 	return fx;
 }
 
+/**
+* Filter effect defenition
+*/
 function createFilter(name)
 {
 	// node setup
@@ -133,6 +150,9 @@ function createFilter(name)
 	return fx;
 }
 
+/**
+* Delay effect definition
+*/
 function createDelay(name)
 {
 	// node setup
@@ -190,6 +210,9 @@ function createDelay(name)
 	return fx;
 }
 
+/**
+* waveshaper effect definition
+*/
 function createShaper(name)
 {
 	// node setup
@@ -245,15 +268,22 @@ function createShaper(name)
 	return fx;
 }
 
-// @todo - where is this from?
+/**
+* Equal power crossfade
+* from http://www.html5rocks.com/en/tutorials/webaudio/intro/js/crossfade-sample.js
+*/
 function crossfade(a, b, val)
 {
 	// 1 = full a, 0 = full b
-	a.value = Math.cos((1-val) * 0.5*Math.PI);
-	b.value = Math.cos(val * 0.5*Math.PI);
+	a.value = Math.cos((1 - val) * 0.5 * Math.PI);
+	b.value = Math.cos(val * 0.5 * Math.PI);
 }
 
-// http://www.musicdsp.org/archive.php?classid=4#46
+/**
+* Creates the waveshaping curves
+* waveshaping algorithm ported to javascript from
+* http://www.musicdsp.org/archive.php?classid=4#46
+*/
 function createShaperCurves()
 {
 	var len = 22050;
@@ -272,6 +302,9 @@ function createShaperCurves()
 	return curves;
 }
 
+/**
+* Set the tempo and update all delays to maintain tempo sync
+*/
 function setTempo(val)
 {
 	// set the tempo
