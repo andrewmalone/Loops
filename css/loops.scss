@@ -1,0 +1,285 @@
+@import "flex";
+$border-color: #666;
+$border-light: 1px solid lighten($border-color, 20%);
+$border: 2px solid $border-color;
+$control-height: 2.5rem;
+
+@mixin square($size) {
+	width: $size;
+	height: $size;
+	line-height: $size;
+}
+
+* {
+	@include box-sizing(border-box);
+}
+html {
+	height:100%;
+}
+body {
+	font-family: 'Source Sans Pro', Arial;
+	padding: 0;
+	margin: 0;
+	height:100%
+}
+
+h2.name {
+	position:absolute;
+	top: $control-height;
+	margin: 0;
+	width: 100%;
+	text-align: center;
+	font-size: 1.3em;
+	font-weight: normal;
+}
+#drumseq, #bseq {
+    @include flexbox;
+    font-size:.8em;
+    padding:.2em;
+    width: 60%;
+    float:left;
+}
+#drum-grid, #bass-grid {
+    @include flex(1);
+    border: $border;
+}
+#drum-labels, #bass-labels {
+	width: 4em;
+}
+.row {
+    @include flexbox;
+    border-bottom: $border-light;
+    height: 1.2em;
+}
+.row:last-child {
+	border-bottom-width: 0;
+}
+.label {
+    height: 1.2em;
+    text-align: right;
+    padding-right:.2em;
+}
+.cell {
+    @include flex(1);
+	border-left: $border-light;
+	position:relative;
+}
+.cell:nth-of-type(4n + 1) {
+	border-left: $border;
+}
+.cell:first-child {
+	border-left-width: 0;
+}
+.cell-inner {
+	position:absolute;
+	height:100%;
+	left:0;
+	right:0;
+}
+$note-color: #5E7FD6;
+.cell-inner.on {
+	border:1px solid darken($note-color,20%);
+	background:#fff;
+	z-index: 1;
+}
+
+.cell-inner.on .note {
+	background:$note-color;
+	width:100%;
+	height:100%;
+	box-shadow: inset 1px 1px 2px 0 lighten($note-color,20%),
+		inset -1px -1px 2px 0 darken($note-color,10%);
+	opacity: .8;	
+}
+
+#bass-grid .row.blackNote
+{
+	background:#eee;
+}
+.panel {
+	clear:left;
+	overflow: hidden;
+}
+h3 {
+	margin: 0;
+	padding: .2em 0 .1em 0;
+}
+header {
+	padding-left:1em;
+}
+.panel p {
+		margin:0;
+		padding-bottom: .2em;
+		font-size: .75em;
+		padding:.5em;
+}
+#pattern-copy {
+	margin-top: -1.2em;
+}
+$pattern-background: #eee;
+
+@mixin pattern() {
+	@include square(2em);
+	border: $border-light;
+	padding:0 .2em;
+	text-align:center;
+	margin-right:.5em;
+	border-radius:.1em;
+	background: $pattern-background;
+}
+.patterns, .sequence {
+	margin-bottom:.5em;
+	overflow:hidden;
+	div {
+		float:left;
+	}
+	.pattern {
+		@include pattern;
+	}
+	.pattern.active {
+		border: $border;
+		background: darken($pattern-background, 10%);
+	}
+	.pattern.over {
+		border-color:red;
+		border-width:2px;
+	}
+}
+.pattern.shadow {
+	@include pattern;
+	position:absolute;
+	opacity: .8;
+	top:0;
+	left:0;
+}
+.sequence .label,
+.patterns .label {
+	width: 5em;
+	height: 2em;
+	line-height:2em;
+}
+.mode {
+	clear:left;
+	float: none;
+	width:100%;
+	text-align:center;
+	height:2em;
+	line-height:2em;
+}
+#fx-panel, #sub-panel {
+    position: absolute;
+    top: $control-height;
+    left: 0;
+    background: #fff;
+    width: 100%;
+    height: calc(100% - 2em);
+    overflow:hidden;
+    z-index:2;
+    @include flexbox;
+    @include transform(translate3d(101%,0,0));
+    @include transition-property(transform);
+    @include transition-duration(.4s);
+}
+
+#fx-panel.active, #sub-panel.active {
+	@include transform(translate3d(0,0,0));
+	@include transition-property(transform);
+    @include transition-duration(.4s);
+}
+
+#sub-panel {
+	top: 0;
+	.fx-section {
+		padding: 0;
+		margin-top: 1.5em;
+	}
+}
+
+#fx-panel button, #sub-panel button {
+	position:absolute;
+}
+
+.fx-section {
+    //float: left;
+    @include flex(1);
+    margin: 1em;
+    padding:.5em 1em;
+    h4 {
+    margin: 0 0 .5em 0;
+    font-size: 1.2em;
+	}
+	h5 {
+	    margin: .8em 0 .2em 0;
+	    font-size: 1em;
+	}
+	label {
+	    width: 5em;
+	    display: inline-block;
+	    text-align: right;
+	    padding-right: .2em;
+	    margin-bottom: .2em;
+	    font-size:.8em;
+	}
+}
+
+#controls {
+	height: $control-height;
+	border-bottom: $border;
+	div {
+		margin: {
+			left: .5em;
+			right: 3em;
+		}
+		display:inline;
+	}
+	h2 {
+		display:inline-block;
+		padding: {
+			left:.5em;
+			right:1em;
+		}
+		background:#ccc;
+		height:100%;
+		margin:0;
+		border-right: $border;
+	}
+}
+
+// slider styles
+.param {
+	width:9em;
+}
+
+#modal {
+	position:absolute;
+	top: $control-height + 1rem;
+	left:50%;
+	width: 30em;
+	min-height:10em;
+	background: $pattern-background;
+	border: $border-light;
+	margin:0 -15em;
+	padding:1em;
+	text-align:center;
+	box-shadow:1px 1px 1px #bbb;
+	border-radius:.2em;
+	opacity:0;
+	@include transform(translateX(500%));
+	@include transition-property(transform, opacity);
+	@include transition-duration(0,.2s);
+	@include transition-delay(.2s,0);
+	z-index:2;
+}
+
+#modal.active {
+	opacity:1;
+	@include transform(translateX(0));
+	@include transition-delay(0,0);
+}
+
+button {
+	@include button(#d5d5d5);
+	font-size:.7em;
+	padding:.2em .8em;
+	font-weight: normal;
+}

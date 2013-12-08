@@ -1,70 +1,69 @@
 <!DOCTYPE html>
 <html lang="en"> 
 <head>
-<title>Drum Sequencer</title>
+<title>Loops</title>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-<link rel="stylesheet" href="drums.css" />
-<script src="jquery-1.9.1.min.js"></script>
-<script src="drums.js"></script>
+<!-- @reload -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro' rel='stylesheet' type='text/css'>
+<!-- @stylesheet loops -->
+<!-- @javascript AudioContextMonkeyPatch -->
+<!-- @javascript js/* -->
+<!-- @include ga -->
 </head>
-
 <body>
-
-<div id="drumseq">
-
-	<div class="buttons">
-	<!--div id="log" >log</div-->
-		<button id="start" class="button">play</button>
-		<button id="stop" class="button">stop</button>
-		<button id="clear">Clear</button> 
-		<label>Tempo</label>
-		<input type="text" name="tempo" value="120" />
-		<a href="" id="link">Link to this</a>
-		<button id="fx">fx</button>
+<h2 class="name"></h2>
+<div id="controls">
+	<h2>LOOPS</h2>
+	<div>
+	<button id="play">PLAY</button>
+	<button id="stop">STOP</button>
 	</div>
-	<div id="wrapper">
-	<div id="seq">
-		<div id="labels"></div>
-		<div id="rows"></div>
+	<div>
+	<label>Tempo</label><input type="range" id="tempo" value="120" max="220" min="40" step="1">
+	<button id="fx">SHOW FX</button>
 	</div>
-
-	<div id="more">
-		<div class="fx">
-			<h3>Filter</h3>
-			<div class="sliders">
-				<div class="slider " id="s_filter_frequency"><span>Freq</span></div>
-				<div class="slider " id="s_filter_q"><span>Q</span></div>
-				<div class="slider " id="s_filter_mix"><span>Mix</span></div>
-			</div>
-			</div>
-			<div class="fx">
-			<h3>Delay</h3>
-			<div class="sliders">
-				<div class="slider " id="s_delay_time"><span>Time</span></div>
-				<div class="slider " id="s_delay_feedback"><span>Feedback</span></div>
-				<div class="slider " id="s_delay_mix"><span>Mix</span></div>
-			</div>
-			</div>
-			<div class="fx">
-			<h3>Dist</h3>
-			<div class="sliders">
-				<div class="slider " id="s_shaper"><span>Shaper</span></div>
-				<div class="slider " id="s_shaper_mix"><span>Mix</span></div>
-				</div>
-		</div>
-		
-		<!--div id="lfo">
-			<h3>LFO</h3>
-			<div class="slider" id="lfo_type"><span>type</span></div>
-			<div class="slider" id="lfo_gain"><span>gain</span></div>
-			<div class="slider" id="lfo_rate"><span>rate</span></div>
-			<div class="slider" id="lfo_phase"><span>phase</span></div>
-		</div>
-		<canvas width="100" height="50" style="border:1px solid black" id="c1"></canvas-->
+	<div>
+	<button id="save">SAVE</button>
+	<button id="render">RENDER</button>
 	</div>
+	<div id="help">
+	<a href="documentation.html">about</a>
 	</div>
 </div>
-</body>
 
+<div class="panel" id="drum-panel">
+		<!-- @todo fix the layout here -->
+	<header>
+		<h3>Drums</h3>
+		<p>Click to toggle notes on/off. Drag up/down on notes to adjust the volume.</p>
+	</header>
+	<div id="drumseq"></div>
+	<p id="pattern-copy">Click to switch patterns. Duplicate a pattern by dragging and dropping. Patterns can also be dropped into the sequence row.</p>
+	<div id="drum-patterns" class="patterns"></div>
+	<div id="drum-sequence" class="sequence"></div>
+</div>
+
+<div class="panel" id="bass-panel">
+	<header>
+		<h3>Bass</h3>
+		<p>Click to toggle notes on/off. Drag up/down on notes to adjust the volume. Drag left/right to adjust note length.</p>
+	</header>
+	<div id="bseq"></div>
+	<div id="bass-patterns" class="patterns"></div>
+	<div id="bass-sequence" class="sequence"></div>
+</div>
+
+<div class="panel" id="fx-panel">
+<button class="sub-panel">SHOW DRUM FX</button>
+<div id="sub-panel"><button class="sub-panel">HIDE DRUM FX</button></div>
+</div>
+
+<div id="modal">
+<div id="modal-content"></div>
+<button id="modal-close">Close</button>
+</div>
+
+</body>
 </html>
