@@ -1,7 +1,14 @@
-// @todo - comments
+/**
+* loadSounds.js
+* loads all sounds into the buffers object for use in playback
+*/
+
 // global object to hold the loaded sounds
 var buffers = {};
 
+/**
+* Initializing the loading
+*/
 function loadSounds() 
 {
 	// test for supported file types
@@ -32,6 +39,7 @@ function loadSounds()
 	
 	// wait for all sounds to be loaded before returning
 	var soundCount = SOUNDS.length + BASS_SOUNDS.length;
+	// temporarily hide the button in the modal
 	$("#modal-close").css("display", "none");
 	announce("Loading sounds...");
 	var loadCheck = setInterval(function() {
@@ -39,12 +47,19 @@ function loadSounds()
 		{
 			clearInterval(loadCheck);
 			$("#modal").removeClass("active");
-			$("#modal-close").css("display", "inline-block");
+			setTimeout(function() {
+				// show the button in the modal again
+				$("#modal-close").css("display", "inline-block");
+			}, 500);
 			continueSetup();
 		}
 	}, 50)	
 }
 
+/**
+* Load an individual sound into the buffer object
+* can't use jquery $.ajax here because it doesn't support arraybuffer responses yet
+*/
 function loadSound(sound, type) 
 {
 	var callback = function(buffer)
