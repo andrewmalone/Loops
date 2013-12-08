@@ -1,20 +1,30 @@
-// @todo - comments
+/**
+* loadSave.js
+* load() and save() functions to handle saving patterns to server
+* and loading saved patterns
+*/
+
+
+/**
+* load a pattern
+*/
 function load()
 {
+	// get the number from the url hash
 	var num = location.hash.slice(1);
-	// @todo - verify this is really an int...
+	// @todo - error handling here
     
 	$.ajax({
 		dataType: "json",
 		url: "save/" + num + ".json",
 		success: function(data)
 		{
-			// console.log(data);
 			// load the data
 			for (var i in data)
 			{
 			   if (i != "fxParams")
 			   {
+			   	   // update all the global variables
 				   window[i] = data[i];
 			   }
 			}
@@ -29,6 +39,7 @@ function load()
 				setParam(params[param], data.fxParams[param]);	
 			}
 			
+			// update the tempo
 			$("#tempo").val(tempo).change();
 
 			
@@ -75,6 +86,9 @@ function load()
 	});
 }
 
+/**
+* Shows the modal dialog with text entry for pattern name
+*/
 function setupSave()
 {
 	var content = $("<div>");
@@ -84,15 +98,15 @@ function setupSave()
 	showModal(content);
 }
 
+/**
+* Saves the pattern to the server
+*/
 function save()
 {
-	// @todo add version number for future compatibilty
-	// @todo allow users to name saved patterns
-	
-	// define all the data to save...
 	// set the name
 	updateName($("[name=saveName]").val());
 	
+	// define all data to save
 	var data = {};
 	var objects = [
 		"tempo",
@@ -109,7 +123,7 @@ function save()
 	
 	// create the combined data object
 	objects.forEach(function(element) {
-		data[element] = window[element]
+		data[element] = window[element];
 	});
 	
 	// get fx params
@@ -117,6 +131,11 @@ function save()
 	$(".param").each(function() {
 		data.fxParams[$(this).attr("name")] = $(this).val();
 	});
+	
+	// add a version number (for future compatibility changes)
+	data.version = "1.0";
+	
+	// convert the data object to JSON
 	data = JSON.stringify(data);
 	
 	// make the ajax call
@@ -126,6 +145,7 @@ function save()
       data: {data:data},
       type: 'POST',
       success: function(data) {
+      	// update the url and display it in the modal dialog
         var url = location.origin + location.pathname + "#" + data.data.num;
         location.hash = data.data.num;
         var content = $("<div>");

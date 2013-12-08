@@ -4,11 +4,14 @@
 * sequence rows, and creates all the parameter sliders
 */
 
-// @todo - comments
+// global constants
 var BASS_MAX = 52;
 var BASS_MIN = 36;
 var BASS_RANGE = BASS_MAX - BASS_MIN;
 
+/**
+* Build everything
+*/
 function initInterface()
 {
 	initDrumGrid();
@@ -18,9 +21,11 @@ function initInterface()
 	initSliders();
 }
 
+/**
+* Creates the grid for drums
+*/
 function initDrumGrid()
 {
-	// create a grid for drums...
 	var seq = $("#drumseq");
 	var labels = $("<div id='drum-labels'>");
 	var grid = $("<div id='drum-grid'>");
@@ -40,9 +45,11 @@ function initDrumGrid()
 	seq.addInteraction(".cell-inner", drumInteractions());	
 }
 
+/**
+* Creates the grid for bass
+*/
 function initBassGrid()
 {
-	// create a grid for the bass
 	var bass = $("#bseq");
 	labels = $("<div id='bass-labels'>");
 	grid = $("<div id='bass-grid'>");
@@ -68,9 +75,11 @@ function initBassGrid()
 	bass.addInteraction(".cell-inner", bassInteractions());
 }
 
+/**
+* Creates the pattern rows for drum/bass
+*/
 function initPatterns()
 {
-// build the patterns for both the drum and bass
 	var plist = $(".patterns");
 	var label = $("<div class='label'>").text("patterns");
 	plist.append(label);
@@ -88,6 +97,9 @@ function initPatterns()
 	$("#bass-patterns").addInteraction(".pattern", bassPatternInteractions());
 }
 
+/**
+* Creates the sequence rows for drum/bass
+*/
 function initSequence()
 {
 	var sequence = $(".sequence")
@@ -106,6 +118,8 @@ function initSequence()
 		}
 		sequence.append(div);
 	}
+	
+	// playback mode button
 	var buttonlabel = $("<div class='mode'>").text("Playback mode: ");
 	var button = $("<button>").text("loop").appendTo(buttonlabel);
 	button.addInteraction({
@@ -119,6 +133,11 @@ function initSequence()
 	sequence.append(buttonlabel);
 }
 
+/**
+* Create all the sliders, based on what parameters have been defined
+* in the params object
+* Relies on aaa-bbb-ccc naming convention in params
+*/
 function initSliders()
 {
 	var getParam = function(element, param)
@@ -133,15 +152,12 @@ function initSliders()
 	// add some sliders to the fx panel
 	var fxPanel = $("#fx-panel");
 	var subPanel = $("#sub-panel");
-	// check the params...
+
 	var fxlist = {};
 	for (var parameter in params)
 	{
-		//console.log(param);
-		// get the three components...
+		// get the three components of the name
 		var param = parameter.split("-");
-		// skip individual drum fx for now
-		// @todo - Add individual drum fx to interface
 		if (!(param[0] in fxlist))
 		{
 			fxlist[param[0]] = {}
@@ -153,6 +169,7 @@ function initSliders()
 		fxlist[param[0]][param[1]][param[2]] = parameter;
 	}
 	
+	// create the fx sections
 	for (var section in fxlist)
 	{
 		sectionDiv = $("<div class='fx-section'>").attr("name", section);
@@ -170,7 +187,8 @@ function initSliders()
 			}
 			
 		}
-	
+		
+		// decide if this goes on the main fx section or the subsection
 		if (["drum","bass","master"].indexOf(section) == -1)
 		{
 			subPanel.append(sectionDiv);
@@ -180,7 +198,6 @@ function initSliders()
 		}
 	}
 	
-	// add a button to the drum fx section
 	
 	// slider setup
 	$(".param").attr({
@@ -189,7 +206,7 @@ function initSliders()
 		step: function() {return getParam($(this), "step")},
 		value: function() {return getParam($(this), "value")}
 	}).on("change", function() {
-		// set the value!!!
+		// set the value when moving the slider
 		setParam(params[$(this).attr("name")], $(this).val());
 		return false;	
 	});

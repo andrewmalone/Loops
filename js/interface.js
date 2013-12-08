@@ -3,7 +3,6 @@
 * Interface update functions
 */
 
-// @todo - finish comments
 // global variable for pattern name
 var saveName = "";
 
@@ -156,6 +155,9 @@ function switchActivePattern(index, type)
 	}
 }
 
+/**
+* Updates the display for the active sequence when playing in sequence mode
+*/
 function setActiveSequence(index, type)
 {
 	var element = $("#" + type + "-sequence .pattern").eq(index);
@@ -166,6 +168,9 @@ function setActiveSequence(index, type)
 	}
 }
 
+/**
+* Shows the modal dialog with any content passed in
+*/
 function showModal(content)
 {
 	var div = $("#modal-content");
@@ -173,12 +178,18 @@ function showModal(content)
 	$("#modal").addClass("active");
 }
 
+/**
+* Calls the modal dialog with just some text
+*/
 function announce(text)
 {
 	var p = $("<p>").text(text);
 	showModal(p);
 }
 
+/**
+* Update the name of the pattern
+*/
 function updateName(text)
 {
 	if (!text)

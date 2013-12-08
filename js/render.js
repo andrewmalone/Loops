@@ -1,21 +1,30 @@
-// @todo - comments
+/**
+* render.js
+* Switches audio processing to offline mode and renders to .wav
+*/
+
+/**
+* Main render function
+* Note - may be able to refactor common code from the main sequencer loop
+*/
 function render()
 {
 	// stop playback
 	stop();
 	
-	// @todo calculate length based on sequence modes
+	// calculate length based on sequence modes
 	var bassLength = bassMode == "loop" ? 1 : bassSequence.length;
 	var drumLength = drumMode == "loop" ? 1 : drumSequence.length;
 	var measures = Math.max(bassLength, drumLength);	
 	
+	// switch to offline mode
 	context = new OfflineAudioContext(2, ((60 / tempo) * (BEATS_PER_MEASURE * measures)) * context.sampleRate, context.sampleRate);
 	context.graph = createAudioGraph();
+	
 	// set all params based on current values...
 	$(".param").each(function() {
 		setParam(params[$(this).attr("name")], $(this).val());
 	});
-	
 	
 	var stepTime = (60 / STEPS_PER_BEAT) / tempo;
 	var steps = drumPatterns[currentDrumPattern].steps;
@@ -32,8 +41,8 @@ function render()
 		bassSequencePosition = 0;
 		currentDrumPattern = bassSequence[0];
 	}
-	// @todo - add all drum/bass sounds and choke groups
-	// loop through the measures
+
+	// loop through the measures and schedule all the sounds
 	for (var measureCount = 0; measureCount < measures; measureCount++)
 	{
 		var steps = drumPatterns[currentDrumPattern].steps;
@@ -54,7 +63,6 @@ function render()
 						if (scheduledSounds[j].buffer._mute == buffers[name]._mute) 
 						{
 							scheduledSounds[j].stop(time + 5/tempo);
-							// @todo is this extra time padding needed?	
 						}
 					}
 					playDrumSound(buffers[name], time, volumes[i][step]);
@@ -64,7 +72,7 @@ function render()
 			// check for bass
 			if (bass[step].note != 0)
 			{
-			// play the note...
+				// play the note...
 				var note = BASS_MAPPING[bass[step].note];
 				playBassSound(
 					buffers[note.sample],
@@ -98,27 +106,29 @@ function render()
 		}
 	}
 	
+	// set the rendering callback function
 	context.oncomplete = function(event) {
+		// switch the audio context back from offline
 		context = new AudioContext();
 		context.graph = createAudioGraph();
 		$(".param").each(function() {
 			setParam(params[$(this).attr("name")], $(this).val());
 		});
 		scheduledSounds = [];
+		
+		// convert the rendered PCM data buffer to a .wav
 		var buffer = event.renderedBuffer;
 		var interleaved = interleave(buffer.getChannelData(0),buffer.getChannelData(1));
 		var dataview = encodeWAV(interleaved);
 		var audioBlob = new Blob([dataview], {type: 'audio/wav'});
-		// var audioBlob = new Blob([dataview]);
-		// forceDownload(audioBlob);
-		// saveAs(audioBlob, "maybe.wav");
+		
+		// convert the blob into a data URI
 		var reader = new FileReader();
 		reader.onloadend = function()
 		{
-			// @todo - update this method for the interface, also maybe some instructions for safari
 			var content = $("<div>");
 			var text = "";
-			// detect if download attr will work
+			// detect if download attr will work and add extra text if needed
 			if ("download" in document.createElement("a"))
 			{
 				text = "Click to download .wav file.";
@@ -134,32 +144,14 @@ function render()
 		reader.readAsDataURL(audioBlob);
 	}
 	
+	// start rendering
 	context.startRendering();
 }
 
 
 /**
-* Wave rendering functions adapted from  https://github.com/mattdiamond/Recorderjs
+* All wave rendering and header functions below adapted from  https://github.com/mattdiamond/Recorderjs
 */
-var globalBlob;
-forceDownload = function(blob, filename){
-	// console.log(blob)
-	//console.log()
-	globalBlob = blob;
-	return;
-    var url = (window.URL || window.webkitURL).createObjectURL(blob);
-    var link = document.createElement('a');
-    link.href = url;
-    //var dataUrl = 
-    link.download = filename || 'output.wav';
-    link.appendChild(document.createTextNode("test"))
-    document.body.appendChild(link);
-    // @todo - work on some cross browser stuff here...
-    //var click = document.createEvent("Event");
-    //click.initEvent("click", true, true);
-    //link.dispatchEvent(click);
-}
-
 function interleave(inputL, inputR){
   var length = inputL.length + inputR.length;
   var result = new Float32Array(length);
@@ -189,7 +181,7 @@ function floatTo16BitPCM(output, offset, input){
 }
 
 function encodeWAV(samples){
-	var sampleRate = 44100;
+  var sampleRate = context.sampleRate;
   var buffer = new ArrayBuffer(44 + samples.length * 2);
   var view = new DataView(buffer);
 

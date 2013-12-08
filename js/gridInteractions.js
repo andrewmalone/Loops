@@ -1,4 +1,14 @@
-// @todo - comments
+/**
+* gridInteractions.js
+* Defines all the interactions in the drum and bass grids,
+* and the pattern drag/drop
+*/
+
+/**
+* Define the drum grid interactions
+* Click to toggle on/off
+* Drag up/down to set volume and opacity of step
+*/
 function drumInteractions()
 {
 	return {
@@ -15,8 +25,7 @@ function drumInteractions()
 				// turn on the cell!
 				isTurningOn = true;
 				requestAnimFrame(function() {			
-					//element.css("opacity", vol);
-					element.children(".note").css("opacity", vol)
+					element.children(".note").css("opacity", vol);
 					element.addClass("on");
 				});		
 				drumPatterns[currentDrumPattern].steps[row][col] = 1;
@@ -31,34 +40,33 @@ function drumInteractions()
 		drag: function(data) {
 			// set the volume and opacity...
 			var vol = calcVolume(data.startV, data.deltaY);
-			// console.log(vol);
 			requestAnimFrame(function() {
-				//data.element.css("opacity", vol);
-				data.element.children(".note").css("opacity", vol)
+				data.element.children(".note").css("opacity", vol);
 			});
 			
-			drumPatterns[currentDrumPattern].volumes[data.row][data.col] = vol
+			drumPatterns[currentDrumPattern].volumes[data.row][data.col] = vol;
 		},
 		click: function(data) {
 			if (data.isTurningOn == false) {
 				// turn the cell off
 				drumPatterns[currentDrumPattern].steps[data.row][data.col] = 0;
 				data.element.removeClass("on");
-				//s();
 			}
-		},
-		up: function(data) {
-			
 		}
 	};
 }
 
+/**
+* Define the bass grid interactions
+* Click to toggle on/off
+* Drag up/down to change volume/opacity
+* Drag left/right to adjust duration and size
+*/
 function bassInteractions()
 {
 	return {
 		init: function(element) {
-			// get the row/column...
-			
+			// get the row/column...		
 			var index = element.index("#bseq .cell-inner");
 			var row = BASS_MIN + (BASS_RANGE - getRow(index));
 			var col = getCol(index);
@@ -66,16 +74,16 @@ function bassInteractions()
 			var duration = bassPatterns[currentBassPattern][col].duration;
 			var volume = bassPatterns[currentBassPattern][col].volume;
 			var isTurningOn = false;
+			
+			// set up some variables for snapping to cells
 			var right = parseFloat(element.css("right"));
-			var next = $("#bseq .cell").eq(index + duration); // element.parent().next();
+			var next = $("#bseq .cell").eq(index + duration);
 			var nextWidth = next.outerWidth();
 			var nextSnap = nextWidth / 2;
 			var prev = $("#bseq .cell").eq(index + duration - 1);
 			var prevWidth = prev.outerWidth() * -1;
 			var prevSnap = duration == 1 ? 0 : prevWidth / 2;
-			// var prev = element.parent().prev();
-			// prevSnap = 1/2 of the current cell width...
-			// console.log(duration, next.index("#bseq .cell"), element.parent().next().index("#bseq .cell"));
+			
 			if (note != row)
 			{
 				// turn it on!
@@ -109,11 +117,9 @@ function bassInteractions()
 		},
 		drag: function(data) {
 			// adjust the duration - move left/right
-			//console.log(data.deltaX, data.nextSnap);
 			if (data.nextSnap != 0 && data.deltaX > data.nextSnap)
 			{
-
-						
+				// snap to the next cell		
 				data.element.css("right", data.right - data.nextWidth);
 				data.prevWidth = data.nextWidth - data.next.outerWidth();
 				data.prev = data.next;
@@ -123,32 +129,27 @@ function bassInteractions()
 				data.nextWidth += data.next.outerWidth();
 				data.duration++;
 				bassPatterns[currentBassPattern][data.col].duration = data.duration;
-				//console.log(data.prevWidth);			
 			}
 			else if (data.prevSnap != 0 && data.deltaX < data.prevSnap)
 			{
-				// console.log("snap back! to " + (data.right - data.prevWidth));
+				// snap to the prior cell
 				data.element.css("right", data.right - data.prevWidth);
 				data.duration--;
-				
 				data.next = data.prev;
 				data.nextSnap = data.prevSnap;
 				data.nextWidth = data.prevWidth + data.prev.outerWidth();
-				
 				data.prev = data.prev.prev();
 				data.prevSnap = data.duration == 1 ? 0 : data.prevWidth - data.prev.outerWidth() / 2;
-				// console.log(data.deltaX, data.prevSnap);
 				data.prevWidth -= data.prev.outerWidth();
 				bassPatterns[currentBassPattern][data.col].duration = data.duration;
 			}
 			
+			// change the volume if needed
 			var vol = calcVolume(data.startV, data.deltaY);
-			// console.log(vol);
 			requestAnimFrame(function() {
 				data.element.children(".note").css("opacity", vol);
 			});
 			bassPatterns[currentBassPattern][data.col].volume = vol;
-			//drumPatterns[currentDrumPattern].volumes[data.row][data.col] = vol
 		},
 		click: function(data) {
 			if (data.isTurningOn == false)
@@ -164,27 +165,33 @@ function bassInteractions()
 	};
 }
 
+/**
+* Defines the interactions for bass patterns
+* Click to switch patterns
+* Drag to another pattern to copy
+* Drag to sequence
+*/
 function bassPatternInteractions()
 {
 	return {
 	    init: function(element)
 	    {
-	        var data = {}
-	        //data.shadow = element.clone().addClass("shadow").appendTo(document.body)
-	        data.offsetX = element.offset().left
-	        data.offsetY = element.offset().top
-	        //data.shadow.css({left: data.offsetX+"px", top: data.offsetY+"px"})
+	    	// initialize for drag/drop
+	        var data = {};
+	        data.offsetX = element.offset().left;
+	        data.offsetY = element.offset().top;
 	        data.isOver = false;
+	        
 	        // get the drop zones...
 	        data.drops = []
 	        element.siblings(".pattern").add(element.parent().next().children(".pattern.open")).each(function() {
-	            var left = $(this).offset().left
-	            var top = $(this).offset().top
-	            var right = left + $(this).outerWidth()
-	            var bottom = top + $(this).outerHeight()
-	            data.drops.push([[left, right],[top, bottom], $(this)])
+	            var left = $(this).offset().left;
+	            var top = $(this).offset().top;
+	            var right = left + $(this).outerWidth();
+	            var bottom = top + $(this).outerHeight();
+	            data.drops.push([[left, right],[top, bottom], $(this)]);
 	        })
-	        return data
+	        return data;
 	    },
 	    click: function(data) 
 	    {
@@ -194,14 +201,16 @@ function bassPatternInteractions()
 	    {
 	    	if (!data.shadow)
 	    	{
-		    	data.shadow = data.element.clone().addClass("shadow").appendTo(document.body)
+	    		// create the shadow element while dragging
+		    	data.shadow = data.element.clone().addClass("shadow").appendTo(document.body);
 	    	}
-	        var px = data.offsetX + data.deltaX
-	        var py = data.offsetY - data.deltaY
-	        var x = e.pageX
-		    var y = e.pageY
+	        var px = data.offsetX + data.deltaX;
+	        var py = data.offsetY - data.deltaY;
+	        var x = e.pageX;
+		    var y = e.pageY;
 	        requestAnimFrame(function() {
-	            data.shadow.css({left: px+"px", top: py+"px"})
+	        	// shadow follows the mouse
+	            data.shadow.css({left: px+"px", top: py+"px"});
 	        });
 	        // look for drop zones...
 	        if (data.isOver === false)
@@ -211,8 +220,7 @@ function bassPatternInteractions()
 		            var drop = data.drops[i];
 		            if (x > drop[0][0] && x < drop[0][1] && y > drop[1][0] && y < drop[1][1])
 		            {
-		                // can this be optimized?
-		                // we have an over here!
+		                // we are over a target
 		                data.isOver = i;
 		                drop[2].addClass("over");
 		                break;
@@ -225,7 +233,7 @@ function bassPatternInteractions()
 			    var drop = data.drops[data.isOver];
 			    if (x < drop[0][0] || x > drop[0][1] || y < drop[1][0] || y > drop[1][1])
 			    {
-				    // not over anymore!
+				    // not over anymore
 				    drop[2].removeClass("over");
 				    data.isOver = false;
 			    }
@@ -235,32 +243,41 @@ function bassPatternInteractions()
 	    {
 	    	if (data.isOver !== false)
 	    	{
+	    		// currently over a drop zone
 	    		var drop = data.drops[data.isOver][2]
 		    	drop.removeClass("over");
-		    	// we had a drop! (what do we do now?)
+		    	
+		    	// decide what to do (figure out bass or drums)
 		    	var i = drop.siblings(".pattern").addBack().index(drop);
 		    	var type = data.element.parent().attr("id").split("-")[0];
 		    	if (drop.parent().hasClass("patterns"))
 		    	{
+		    		// copy the pattern
 			    	window[type + "Patterns"][i] = $.extend(true, {}, window[type + "Patterns"][window["current" + initCap(type) + "Pattern"]]);
 			    	switchActivePattern(drop, type);
 		    	}
 		    	else if (drop.parent().hasClass("sequence"))
 		    	{
+		    		// add to the sequence
 			    	// add the number
 			    	drop.text(data.element.text());
 			    	// set the next one to open
 			    	drop.next(".pattern").addClass("open").removeClass("closed");
 			    	// add to the sequence
-			    	//var index = data.element.siblings(".pattern").addBack().index(data.element);
 			    	window[type + "Sequence"][i] = data.element.siblings(".pattern").addBack().index(data.element);
 		    	}
 	    	}
+	    	// destroy the drag shadow
 	        data.shadow.remove()
 	    }	
 	};
 }
 
+/**
+* Define drum pattern interaction
+* Same as bass except for click
+* (this could probably be factored out)
+*/
 function drumPatternInteractions()
 {
 	var fn = bassPatternInteractions();
