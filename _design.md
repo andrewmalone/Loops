@@ -10,9 +10,21 @@ The code is organized into the following files:
 
 * **initInterface.js** - Initializes the interface. Dynamically draws the pattern grids, creates the pattern and sequence rows, and creates all the parameter sliders.
 
+* **gridInteractions.js** - defines the interaction behavior for the main interface sections: drum grid, bass grid, drum patterns, bass patterns. All mouse and touch interaction is defined here.
+
+* **interactions.js** - defines the general interaction scheme, which combines mouse and touch events into a single set of functions.
+
+* **sequencer.js** - functions for audio looping and playback
+
 * **audioGraph.js** - sets up all the audio processing nodes and effects parameters
 
-* gridInteraction.js
+* **loadSave.js** - ajax based functions for saving to the server and loading saved patterns
+
+* **render.js** - functions for rendering to a .wav file for download
+
+* **sounds.js** - global declaration of sound files to use
+
+* **loadSounds.js** - functions to load sound files into buffers for use in playback
 
 
 The heart of the application is the sequencer loop and the audio graph. 
@@ -20,6 +32,10 @@ The heart of the application is the sequencer loop and the audio graph.
 ## Audio graph
 
 ## Sequencer loop
+
+## Loading/saving
+
+## Rendering
 
 ## External scripts/libraries
 * [jQuery][jquery]
@@ -31,9 +47,9 @@ The heart of the application is the sequencer loop and the audio graph.
 
 * [Hammer][hammer] for compiling html and css files locally. This is a very cool utility for building static websites - it allows for html includes and lots of little touches to ease development. It allowed me to keep all my javascript in individual files, and then automatically combine them into one file for publishing.
 
-* [Sass][sass] - 
+* [Sass][sass] - Allows for more advanced css functions like variables, nested selectors and functions. Also makes cross browser support much easier. This was my first time working with Sass, and I found it to be a great tool. Hammer automatically compiles Sass files into CSS.
 
-* [Markdown][markdown]
+* [Markdown][markdown] - Documentation files were written in markdown. Hammer compiles markdown files into HTML.
 
 **Note:** The main directory has files with the hammer specific directives and won't run without hammer. The Build folder has the compiled files that should run on any webserver.
 

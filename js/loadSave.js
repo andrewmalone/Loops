@@ -1,3 +1,4 @@
+// @todo - comments
 function load()
 {
 	var num = location.hash.slice(1);

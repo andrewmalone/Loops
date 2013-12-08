@@ -1,3 +1,4 @@
+// @todo - comments and cleanup
 $.fn.addInteraction = function(selector, cb)
 {
 	if (cb == null)
