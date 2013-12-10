@@ -96,6 +96,7 @@ function bassInteractions()
 				bassPatterns[currentBassPattern][col].note = row;
 				bassPatterns[currentBassPattern][col].duration = duration;
 				bassPatterns[currentBassPattern][col].volume = .8;
+				volume = .8;
 				isTurningOn = true;
 				element.addClass("on");
 				element.children(".note").css("opacity", volume);
