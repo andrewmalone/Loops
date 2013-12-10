@@ -210,15 +210,9 @@ function drawStep(step)
 {
 	// test adding the playing class for the current step
 	// @todo - does this need to be in an animationFrame?
-	if (step == 0)
-	{
-		step = NUMSTEPS;
-	}
-	else
-	{
-		step = step + 1;
-	}
+	step++;
 	// @todo - this works for drums, but not for bass! (because of duration)
+	// @todo - clear on stop
 	$(".playing").removeClass("playing");
 	$("#drumseq .cell:nth-child(" + step + ") .cell-inner.on").addClass("playing");
 }

@@ -227,6 +227,7 @@ function loop()
 			currentStep = 0;
 			
 			// switch patterns if in sequence mode
+			// @todo - move some of this into the drawing updates below
 			if (drumMode == "sequence")
 			{
 				drumSequencePosition = (drumSequencePosition + 1) % drumSequence.length;
