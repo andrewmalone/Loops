@@ -92,6 +92,10 @@ $note-color: #5E7FD6;
 	opacity: .8;	
 }
 
+.cell-inner.on.playing .note {
+	background:complement($note-color);		
+}
+
 #bass-grid .row.blackNote
 {
 	background:#eee;
