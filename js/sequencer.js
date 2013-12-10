@@ -45,6 +45,10 @@ var nextStepTime = 0;
 // scheduled sounds array (for mute groups)
 var scheduledSounds = [];
 
+// keep track of drawing queue for updating the interface
+var lastStepDrawn = -1;
+var drawingQueue = [];
+
 // shim for cross browser requestAnimationFrame
 window.requestAnimFrame = (function(){
     return  window.requestAnimationFrame ||
@@ -214,7 +218,8 @@ function loop()
 				note.tune
 			);
 		}
-				 
+		
+		drawingQueue.push({step: currentStep, time: nextStepTime});
 		nextStepTime += stepTime; 
 		currentStep++;
 		if (currentStep == NUMSTEPS) {
@@ -245,6 +250,21 @@ function loop()
 			}
 		}
 	}
+	
+	// check if we need to do a drawing update
+	var currentDrawStep = lastStepDrawn;
+	while (drawingQueue.length && drawingQueue[0].time < context.currentTime)
+	{
+		currentDrawStep = drawingQueue[0].step;
+		drawingQueue.splice(0, 1);
+	}
+	
+	if (currentDrawStep != lastStepDrawn)
+	{
+		drawStep(currentDrawStep);
+		lastStepDrawn = currentDrawStep;
+	}
+	
 }
 
 /**
