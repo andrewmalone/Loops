@@ -234,9 +234,7 @@ function loop()
 				if (drumSequence[drumSequencePosition] == null)
 				{
 					drumSequencePosition = 0;
-				}
-				setActiveSequence(drumSequencePosition, "drum");
-				switchActivePattern(drumSequence[drumSequencePosition], "drum");
+				}				
 			}
 			
 			if (bassMode == "sequence")
@@ -246,8 +244,6 @@ function loop()
 				{
 					bassSequencePosition = 0;
 				}
-				setActiveSequence(bassSequencePosition, "bass");
-				switchActivePattern(bassSequence[bassSequencePosition], "bass");
 			}
 		}
 	}
@@ -262,6 +258,19 @@ function loop()
 	
 	if (currentDrawStep != lastStepDrawn)
 	{
+		if (currentStep == 0)
+		{
+			if (drumMode == "sequence")
+			{
+				setActiveSequence(drumSequencePosition, "drum");
+				switchActivePattern(drumSequence[drumSequencePosition], "drum");
+			}
+			if (bassMode == "sequence")
+			{
+				setActiveSequence(bassSequencePosition, "bass");
+				switchActivePattern(bassSequence[bassSequencePosition], "bass");
+			}
+		}
 		drawStep(currentDrawStep);
 		lastStepDrawn = currentDrawStep;
 	}
