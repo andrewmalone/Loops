@@ -110,6 +110,7 @@ function stop()
 	currentStep = 0;
 	scheduledSounds = [];
 	$(".sequence .active").removeClass("active");
+	$(".playing").removeClass("playing");
 }
 
 /**
