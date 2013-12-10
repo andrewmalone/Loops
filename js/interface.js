@@ -147,10 +147,14 @@ function switchActivePattern(index, type)
 	}
 	if (!element.hasClass("active"))
 	{
-		//type = initCap(type);
 		element.siblings(".active").removeClass("active");
 		element.addClass("active");
 		window["current" + initCap(type) + "Pattern"] = index;
+		window["drawCurrent" + initCap(type) + "Pattern"]();
+	}
+	else
+	{
+		// just need to redraw the pattern here
 		window["drawCurrent" + initCap(type) + "Pattern"]();
 	}
 }
