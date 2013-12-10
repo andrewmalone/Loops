@@ -19,8 +19,19 @@ $(function(){
 function continueSetup()
 {
 	// set up all the buttons
-	$("#play").addInteraction({click: start});
-	$("#stop").addInteraction({click: stop});
+	$("#play").addInteraction({click: function(data) {
+		if (data.element.text() == "PLAY")
+		{
+			start();
+			data.element.text("STOP");
+		}
+		else
+		{
+			stop();
+			data.element.text("PLAY");
+		}
+	}});
+
 	$("#render").addInteraction({click: render})
 	$("#save").addInteraction({click: setupSave})
 	$("#fx").addInteraction({click: function(data) {

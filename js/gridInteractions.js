@@ -96,6 +96,7 @@ function bassInteractions()
 				bassPatterns[currentBassPattern][col].note = row;
 				bassPatterns[currentBassPattern][col].duration = duration;
 				bassPatterns[currentBassPattern][col].volume = .8;
+				volume = .8;
 				isTurningOn = true;
 				element.addClass("on");
 				element.children(".note").css("opacity", volume);
@@ -248,12 +249,13 @@ function bassPatternInteractions()
 		    	drop.removeClass("over");
 		    	
 		    	// decide what to do (figure out bass or drums)
-		    	var i = drop.siblings(".pattern").addBack().index(drop);
+		    	var targetIndex = drop.siblings(".pattern").addBack().index(drop);
+		    	var sourceIndex = data.element.siblings(".pattern").addBack().index(data.element);
 		    	var type = data.element.parent().attr("id").split("-")[0];
 		    	if (drop.parent().hasClass("patterns"))
 		    	{
 		    		// copy the pattern
-			    	window[type + "Patterns"][i] = $.extend(true, {}, window[type + "Patterns"][window["current" + initCap(type) + "Pattern"]]);
+			    	window[type + "Patterns"][targetIndex] = $.extend(true, {}, window[type + "Patterns"][sourceIndex]);
 			    	switchActivePattern(drop, type);
 		    	}
 		    	else if (drop.parent().hasClass("sequence"))
@@ -264,7 +266,7 @@ function bassPatternInteractions()
 			    	// set the next one to open
 			    	drop.next(".pattern").addClass("open").removeClass("closed");
 			    	// add to the sequence
-			    	window[type + "Sequence"][i] = data.element.siblings(".pattern").addBack().index(data.element);
+			    	window[type + "Sequence"][targetIndex] = sourceIndex;
 		    	}
 	    	}
 	    	// destroy the drag shadow
