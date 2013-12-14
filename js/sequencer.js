@@ -228,14 +228,14 @@ function loop()
 			currentStep = 0;
 			
 			// switch patterns if in sequence mode
-			// @todo - move some of this into the drawing updates below
 			if (drumMode == "sequence")
 			{
 				drumSequencePosition = (drumSequencePosition + 1) % drumSequence.length;
 				if (drumSequence[drumSequencePosition] == null)
 				{
 					drumSequencePosition = 0;
-				}				
+				}
+				currentDrumPattern = drumSequence[drumSequencePosition];
 			}
 			
 			if (bassMode == "sequence")
@@ -245,6 +245,7 @@ function loop()
 				{
 					bassSequencePosition = 0;
 				}
+				currentBassPattern = bassSequence[bassSequencePosition];
 			}
 		}
 	}
