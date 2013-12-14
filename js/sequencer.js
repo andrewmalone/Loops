@@ -45,6 +45,10 @@ var nextStepTime = 0;
 // scheduled sounds array (for mute groups)
 var scheduledSounds = [];
 
+// keep track of drawing queue for updating the interface
+var lastStepDrawn = -1;
+var drawingQueue = [];
+
 // shim for cross browser requestAnimationFrame
 window.requestAnimFrame = (function(){
     return  window.requestAnimationFrame ||
@@ -106,6 +110,7 @@ function stop()
 	currentStep = 0;
 	scheduledSounds = [];
 	$(".sequence .active").removeClass("active");
+	$(".playing").removeClass("playing");
 }
 
 /**
@@ -214,7 +219,8 @@ function loop()
 				note.tune
 			);
 		}
-				 
+		
+		drawingQueue.push({step: currentStep, time: nextStepTime});
 		nextStepTime += stepTime; 
 		currentStep++;
 		if (currentStep == NUMSTEPS) {
@@ -229,8 +235,7 @@ function loop()
 				{
 					drumSequencePosition = 0;
 				}
-				setActiveSequence(drumSequencePosition, "drum");
-				switchActivePattern(drumSequence[drumSequencePosition], "drum");
+				currentDrumPattern = drumSequence[drumSequencePosition];
 			}
 			
 			if (bassMode == "sequence")
@@ -240,11 +245,38 @@ function loop()
 				{
 					bassSequencePosition = 0;
 				}
+				currentBassPattern = bassSequence[bassSequencePosition];
+			}
+		}
+	}
+	
+	// check if we need to do a drawing update
+	var currentDrawStep = lastStepDrawn;
+	while (drawingQueue.length && drawingQueue[0].time < context.currentTime)
+	{
+		currentDrawStep = drawingQueue[0].step;
+		drawingQueue.splice(0, 1);
+	}
+	
+	if (currentDrawStep != lastStepDrawn)
+	{
+		if (currentDrawStep == 0)
+		{
+			if (drumMode == "sequence")
+			{
+				setActiveSequence(drumSequencePosition, "drum");
+				switchActivePattern(drumSequence[drumSequencePosition], "drum");
+			}
+			if (bassMode == "sequence")
+			{
 				setActiveSequence(bassSequencePosition, "bass");
 				switchActivePattern(bassSequence[bassSequencePosition], "bass");
 			}
 		}
+		drawStep(currentDrawStep);
+		lastStepDrawn = currentDrawStep;
 	}
+	
 }
 
 /**
