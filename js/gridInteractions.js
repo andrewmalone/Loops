@@ -77,7 +77,8 @@ function bassInteractions()
 			
 			// set up some variables for snapping to cells
 			var right = parseFloat(element.css("right"));
-			var next = $("#bseq .cell").eq(index + duration);
+			var next = element.parent().nextAll().eq(duration - 1);
+			console.log(next);
 			var nextWidth = next.outerWidth();
 			var nextSnap = nextWidth / 2;
 			var prev = $("#bseq .cell").eq(index + duration - 1);
@@ -126,7 +127,14 @@ function bassInteractions()
 				data.prev = data.next;
 				data.prevSnap = data.nextSnap;
 				data.next = data.next.next();
-				data.nextSnap = data.nextWidth + data.next.outerWidth() / 2;
+				if (data.next.outerWidth())
+				{
+					data.nextSnap = data.nextWidth + data.next.outerWidth() / 2;
+				}
+				else
+				{
+					data.nextSnap = 0;
+				}
 				data.nextWidth += data.next.outerWidth();
 				data.duration++;
 				bassPatterns[currentBassPattern][data.col].duration = data.duration;
@@ -152,8 +160,8 @@ function bassInteractions()
 				var dur = data.col + data.duration == NUMSTEPS - 1 ? 0 : data.col + data.duration + 1;
 				data.element.removeClass("d" + dur);
 				data.element.addClass("dur d" + (data.col + data.duration));
+				console.log(data.duration)
 			}
-			
 			// change the volume if needed
 			var vol = calcVolume(data.startV, data.deltaY);
 			requestAnimFrame(function() {
