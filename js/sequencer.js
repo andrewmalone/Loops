@@ -259,7 +259,7 @@ function loop()
 	
 	if (currentDrawStep != lastStepDrawn)
 	{
-		if (currentStep == 0)
+		if (currentDrawStep == 0)
 		{
 			if (drumMode == "sequence")
 			{
