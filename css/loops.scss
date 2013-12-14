@@ -22,7 +22,11 @@ body {
 	margin: 0;
 	height:100%
 }
-
+#wrapper {
+	position:absolute;
+	width:100%;
+	overflow-x: hidden;
+}
 h2.name {
 	position:absolute;
 	top: $control-height;
@@ -201,12 +205,10 @@ $pattern-background: #eee;
 }
 #fx-panel, #sub-panel {
     position: absolute;
-    top: $control-height;
-    left: 0;
+    top: 0;
     background: #fff;
     width: 100%;
-    height: calc(100% - 2em);
-    overflow:hidden;
+    height: 100%;
     z-index:2;
     @include flexbox;
     @include transform(translate3d(101%,0,0));
