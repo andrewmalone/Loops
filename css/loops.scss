@@ -73,7 +73,7 @@ $note-playing-color: complement($note-color);
 		inset -1px -1px 2px 0 darken($color, 10%);
 }
 @mixin cell-playing($color) {
-	background: mix($color, lighten(red,30%), 90%);
+	background: mix($color, lighten(blue,25%), 95%);
 }
 
 .cell {
@@ -93,6 +93,7 @@ $note-playing-color: complement($note-color);
 	height:100%;
 	left:0;
 	right:0;
+	@include transition(background .1s);
 }
 .cell-inner.on {
 	border:1px solid darken($note-color,20%);
@@ -100,19 +101,29 @@ $note-playing-color: complement($note-color);
 	z-index: 1;
 }
 
-.cell-inner.on .note {
+.cell-inner .note {
 	@include note-background($note-color);
 	width:100%;
 	height:100%;
-	opacity: .8;	
+	opacity: .8;
+	@include transition-property(background, box-shadow);
+	// fade out is slower than fade in
+	@include transition-duration(.5s);
+	display:none;	
+}
+
+.cell-inner.on .note {
+	display:block;
 }
 
 .cell-inner.playing:not(.on) {
 	@include cell-playing($cell-color);
+	@include transition-duration(0s);
 }
 
 .cell-inner.on.playing .note {
 	@include note-background($note-playing-color);
+	@include transition-duration(.1s);
 }
 
 .blackNote .cell
