@@ -208,7 +208,8 @@ function updateName(text)
 */
 function drawStep(step)
 {
-	// @todo - does this need to be in an animationFrame?
+	// remove class from last step playing
 	$(".playing:not(.dur)").add(".d" + step).removeClass("playing");
+	// add class to current step
 	$(".cell:nth-child(" + (step + 1) + ") .cell-inner").addClass("playing");
 }
