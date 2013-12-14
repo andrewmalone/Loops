@@ -59,10 +59,28 @@ h2.name {
     text-align: right;
     padding-right:.2em;
 }
+
+/**
+* Grid cells
+*/
+$cell-color: #fff;
+$cell-color-dark: #eee;
+$note-color: #5E7FD6;
+$note-playing-color: complement($note-color);
+@mixin note-background($color) {
+	background: $color;
+	box-shadow: inset 1px 1px 2px 0 lighten($color, 20%),
+		inset -1px -1px 2px 0 darken($color, 10%);
+}
+@mixin cell-playing($color) {
+	background: mix($color, lighten(red,30%), 90%);
+}
+
 .cell {
     @include flex(1);
 	border-left: $border-light;
 	position:relative;
+	background: $cell-color;
 }
 .cell:nth-of-type(4n + 1) {
 	border-left: $border;
@@ -76,7 +94,6 @@ h2.name {
 	left:0;
 	right:0;
 }
-$note-color: #5E7FD6;
 .cell-inner.on {
 	border:1px solid darken($note-color,20%);
 	background:#fff;
@@ -84,22 +101,29 @@ $note-color: #5E7FD6;
 }
 
 .cell-inner.on .note {
-	background:$note-color;
+	@include note-background($note-color);
 	width:100%;
 	height:100%;
-	box-shadow: inset 1px 1px 2px 0 lighten($note-color,20%),
-		inset -1px -1px 2px 0 darken($note-color,10%);
 	opacity: .8;	
 }
 
-.cell-inner.on.playing .note {
-	background:complement($note-color);		
+.cell-inner.playing:not(.on) {
+	@include cell-playing($cell-color);
 }
 
-#bass-grid .row.blackNote
-{
-	background:#eee;
+.cell-inner.on.playing .note {
+	@include note-background($note-playing-color);
 }
+
+.blackNote .cell
+{
+	background: $cell-color-dark;
+}
+
+.blackNote .cell-inner.playing {
+	@include cell-playing($cell-color-dark);
+}
+
 .panel {
 	clear:left;
 	overflow: hidden;
