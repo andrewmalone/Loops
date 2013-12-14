@@ -130,6 +130,9 @@ function bassInteractions()
 				data.nextWidth += data.next.outerWidth();
 				data.duration++;
 				bassPatterns[currentBassPattern][data.col].duration = data.duration;
+				// adjust the class name so we can turn off at the correct time...
+				data.element.removeClass("d" + (data.col + data.duration - 1));
+				data.element.addClass("dur d" + (data.col + data.duration));
 			}
 			else if (data.prevSnap != 0 && data.deltaX < data.prevSnap)
 			{
@@ -143,6 +146,8 @@ function bassInteractions()
 				data.prevSnap = data.duration == 1 ? 0 : data.prevWidth - data.prev.outerWidth() / 2;
 				data.prevWidth -= data.prev.outerWidth();
 				bassPatterns[currentBassPattern][data.col].duration = data.duration;
+				data.element.removeClass("d" + (data.col + data.duration + 1));
+				data.element.addClass("dur d" + (data.col + data.duration));
 			}
 			
 			// change the volume if needed
@@ -156,7 +161,8 @@ function bassInteractions()
 			if (data.isTurningOn == false)
 			{
 				// turn it off
-				data.element.removeClass("on");
+				// remove all classes
+				data.element.removeClass().addClass("cell-inner");
 				data.element.css("right", 0);
 				bassPatterns[currentBassPattern][data.col].duration = 1;
 				bassPatterns[currentBassPattern][data.col].note = 0;
