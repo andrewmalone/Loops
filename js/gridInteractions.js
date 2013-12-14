@@ -131,8 +131,10 @@ function bassInteractions()
 				data.duration++;
 				bassPatterns[currentBassPattern][data.col].duration = data.duration;
 				// adjust the class name so we can turn off at the correct time...
+				// wrap to 0 at the end.
+				var dur = data.col + data.duration == NUMSTEPS ? 0 : data.col + data.duration;
 				data.element.removeClass("d" + (data.col + data.duration - 1));
-				data.element.addClass("dur d" + (data.col + data.duration));
+				data.element.addClass("dur d" + dur);
 			}
 			else if (data.prevSnap != 0 && data.deltaX < data.prevSnap)
 			{
@@ -146,7 +148,9 @@ function bassInteractions()
 				data.prevSnap = data.duration == 1 ? 0 : data.prevWidth - data.prev.outerWidth() / 2;
 				data.prevWidth -= data.prev.outerWidth();
 				bassPatterns[currentBassPattern][data.col].duration = data.duration;
-				data.element.removeClass("d" + (data.col + data.duration + 1));
+				// wrap to 0
+				var dur = data.col + data.duration == NUMSTEPS - 1 ? 0 : data.col + data.duration + 1;
+				data.element.removeClass("d" + dur);
 				data.element.addClass("dur d" + (data.col + data.duration));
 			}
 			

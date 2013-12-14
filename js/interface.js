@@ -82,7 +82,7 @@ function drawCurrentBassPattern()
 			$(this).css("right", width);
 			if (duration > 1)
 			{
-				$(this).addClass("dur d" + (col + duration));
+				$(this).addClass("dur d" + (col + duration == NUMSTEPS ? 0 : col + duration));
 			}
 		}
 	});
