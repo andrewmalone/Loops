@@ -218,5 +218,5 @@ function drawStep(step)
 	// @todo - this works for drums, but not for bass! (because of duration)
 	// @todo - clear on stop
 	$(".playing").removeClass("playing");
-	$(".cell:nth-child(" + step + ") .cell-inner.on").addClass("playing");
+	$(".cell:nth-child(" + step + ") .cell-inner").addClass("playing");
 }
