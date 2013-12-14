@@ -22,7 +22,11 @@ body {
 	margin: 0;
 	height:100%
 }
-
+#wrapper {
+	position:absolute;
+	width:100%;
+	overflow-x: hidden;
+}
 h2.name {
 	position:absolute;
 	top: $control-height;
@@ -59,10 +63,28 @@ h2.name {
     text-align: right;
     padding-right:.2em;
 }
+
+/**
+* Grid cells
+*/
+$cell-color: #fff;
+$cell-color-dark: #eee;
+$note-color: #5E7FD6;
+$note-playing-color: complement($note-color);
+@mixin note-background($color) {
+	background: $color;
+	box-shadow: inset 1px 1px 2px 0 lighten($color, 20%),
+		inset -1px -1px 2px 0 darken($color, 10%);
+}
+@mixin cell-playing($color) {
+	background: mix($color, lighten(blue,25%), 95%);
+}
+
 .cell {
     @include flex(1);
 	border-left: $border-light;
 	position:relative;
+	background: $cell-color;
 }
 .cell:nth-of-type(4n + 1) {
 	border-left: $border;
@@ -76,26 +98,41 @@ h2.name {
 	left:0;
 	right:0;
 }
-$note-color: #5E7FD6;
 .cell-inner.on {
 	border:1px solid darken($note-color,20%);
 	background:#fff;
 	z-index: 1;
 }
 
-.cell-inner.on .note {
-	background:$note-color;
+.cell-inner .note {
+	@include note-background($note-color);
 	width:100%;
 	height:100%;
-	box-shadow: inset 1px 1px 2px 0 lighten($note-color,20%),
-		inset -1px -1px 2px 0 darken($note-color,10%);
-	opacity: .8;	
+	opacity: .8;
+	display:none;	
 }
 
-#bass-grid .row.blackNote
-{
-	background:#eee;
+.cell-inner.on .note {
+	display:block;
 }
+
+.cell-inner.playing:not(.on) {
+	@include cell-playing($cell-color);
+}
+
+.cell-inner.on.playing .note {
+	@include note-background($note-playing-color);
+}
+
+.blackNote .cell
+{
+	background: $cell-color-dark;
+}
+
+.blackNote .cell-inner.playing {
+	@include cell-playing($cell-color-dark);
+}
+
 .panel {
 	clear:left;
 	overflow: hidden;
@@ -168,12 +205,10 @@ $pattern-background: #eee;
 }
 #fx-panel, #sub-panel {
     position: absolute;
-    top: $control-height;
-    left: 0;
+    top: 0;
     background: #fff;
     width: 100%;
-    height: calc(100% - 2em);
-    overflow:hidden;
+    height: 100%;
     z-index:2;
     @include flexbox;
     @include transform(translate3d(101%,0,0));

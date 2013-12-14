@@ -77,7 +77,8 @@ function bassInteractions()
 			
 			// set up some variables for snapping to cells
 			var right = parseFloat(element.css("right"));
-			var next = $("#bseq .cell").eq(index + duration);
+			var next = element.parent().nextAll().eq(duration - 1);
+			console.log(next);
 			var nextWidth = next.outerWidth();
 			var nextSnap = nextWidth / 2;
 			var prev = $("#bseq .cell").eq(index + duration - 1);
@@ -126,10 +127,22 @@ function bassInteractions()
 				data.prev = data.next;
 				data.prevSnap = data.nextSnap;
 				data.next = data.next.next();
-				data.nextSnap = data.nextWidth + data.next.outerWidth() / 2;
+				if (data.next.outerWidth())
+				{
+					data.nextSnap = data.nextWidth + data.next.outerWidth() / 2;
+				}
+				else
+				{
+					data.nextSnap = 0;
+				}
 				data.nextWidth += data.next.outerWidth();
 				data.duration++;
 				bassPatterns[currentBassPattern][data.col].duration = data.duration;
+				// adjust the class name so we can turn off at the correct time...
+				// wrap to 0 at the end.
+				var dur = data.col + data.duration == NUMSTEPS ? 0 : data.col + data.duration;
+				data.element.removeClass("d" + (data.col + data.duration - 1));
+				data.element.addClass("dur d" + dur);
 			}
 			else if (data.prevSnap != 0 && data.deltaX < data.prevSnap)
 			{
@@ -143,8 +156,12 @@ function bassInteractions()
 				data.prevSnap = data.duration == 1 ? 0 : data.prevWidth - data.prev.outerWidth() / 2;
 				data.prevWidth -= data.prev.outerWidth();
 				bassPatterns[currentBassPattern][data.col].duration = data.duration;
+				// wrap to 0
+				var dur = data.col + data.duration == NUMSTEPS - 1 ? 0 : data.col + data.duration + 1;
+				data.element.removeClass("d" + dur);
+				data.element.addClass("dur d" + (data.col + data.duration));
+				console.log(data.duration)
 			}
-			
 			// change the volume if needed
 			var vol = calcVolume(data.startV, data.deltaY);
 			requestAnimFrame(function() {
@@ -156,7 +173,8 @@ function bassInteractions()
 			if (data.isTurningOn == false)
 			{
 				// turn it off
-				data.element.removeClass("on");
+				// remove all classes
+				data.element.removeClass().addClass("cell-inner");
 				data.element.css("right", 0);
 				bassPatterns[currentBassPattern][data.col].duration = 1;
 				bassPatterns[currentBassPattern][data.col].note = 0;

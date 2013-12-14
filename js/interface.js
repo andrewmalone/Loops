@@ -65,12 +65,12 @@ function drawCurrentBassPattern()
 		var note = bassPatterns[currentBassPattern][col].note;
 		var volume = bassPatterns[currentBassPattern][col].volume;
 		var duration = bassPatterns[currentBassPattern][col].duration;
+		// reset the cell
+		$(this).removeClass().addClass("cell-inner").css("right", 0);
+		
 		if (note == row)
 		{
-			if (!$(this).hasClass("on"))
-			{
-				$(this).addClass("on");
-			}
+			$(this).addClass("on");
 			$(this).children(".note").css("opacity", volume);
 			var width = 0;
 			var element = $(this).parent();
@@ -80,13 +80,9 @@ function drawCurrentBassPattern()
 				width -= element.outerWidth();
 			}
 			$(this).css("right", width);
-		}
-		else
-		{
-			if ($(this).hasClass("on"))
+			if (duration > 1)
 			{
-				$(this).removeClass("on");
-				$(this).css("right", 0);
+				$(this).addClass("dur d" + (col + duration == NUMSTEPS ? 0 : col + duration));
 			}
 		}
 	});
@@ -205,4 +201,15 @@ function updateName(text)
 		saveName = text;
 	}
 	$("h2.name").text(text);
+}
+
+/**
+* Highlight playing notes and grid steps
+*/
+function drawStep(step)
+{
+	// remove class from last step playing
+	$(".playing:not(.dur)").add(".d" + step).removeClass("playing");
+	// add class to current step
+	$(".cell:nth-child(" + (step + 1) + ") .cell-inner").addClass("playing");
 }
