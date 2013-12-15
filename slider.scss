@@ -1,0 +1,30 @@
+::-moz-range-track {
+    height:20px;
+    background:#ccc;
+}
+
+input[type=range] {
+    -webkit-appearance: none;
+    height: 20px;
+    background:#ccc;
+}
+
+::-moz-range-thumb {
+    height:20px;
+    width:10px;
+    background:red;
+    border-width:0;
+    border-radius:0;
+}
+
+input[type=range] {
+    -webkit-appearance: none;
+    height: 20px;
+    background:#ccc;
+}
+::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 20px;
+    width:10px;
+    background:red;
+}
