@@ -1,30 +1,28 @@
-::-moz-range-track {
-    height:20px;
-    background:#ccc;
+@import "css/slider";
+
+$slider-height: 1.25em;
+$slider-width: 10em;
+$thumb-height: $slider-height * 1.5;
+@include slider($width: $slider-width, $height: $slider-height) {
+	background:#eee;
+	box-shadow: inset 1px 1px 1px 1px #ccc;
+	border-radius: 1.5em;
+	padding: 0 ($slider-height / 3);
 }
 
-input[type=range] {
-    -webkit-appearance: none;
-    height: 20px;
-    background:#ccc;
+@include slider-track($height: $slider-height / 3) {
+	background: #ccc;
+	box-shadow: inset 1px 1px 1px 1px #999;
+	border-radius: 1.5em - ($slider-height / 2);
 }
 
-::-moz-range-thumb {
-    height:20px;
-    width:10px;
-    background:red;
-    border-width:0;
-    border-radius:0;
+@include slider-thumb($width: 1.5em, $height: $thumb-height) {
+	background: #ccc;
+	border-radius: 1em;
+	box-shadow: inset 2px 2px #eee,
+		inset -2px -2px #999,
+		1px 1px 1px #666;
+	border:0;
+	margin-top: -1 * (($slider-height / 3) + ($thumb-height - $slider-height) / 2);	
 }
 
-input[type=range] {
-    -webkit-appearance: none;
-    height: 20px;
-    background:#ccc;
-}
-::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    height: 20px;
-    width:10px;
-    background:red;
-}
