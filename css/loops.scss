@@ -1,4 +1,6 @@
 @import "flex";
+@import "slider";
+
 $border-color: #666;
 $border-light: 1px solid lighten($border-color, 20%);
 $border: 2px solid $border-color;
@@ -281,8 +283,43 @@ $pattern-background: #eee;
 }
 
 // slider styles
-.param {
-	width:9em;
+$slider-height: 1.25em;
+$slider-width: 8.5em;
+$thumb-height: $slider-height * 1.4;
+$thumb-color: #d5d5d5;
+$thumb-border: grayscale(adjust-color($thumb-color, $saturation:  9%,  $lightness: -14%));
+$thumb-shadow:  grayscale(adjust-color($thumb-color, $saturation: -8%,  $lightness:  15%));
+$thumb-gradient: grayscale(adjust-color($thumb-color, $saturation:  9%,  $lightness: -11%));
+
+
+@include slider($width: $slider-width, $height: $slider-height) {
+	background:#fcfcfc;
+	box-shadow: inset 1px 1px 1px 1px #ddd;
+	border-radius: 1.5em;
+	padding: 0 ($slider-height / 3);
+}
+
+@include slider-track($height: $slider-height / 3) {
+	background: #ccc;
+	box-shadow: inset 1px 1px 1px 1px #999;
+	border-radius: 1.5em - ($slider-height / 2);
+}
+
+@include slider-thumb($width: $thumb-height, $height: $thumb-height) {
+	margin-top: -1 * (($slider-height / 3) + ($thumb-height - $slider-height) / 2);	
+	border: 1px solid $thumb-border;
+	border-radius: 100%;
+	box-shadow: inset 0 1px 0 0 $thumb-shadow;
+	@include linear-gradient($thumb-color, $thumb-gradient);
+}
+
+@include slider-thumb-active {
+	$active-color: grayscale(adjust-color($thumb-color, $saturation: -4%, $lightness: -5%));
+    $shadow-color: grayscale(adjust-color($thumb-color, $saturation: -7%, $lightness:  5%));
+    $gradient-color: grayscale(adjust-color($thumb-color, $saturation:  8%, $lightness: -14%));
+    
+    box-shadow: inset 0 1px 0 0 $shadow-color;
+    @include linear-gradient ($active-color, $gradient-color);
 }
 
 #modal {

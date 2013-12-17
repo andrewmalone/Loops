@@ -1,0 +1,77 @@
+// SASS mixins for cross browser slider styling
+// using <input type="range">
+
+@mixin slider($width:0, $height:0) {
+	input[type=range] {
+		-webkit-appearance: none;
+		@if $width != 0 {
+			width: $width;
+		}
+		@if $height != 0 {
+			height: $height;
+		}
+		outline:0;
+		@content;
+	}
+}
+
+@mixin slider-active {
+	@each $t in moz-range, webkit-slider-runnable {
+		:active::-#{$t}-track {
+			@content;
+		}
+	}
+}
+
+@mixin slider-focus {
+	@each $t in moz-range, webkit-slider-runnable {
+		:focus::-#{$t}-track {
+			@content;
+		}
+	}
+}
+
+@mixin slider-track($width: 100%, $height: 0) {
+	@each $t in moz-range, webkit-slider-runnable {
+		::-#{$t}-track {
+			@if $height != 0 {
+				height: $height;
+			}
+			width: $width;
+			@content;
+		}
+	}
+}
+
+@mixin slider-track-active {
+	@each $t in moz-range, webkit-slider-runnable {
+		:active::-#{$t}-track {
+			@content;
+		}
+	}
+}
+
+@mixin slider-thumb($width: 10%, $height: 100%) {
+	@each $t in moz-range, webkit-slider {
+		::-#{$t}-thumb {
+			@if $t == webkit-slider {
+				-webkit-appearance: none;
+			}
+			@if $t == moz-range {
+				border-radius: 0;
+				border:0;
+			}
+			width: $width;
+			height: $height;
+			@content;
+		}
+	}
+}
+
+@mixin slider-thumb-active {
+	@each $t in moz-range, webkit-slider {
+		:active::-#{$t}-thumb {
+			@content;
+		}
+	}
+}
