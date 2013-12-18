@@ -50,7 +50,7 @@ h2.name {
     border: $border;
 }
 #drum-labels, #bass-labels {
-	width: 4em;
+	width: 5em;
 }
 .row {
     @include flexbox;
@@ -355,3 +355,22 @@ button {
 	padding:.2em .8em;
 	font-weight: normal;
 }
+
+.editor {
+	position: absolute;
+	background: #FFF;
+	border: 1px solid #000;
+	left: 25%;
+	top: 25%;
+	display:none;
+	z-index:3;
+	.fx-wrapper {
+		@include flexbox;
+		@include flex-wrap(wrap);
+	}
+}
+
+.editor.active {
+	display:block;
+}
+

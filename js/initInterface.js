@@ -33,7 +33,19 @@ function initDrumGrid()
 	{
 		var row = $("<div class='row'>");
 		var label = $("<div class='label'>").text(SOUNDS[i].name);
-		labels.append(label);
+		var button = $("<button class='drum-edit'>").text("E").attr("name", SOUNDS[i].name);
+		button.addInteraction({
+			click: function(data) {
+				var editor = $(".editor[name='"+ data.element.attr("name") + "']");
+				editor.toggleClass("active")
+			}
+		});
+		label.append(button).appendTo(labels);
+		// add a edit window...
+		var editor = $("<div class='editor'>").attr("name", SOUNDS[i].name);
+		$(document.body).append(editor);
+		
+		//labels.append(label);
 		for (var j = 0; j < NUMSTEPS; j++)
 		{
 			var cell = $("<div class='cell'><div class='cell-inner'><div class='note'></div></div>");
@@ -138,7 +150,7 @@ function initSequence()
 * in the params object
 * Relies on aaa-bbb-ccc naming convention in params
 */
-function initSliders()
+function initSlidersX()
 {
 	var getParam = function(element, param)
 	{
@@ -192,6 +204,84 @@ function initSliders()
 		if (["drum","bass","master"].indexOf(section) == -1)
 		{
 			subPanel.append(sectionDiv);
+		}
+		else {
+			fxPanel.append(sectionDiv);
+		}
+	}
+	
+	
+	// slider setup
+	$(".param").attr({
+		min: function() {return getParam($(this), "min")},
+		max: function() {return getParam($(this), "max")},
+		step: function() {return getParam($(this), "step")},
+		value: function() {return getParam($(this), "value")}
+	}).on("change", function() {
+		// set the value when moving the slider
+		setParam(params[$(this).attr("name")], $(this).val());
+		return false;	
+	});
+}
+
+function initSliders()
+{
+	var getParam = function(element, param)
+	{
+		var name = element.attr("name");
+		if (params[name] && params[name][param])
+		{
+			return params[name][param];
+		}
+	}
+	
+	// add some sliders to the fx panel
+	 var fxPanel = $("#fx-panel");
+	 var subPanel = $("#sub-panel");
+
+	var fxlist = {};
+	for (var parameter in params)
+	{
+		// get the three components of the name
+		var param = parameter.split("-");
+		if (!(param[0] in fxlist))
+		{
+			fxlist[param[0]] = {}
+		}
+		if (!(param[1] in fxlist[param[0]]))
+		{
+			fxlist[param[0]][param[1]] = {}
+		}
+		fxlist[param[0]][param[1]][param[2]] = parameter;
+	}
+	
+	// create the fx sections
+	for (var section in fxlist)
+	{
+		var sectionDiv = $("<div class='fx-section'>");
+		$("<h4>").text(initCap(section)).appendTo(sectionDiv);
+		var subsectionDiv = $("<div class='fx-wrapper'>").appendTo(sectionDiv);
+		
+		for (var fx in fxlist[section])
+		{
+			var subsection = $("<div class='fx-subsection'>")
+			$("<h5>").text(initCap(fx)).appendTo(subsection);
+			for (var i in fxlist[section][fx])
+			{
+				var slider = $("<div>")
+				$("<label>").text(i).appendTo(slider);
+				$("<input class='param' type='range'>").attr("name", fxlist[section][fx][i]).appendTo(slider);
+				slider.appendTo(subsection);
+			}
+			subsection.appendTo(subsectionDiv);
+			
+		}
+		
+		// decide if this goes on the main fx section or the subsection
+		if (["drum","bass","master"].indexOf(section) == -1)
+		{
+			// subPanel.append(sectionDiv);
+			$(".editor[name='"+ section + "']").append(sectionDiv);
 		}
 		else {
 			fxPanel.append(sectionDiv);
