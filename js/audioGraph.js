@@ -24,6 +24,7 @@ function createAudioGraph()
 		out: context.createGain(),
 		master: context.createGain(),
 		drumMaster: context.createGain(),
+		drumComp: createCompressor("drum"),
 		drumMasterFx: createFx("drum"),
 		bassFx: createFx("bass"),
 		masterFx: createFx("master")
@@ -45,7 +46,8 @@ function createAudioGraph()
 	});
 	
 	// build connections
-	g.drumMaster.connect(g.drumMasterFx.in);
+	g.drumMaster.connect(g.drumComp.in);
+	g.drumComp.out.connect(g.drumMasterFx.in);
 	g.drumMasterFx.out.connect(g.master);
 	
 	g.in.bass.connect(g.bassFx.in);
@@ -264,6 +266,78 @@ function createShaper(name)
 			crossfade(fx.wet.gain, fx.dry.gain, value);
 		}
 	}
+	
+	return fx;
+}
+
+/**
+* Compressor FX
+*/
+function createCompressor(name)
+{
+	var fx = {
+		in: context.createGain(),
+		out: context.createGain(),
+		comp: context.createDynamicsCompressor(),
+		wet: context.createGain(),
+		dry: context.createGain()
+	};
+	
+	// initial values
+	fx.comp.threshold.value = -24;
+	fx.comp.ratio.value = 12;
+	fx.comp.attack.value = .0003;
+	fx.comp.release.value = .25;
+	
+	// connections
+	fx.in.connect(fx.comp);
+	fx.in.connect(fx.dry);
+	fx.comp.connect(fx.wet);
+	fx.wet.connect(fx.out);
+	fx.wet.gain.value = 1;
+	fx.dry.connect(fx.out);
+	fx.dry.gain.value = 0;
+	
+	// params
+	params[name + "-compressor-threshold"] = {
+		min: -100,
+		max: "0",
+		value: -24,
+		step: "any",
+		param: fx.comp.threshold
+	};
+	
+	params[name + "-compressor-knee"] = {
+		min: "0",
+		max: 40,
+		value: 30,
+		step: "any",
+		param: fx.comp.knee	
+	};
+	
+	params[name + "-compressor-ratio"] = {
+		min: 1,
+		max: 20,
+		step: "any",
+		value: 12,
+		param: fx.comp.ratio
+	};
+	
+	params[name + "-compressor-attack"] = {
+		min: "0",
+		max: 1,
+		step: "any",
+		value: .0003,
+		param: fx.comp.attack
+	};
+	
+	params[name + "-compressor-release"] = {
+		min: "0",
+		max: 1,
+		step: "any",
+		value: .25,
+		param: fx.comp.release
+	};
 	
 	return fx;
 }
