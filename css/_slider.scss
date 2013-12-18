@@ -16,18 +16,14 @@
 }
 
 @mixin slider-active {
-	@each $t in moz-range, webkit-slider-runnable {
-		:active::-#{$t}-track {
-			@content;
-		}
+	input[type=range]:active {
+		@content;
 	}
 }
 
 @mixin slider-focus {
-	@each $t in moz-range, webkit-slider-runnable {
-		:focus::-#{$t}-track {
-			@content;
-		}
+	input[type=range]:focus {
+		@content;
 	}
 }
 
@@ -71,6 +67,14 @@
 @mixin slider-thumb-active {
 	@each $t in moz-range, webkit-slider {
 		:active::-#{$t}-thumb {
+			@content;
+		}
+	}
+}
+
+@mixin slider-thumb-focus {
+	@each $t in moz-range, webkit-slider {
+		:focus::-#{$t}-thumb {
 			@content;
 		}
 	}
