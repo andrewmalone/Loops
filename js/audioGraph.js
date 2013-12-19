@@ -24,7 +24,6 @@ function createAudioGraph()
 		out: context.createGain(),
 		master: context.createGain(),
 		drumMaster: context.createGain(),
-		drumComp: createCompressor("drum"),
 		drumMasterFx: createFx("drum"),
 		bassFx: createFx("bass"),
 		masterFx: createFx("master")
@@ -46,8 +45,7 @@ function createAudioGraph()
 	});
 	
 	// build connections
-	g.drumMaster.connect(g.drumComp.in);
-	g.drumComp.out.connect(g.drumMasterFx.in);
+	g.drumMaster.connect(g.drumMasterFx.in);
 	g.drumMasterFx.out.connect(g.master);
 	
 	g.in.bass.connect(g.bassFx.in);
