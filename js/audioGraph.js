@@ -269,6 +269,71 @@ function createShaper(name)
 }
 
 /**
+* Compressor FX
+*/
+function createCompressor(name)
+{
+	var fx = {
+		in: context.createGain(),
+		out: context.createGain(),
+		comp: context.createDynamicsCompressor(),
+		wet: context.createGain(),
+		dry: context.createGain()
+	};
+	
+	// initial values
+	fx.comp.threshold.value = -24;
+	fx.comp.ratio.value = 12;
+	fx.comp.attack.value = .0003;
+	fx.comp.release.value = .25;
+	fx.comp.knee.value = 30;
+	
+	// connections
+	fx.in.connect(fx.comp);
+	fx.in.connect(fx.dry);
+	fx.comp.connect(fx.wet);
+	fx.wet.connect(fx.out);
+	fx.wet.gain.value = 1;
+	fx.dry.connect(fx.out);
+	fx.dry.gain.value = 0;
+	
+	// params
+	params[name + "-compressor-threshold"] = {
+		min: -100,
+		max: "0",
+		value: "0",
+		step: "any",
+		param: fx.comp.threshold
+	};
+	
+	params[name + "-compressor-ratio"] = {
+		min: 1,
+		max: 30,
+		step: "any",
+		value: 1,
+		param: fx.comp.ratio
+	};
+	
+	params[name + "-compressor-attack"] = {
+		min: .005,
+		max: 1,
+		step: "any",
+		value: .005,
+		param: fx.comp.attack
+	};
+	
+	params[name + "-compressor-release"] = {
+		min: .005,
+		max: 1,
+		step: "any",
+		value: .005,
+		param: fx.comp.release
+	};
+	
+	return fx;
+}
+
+/**
 * Equal power crossfade
 * from http://www.html5rocks.com/en/tutorials/webaudio/intro/js/crossfade-sample.js
 */
