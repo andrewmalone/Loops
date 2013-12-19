@@ -288,6 +288,7 @@ function createCompressor(name)
 	fx.comp.ratio.value = 12;
 	fx.comp.attack.value = .0003;
 	fx.comp.release.value = .25;
+	fx.comp.knee.value = 30;
 	
 	// connections
 	fx.in.connect(fx.comp);
@@ -302,40 +303,32 @@ function createCompressor(name)
 	params[name + "-compressor-threshold"] = {
 		min: -100,
 		max: "0",
-		value: -24,
+		value: "0",
 		step: "any",
 		param: fx.comp.threshold
 	};
 	
-	params[name + "-compressor-knee"] = {
-		min: "0",
-		max: 40,
-		value: 30,
-		step: "any",
-		param: fx.comp.knee	
-	};
-	
 	params[name + "-compressor-ratio"] = {
 		min: 1,
-		max: 20,
+		max: 30,
 		step: "any",
-		value: 12,
+		value: 1,
 		param: fx.comp.ratio
 	};
 	
 	params[name + "-compressor-attack"] = {
-		min: "0",
+		min: .005,
 		max: 1,
 		step: "any",
-		value: .0003,
+		value: .005,
 		param: fx.comp.attack
 	};
 	
 	params[name + "-compressor-release"] = {
-		min: "0",
+		min: .005,
 		max: 1,
 		step: "any",
-		value: .25,
+		value: .005,
 		param: fx.comp.release
 	};
 	
