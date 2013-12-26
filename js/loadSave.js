@@ -4,6 +4,8 @@
 * and loading saved patterns
 */
 
+/*global setParam, switchActivePattern, initCap, updateName, announce, showModal */
+/*global tempo, params */
 
 /**
 * load a pattern
@@ -17,20 +19,22 @@ function load()
 	$.ajax({
 		dataType: "json",
 		url: "save/" + num + ".json",
-		success: function(data)
+		success: function (data)
 		{
+			var i, param;
+			
 			// load the data
-			for (var i in data)
+			for (i in data)
 			{
-			   if (i != "fxParams")
-			   {
-			   	   // update all the global variables
-				   window[i] = data[i];
-			   }
+				if (i != "fxParams")
+				{
+					// update all the global variables
+					window[i] = data[i];
+				}
 			}
 			
 			// deal with the fx params and sliders...						
-			for (var param in data.fxParams)
+			for (param in data.fxParams)
 			{
 				// update the slider...
 				$(".param[name='" + param + "']").val(data.fxParams[param]);
@@ -48,20 +52,22 @@ function load()
 			$(".pattern.active").removeClass("active");
 			
 			// pattern sequences and sequence modes
-			["bass","drum"].forEach(function(name) {
+			["bass", "drum"].forEach(function (name) {
+				var sequence, element, text, i;
+				
 				// active pattern
-				switchActivePattern(window["current" + initCap(name) + "Pattern"], name)
+				switchActivePattern(window["current" + initCap(name) + "Pattern"], name);
 				
 				// sequence
-				var sequence = window[name + "Sequence"];
-				for (var i = 0; i < sequence.length; i++)
+				sequence = window[name + "Sequence"];
+				for (i = 0; i < sequence.length; i++)
 				{
 					// get the correct element
-					var element = $("#" + name + "-sequence .pattern").eq(i);
+					element = $("#" + name + "-sequence .pattern").eq(i);
 					
 					// set the text and class
-					var text = "";
-					if (sequence.length > 1 || sequence[0] != 0)
+					text = "";
+					if (sequence.length > 1 || sequence[0] !== 0)
 					{
 						text = i + 1;
 					}
@@ -79,7 +85,7 @@ function load()
 			// set the name
 			updateName();
 		},
-		error: function(error) 
+		error: function (error) 
 		{
 			announce("Sorry, something went wrong loading that pattern.");
 		}
@@ -107,28 +113,28 @@ function save()
 	updateName($("[name=saveName]").val());
 	
 	// define all data to save
-	var data = {};
-	var objects = [
-		"tempo",
-		"saveName",
-		"drumPatterns",
-		"bassPatterns",
-		"drumSequence",
-		"bassSequence",
-		"drumMode",
-		"bassMode",
-		"currentDrumPattern",
-		"currentBassPattern"
-	];
+	var data = {},
+		objects = [
+			"tempo",
+			"saveName",
+			"drumPatterns",
+			"bassPatterns",
+			"drumSequence",
+			"bassSequence",
+			"drumMode",
+			"bassMode",
+			"currentDrumPattern",
+			"currentBassPattern"
+		];
 	
 	// create the combined data object
-	objects.forEach(function(element) {
+	objects.forEach(function (element) {
 		data[element] = window[element];
 	});
 	
 	// get fx params
 	data.fxParams = {};
-	$(".param").each(function() {
+	$(".param").each(function () {
 		data.fxParams[$(this).attr("name")] = $(this).val();
 	});
 	
@@ -139,24 +145,32 @@ function save()
 	data = JSON.stringify(data);
 	
 	// make the ajax call
-	$.ajax({
-      dataType: "json",
-      url: "save/save.py",
-      data: {data:data},
-      type: 'POST',
-      success: function(data) {
-      	// update the url and display it in the modal dialog
-        var url = location.origin + location.pathname + "#" + data.data.num;
-        location.hash = data.data.num;
-        var content = $("<div>");
-        $("<p>").text("Unique url for this pattern:").appendTo(content);
-        $("<a>").attr("href", url).text(url).click(function(){
-        	$("#modal").removeClass("active");
-        }).appendTo(content);
-        showModal(content);
-      },
-      error: function(error) {
-	      announce("Sorry, there was a problem saving your pattern.")
-      }
-    });
+	$.ajax(
+	{
+		dataType: "json",
+		url: "save/save.py",
+		data: {
+			data: data
+		},
+		type: 'POST',
+		success: function (data)
+		{
+			var url, content;
+			
+			// update the url and display it in the modal dialog
+			url = location.origin + location.pathname + "#" + data.data.num;
+			location.hash = data.data.num;
+			content = $("<div>");
+			$("<p>").text("Unique url for this pattern:").appendTo(content);
+			$("<a>").attr("href", url).text(url).click(function ()
+			{
+				$("#modal").removeClass("active");
+			}).appendTo(content);
+			showModal(content);
+		},
+		error: function (error)
+		{
+			announce("Sorry, there was a problem saving your pattern.");
+		}
+	});
 }

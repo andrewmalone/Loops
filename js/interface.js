@@ -3,6 +3,8 @@
 * Interface update functions
 */
 
+/*globals NUMSTEPS drumPatterns, currentDrumPattern, BASS_RANGE, BASS_MIN, bassPatterns, currentBassPattern */
+
 // global variable for pattern name
 var saveName = "";
 
@@ -26,7 +28,7 @@ function setParam(p, value)
 */
 function drawCurrentDrumPattern()
 {
-	$("#drumseq .cell-inner").each(function(index) {
+	$("#drumseq .cell-inner").each(function (index) {
 		var row = getRow(index);
 		var col = getCol(index);
 		
@@ -59,7 +61,7 @@ function drawCurrentDrumPattern()
 */
 function drawCurrentBassPattern()
 {
-	$("#bseq .cell-inner").each(function(index) {
+	$("#bseq .cell-inner").each(function (index) {
 		var row = (BASS_RANGE - getRow(index)) + BASS_MIN;
 		var col = getCol(index);
 		var note = bassPatterns[currentBassPattern][col].note;
@@ -95,8 +97,8 @@ function drawCurrentBassPattern()
 function calcVolume(startV, deltaY) 
 {
 	var vol = parseFloat(startV) + (deltaY / 100);
-	if (vol > 1) vol = 1;
-	if (vol < 0) vol = 0;
+	if (vol > 1) { vol = 1; }
+	if (vol < 0) { vol = 0; }
 	vol = Math.round(vol * 100) / 100;
 	return vol;
 }
