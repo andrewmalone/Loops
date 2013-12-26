@@ -5,38 +5,38 @@
  
 var SOUNDS = [
 	{
-		name:"kick",
-		source:"Ruffrider/Kick 3",
-		mute:null
-	},
+		name: "kick",
+		source: "Ruffrider/Kick 3",
+		mute: null
+	}, 
 	{
-		name:"snare",
-		source:"Ruffrider/Snare base 4",
-		mute:null
-	},
+		name: "snare",
+		source: "Ruffrider/Snare base 4",
+		mute: null
+	}, 
 	{
-		name:"rim",
-		source:"Ruffrider/Snare rim 3",
-		mute:null
-	},
+		name: "rim",
+		source: "Ruffrider/Snare rim 3",
+		mute: null
+	}, 
 	{
-		name:"cl hat",
-		source:"Ruffrider/hihat base 3",
-		mute:1
-	},
+		name: "cl hat",
+		source: "Ruffrider/hihat base 3",
+		mute: 1
+	}, 
 	{
-		name:"op hat",
-		source:"Ruffrider/hihat open 3",
-		mute:1
-	},
+		name: "op hat",
+		source: "Ruffrider/hihat open 3",
+		mute: 1
+	}, 
 	{
-		name:"ride",
-		source:"Ruffrider/ride 3",
-		mute:2
+		name: "ride",
+		source: "Ruffrider/ride 3",
+		mute: 2
 	}
 ];
 
-BASS_SOUNDS = [
+var BASS_SOUNDS = [
     "Fingered2E1_4",
     "Fingered2F1_4",
     "Fingered2G1_4",
@@ -60,7 +60,7 @@ BASS_SOUNDS = [
     "Fingered2D3_4"
 ];
 
-BASS_MAPPING = {
+var BASS_MAPPING = {
     "24": {
         "sample": "Fingered2E1_4",
         "tune": 10,
