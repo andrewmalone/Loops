@@ -126,7 +126,7 @@ function playDrumSound(buffer, time, volume)
 	// @todo - change this to an exponential volume curve instead of linear
 	
 	source.connect(v);
-	v.connect(context.graph.in["drum"][buffer._name])
+	v.connect(context.graph.input["drum"][buffer._name])
 	source.start(time);
 	scheduledSounds.push(source);	
 }
@@ -143,7 +143,7 @@ function playBassSound(buffer, time, volume, duration, pitch, tune)
 	// set release value for smoother playback
 	v.gain.setTargetAtTime(0, time + duration, .005);
 	source.connect(v);
-	v.connect(context.graph.in["bass"]);
+	v.connect(context.graph.input["bass"]);
 	
 	// set the tuning 
 	// step = 1 semitone (based on 1 - Math.pow(1, 1/12);

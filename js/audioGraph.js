@@ -3,8 +3,10 @@
 * Creates the audio nodes, fx and routing
 */
 
+/*global context, SOUNDS, tempo: true, setParam */
+
 // set up global variables
-var params = {}
+var params = {};
 // curves to use for the waveshaper;
 var shaperCurves = createShaperCurves();
 
@@ -16,12 +18,12 @@ function createAudioGraph()
 {
 	// set up the main nodes
 	var g = {
-		in: {
+		input: {
 			drum: {},
 			bass: context.createGain()
 		},
 		drumFx: [],
-		out: context.createGain(),
+		output: context.createGain(),
 		master: context.createGain(),
 		drumMaster: context.createGain(),
 		drumMasterFx: createFx("drum"),
@@ -30,38 +32,38 @@ function createAudioGraph()
 	};
 	
 	// create the input nodes and effects for each drum sound
-	SOUNDS.forEach(function(sound, index) {
-		g.in.drum[sound.name] = context.createGain();
+	SOUNDS.forEach(function (sound, index) {
+		g.input.drum[sound.name] = context.createGain();
 		g.drumFx[index] = createFx(sound.name);
-		g.in.drum[sound.name].connect(g.drumFx[index].in);
-		g.drumFx[index].out.connect(g.drumMaster);
+		g.input.drum[sound.name].connect(g.drumFx[index].input);
+		g.drumFx[index].output.connect(g.drumMaster);
 		params[sound.name + "-master-level"] = {
 			max: 1,
 			min: "0",
 			value: 1,
-			step: .01,
-			param: g.in.drum[sound.name].gain
-		}
+			step: 0.01,
+			param: g.input.drum[sound.name].gain
+		};
 	});
 	
 	// build connections
-	g.drumMaster.connect(g.drumMasterFx.in);
-	g.drumMasterFx.out.connect(g.master);
+	g.drumMaster.connect(g.drumMasterFx.input);
+	g.drumMasterFx.output.connect(g.master);
 	
-	g.in.bass.connect(g.bassFx.in);
-	g.bassFx.out.connect(g.master);
+	g.input.bass.connect(g.bassFx.input);
+	g.bassFx.output.connect(g.master);
 	
-	g.master.connect(g.masterFx.in);
-	g.masterFx.out.connect(g.out);
+	g.master.connect(g.masterFx.input);
+	g.masterFx.output.connect(g.output);
 	
-	g.out.connect(context.destination);
+	g.output.connect(context.destination);
 	
 	// master level parameters
 	params["drum-master-level"] = {
 		max: 1,
 		min: "0",
 		value: 1,
-		step: .01,
+		step: 0.01,
 		param: g.drumMaster.gain
 	};
 	
@@ -69,9 +71,9 @@ function createAudioGraph()
 		max: 1,
 		min: "0",
 		value: 1,
-		step: .01,
-		param: g.in.bass.gain
-	}
+		step: 0.01,
+		param: g.input.bass.gain
+	};
 	
 	return g;
 }
@@ -85,12 +87,12 @@ function createFx(name)
 		filter: createFilter(name),
 		delay: createDelay(name),
 		shaper: createShaper(name)
-	}
+	};
 	
-	fx.in = fx.filter.in;
-	fx.filter.out.connect(fx.delay.in);
-	fx.delay.out.connect(fx.shaper.in);
-	fx.out = fx.shaper.out;
+	fx.input = fx.filter.input;
+	fx.filter.output.connect(fx.delay.input);
+	fx.delay.output.connect(fx.shaper.input);
+	fx.output = fx.shaper.output;
 	return fx;
 }
 
@@ -101,12 +103,12 @@ function createFilter(name)
 {
 	// node setup
 	var fx = {
-		in: context.createGain(),
+		input: context.createGain(),
 		filter: context.createBiquadFilter(),
 		wet: context.createGain(),
 		dry: context.createGain(),
-		out: context.createGain()
-	}
+		output: context.createGain()
+	};
 	
 	// initial values
 	fx.filter.frequency.value = context.sampleRate / 2;
@@ -114,11 +116,11 @@ function createFilter(name)
 	fx.dry.gain.value = 0;
 
 	// connections
-	fx.in.connect(fx.filter);
-	fx.in.connect(fx.dry);
+	fx.input.connect(fx.filter);
+	fx.input.connect(fx.dry);
 	fx.filter.connect(fx.wet);
-	fx.dry.connect(fx.out);
-	fx.wet.connect(fx.out);
+	fx.dry.connect(fx.output);
+	fx.wet.connect(fx.output);
 	
 	// parameters
 	params[name + "-filter-frequency"] = {
@@ -126,26 +128,26 @@ function createFilter(name)
 		max: context.sampleRate / 2,
 		value: context.sampleRate / 2,
 		param: fx.filter.frequency
-	}
+	};
 	
 	params[name + "-filter-q"] = {
 		min: 1,
 		max: 50,
-		step: .5,
+		step: 0.5,
 		value: 1,
 		param: fx.filter.Q
-	}
+	};
 	
 	params[name + "-filter-mix"] = {
 		min: "0",
 		max: 1,
-		step: .01,
+		step: 0.01,
 		value: 1,
-		param: function(value) 
+		param: function (value) 
 		{
 			crossfade(fx.wet.gain, fx.dry.gain, value);
 		}
-	}
+	};
 	
 	return fx;
 }
@@ -157,27 +159,27 @@ function createDelay(name)
 {
 	// node setup
 	var fx = {
-		in: context.createGain(),
-		out: context.createGain(),
+		input: context.createGain(),
+		output: context.createGain(),
 		wet: context.createGain(),
 		dry: context.createGain(),
 		feedback: context.createGain(),
 		delay: context.createDelay(10)
-	}
+	};
 
 	// initial values
 	fx.feedback.gain.value = 0;
-	fx.delay.delayTime.value = 15/tempo * 1;
+	fx.delay.delayTime.value = 15 / tempo * 1;
 	fx.wet.gain.value = 0;
 
 	// connections
-	fx.in.connect(fx.delay);
-	fx.in.connect(fx.dry);
+	fx.input.connect(fx.delay);
+	fx.input.connect(fx.dry);
 	fx.delay.connect(fx.wet);
 	fx.delay.connect(fx.feedback);
 	fx.feedback.connect(fx.delay);
-	fx.wet.connect(fx.out);
-	fx.dry.connect(fx.out);
+	fx.wet.connect(fx.output);
+	fx.dry.connect(fx.output);
 
 	// params
 	params[name + "-delay-time"] = {
@@ -185,27 +187,27 @@ function createDelay(name)
 		max: 15,
 		step: 1,
 		value: 1,
-		param: function(value)
+		param: function (value)
 		{
-			fx.delay.delayTime.value = 15/tempo * value;
+			fx.delay.delayTime.value = 15 / tempo * value;
 		}
-	}
+	};
 
 	params[name + "-delay-feedback"] = {
 		min: "0",
 		max: 1,
-		step: .1,
+		step: 0.1,
 		value: "0",
 		param: fx.feedback.gain
-	}
+	};
 
 	params[name + "-delay-level"] = {
 		min: "0",
-		max: .8,
-		step: .1,
+		max: 0.8,
+		step: 0.1,
 		value: "0",
 		param: fx.wet.gain
-	}
+	};
 
 	return fx;
 }
@@ -217,13 +219,13 @@ function createShaper(name)
 {
 	// node setup
 	var fx = {
-		in: context.createGain(),
-		out: context.createGain(),
+		input: context.createGain(),
+		output: context.createGain(),
 		shaper: context.createWaveShaper(),
 		shaperGain: context.createGain(),
 		wet: context.createGain(),
-		dry: context.createGain(),
-	}
+		dry: context.createGain()
+	};
 	
 	// initial values
 	fx.shaper.curve = shaperCurves[0];
@@ -231,14 +233,14 @@ function createShaper(name)
 	fx.dry.gain.value = 0;
 	
 	// connections
-	fx.in.connect(fx.shaper);
-	fx.in.connect(fx.dry);
+	fx.input.connect(fx.shaper);
+	fx.input.connect(fx.dry);
 	
 	fx.shaper.connect(fx.shaperGain);
 	fx.shaperGain.connect(fx.wet);
 	
-	fx.wet.connect(fx.out);
-	fx.dry.connect(fx.out);
+	fx.wet.connect(fx.output);
+	fx.dry.connect(fx.output);
 	
 	// parameters
 	params[name + "-distortion-amount"] = {
@@ -246,24 +248,24 @@ function createShaper(name)
 		max: 99,
 		step: 1,
 		value: "0",
-		param: function(value)
+		param: function (value)
 		{
 			fx.shaper.curve = shaperCurves[value];
 			// lower the gain at higher curves
-			fx.shaperGain.gain.value = (.8 * Math.pow(-1 * value / 99, 3)) + 1;
+			fx.shaperGain.gain.value = (0.8 * Math.pow(-1 * value / 99, 3)) + 1;
 		}
-	}
+	};
 	
 	params[name + "-distortion-mix"] = {
 		min: "0",
 		max: 1,
-		step: .01,
+		step: 0.01,
 		value: 1,
-		param: function(value)
+		param: function (value)
 		{
 			crossfade(fx.wet.gain, fx.dry.gain, value);
 		}
-	}
+	};
 	
 	return fx;
 }
@@ -274,8 +276,8 @@ function createShaper(name)
 function createCompressor(name)
 {
 	var fx = {
-		in: context.createGain(),
-		out: context.createGain(),
+		input: context.createGain(),
+		output: context.createGain(),
 		comp: context.createDynamicsCompressor(),
 		wet: context.createGain(),
 		dry: context.createGain()
@@ -284,17 +286,17 @@ function createCompressor(name)
 	// initial values
 	fx.comp.threshold.value = -24;
 	fx.comp.ratio.value = 12;
-	fx.comp.attack.value = .0003;
-	fx.comp.release.value = .25;
+	fx.comp.attack.value = 0.0003;
+	fx.comp.release.value = 0.25;
 	fx.comp.knee.value = 30;
 	
 	// connections
-	fx.in.connect(fx.comp);
-	fx.in.connect(fx.dry);
+	fx.input.connect(fx.comp);
+	fx.input.connect(fx.dry);
 	fx.comp.connect(fx.wet);
-	fx.wet.connect(fx.out);
+	fx.wet.connect(fx.output);
 	fx.wet.gain.value = 1;
-	fx.dry.connect(fx.out);
+	fx.dry.connect(fx.output);
 	fx.dry.gain.value = 0;
 	
 	// params
@@ -315,18 +317,18 @@ function createCompressor(name)
 	};
 	
 	params[name + "-compressor-attack"] = {
-		min: .005,
+		min: 0.005,
 		max: 1,
 		step: "any",
-		value: .005,
+		value: 0.005,
 		param: fx.comp.attack
 	};
 	
 	params[name + "-compressor-release"] = {
-		min: .005,
+		min: 0.005,
 		max: 1,
 		step: "any",
-		value: .005,
+		value: 0.005,
 		param: fx.comp.release
 	};
 	
@@ -351,16 +353,18 @@ function crossfade(a, b, val)
 */
 function createShaperCurves()
 {
-	var len = 22050;
-	var curves = [];
-	for (var amt = 0; amt < 1; amt += .01) {
+	var len = 22050,
+		curves = [],
+		amt, i, data, k, n;
 	
-		var data = new Float32Array(len);
-		var k = 2 * amt / (1 - amt)
+	for (amt = 0; amt < 1; amt += 0.01) {
 	
-		for (var i = 0; i < len; i++) {
-			var n = (i / (len - 1) * 2) - 1;
-			data[i] = (1 + k) * n / (1 + k * Math.abs(n))
+		data = new Float32Array(len);
+		k = 2 * amt / (1 - amt);
+	
+		for (i = 0; i < len; i++) {
+			n = (i / (len - 1) * 2) - 1;
+			data[i] = (1 + k) * n / (1 + k * Math.abs(n));
 		}
 		curves.push(data);
 	}
@@ -376,7 +380,7 @@ function setTempo(val)
 	tempo = val;
 	
 	// set all the delays...
-	$(".param[name$=delay-time]").each(function() {
+	$(".param[name$=delay-time]").each(function () {
 		setParam(params[$(this).attr("name")], $(this).val());
-	})
+	});
 }
