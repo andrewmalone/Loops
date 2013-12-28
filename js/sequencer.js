@@ -4,6 +4,8 @@
  * functions for looping and audio playback
  */
 
+/*global context, buffers, setActiveSequence, switchActivePattern, SOUNDS, requestAnimFrame, cancelAnimFrame, BASS_MAPPING, drawStep */
+
 // set some global variables
 var BEATS_PER_MEASURE = 4;
 var STEPS_PER_BEAT = 4;
@@ -37,7 +39,7 @@ var currentBassPattern = 0;
 // sequencer variables
 var currentStep = 0;
 // time to schedule sounds ahead
-var scheduleAhead = .1; 
+var scheduleAhead = 0.1; 
 // variable used for requestAnimationFrame
 var looper = null;
 var tempo = 120;
@@ -50,17 +52,17 @@ var lastStepDrawn = -1;
 var drawingQueue = [];
 
 // shim for cross browser requestAnimationFrame
-window.requestAnimFrame = (function(){
+window.requestAnimFrame = (function () {
     return  window.requestAnimationFrame ||
     window.webkitRequestAnimationFrame ||
     window.mozRequestAnimationFrame ||
     window.oRequestAnimationFrame ||
     window.msRequestAnimationFrame ||
-    function( callback ){
+    function (callback) {
         window.setTimeout(callback, 1000 / 60);
     };
 })();
-window.cancelAnimFrame = (function(){
+window.cancelAnimFrame = (function () {
 	return window.cancelAnimationFrame ||
 	window.webkitCancelAnimationFrame;
 })();
@@ -71,11 +73,13 @@ window.cancelAnimFrame = (function(){
  */
 function start()
 {
+	var s, volume;
+
 	// INIT FOR iOS - sounds won't play unless first directly triggered
 	// see http://www.html5rocks.com/en/tutorials/webaudio/intro/
-	var s = context.createBufferSource();
+	s = context.createBufferSource();
 	s.buffer = buffers[SOUNDS[0].name];
-	var volume = context.createGain();
+	volume = context.createGain();
 	volume.gain.value = 0;
 	s.connect(volume);
 	volume.connect(context.destination);
@@ -118,15 +122,16 @@ function stop()
  */
 function playDrumSound(buffer, time, volume)
 {
-	var source = context.createBufferSource();
+	var source, v;
+	source = context.createBufferSource();
 	source.buffer = buffer;
 	
-	var v = context.createGain();
+	v = context.createGain();
 	v.gain.value = volume;
 	// @todo - change this to an exponential volume curve instead of linear
 	
 	source.connect(v);
-	v.connect(context.graph.input["drum"][buffer._name])
+	v.connect(context.graph.input.drum[buffer._name]);
 	source.start(time);
 	scheduledSounds.push(source);	
 }
@@ -136,25 +141,26 @@ function playDrumSound(buffer, time, volume)
 */
 function playBassSound(buffer, time, volume, duration, pitch, tune)
 {
-	var source = context.createBufferSource();
+	var source, v, step;
+	source = context.createBufferSource();
 	source.buffer = buffer;
-	var v = context.createGain();
+	v = context.createGain();
 	v.gain.value = volume;
 	// set release value for smoother playback
-	v.gain.setTargetAtTime(0, time + duration, .005);
+	v.gain.setTargetAtTime(0, time + duration, 0.005);
 	source.connect(v);
-	v.connect(context.graph.input["bass"]);
+	v.connect(context.graph.input.bass);
 	
 	// set the tuning 
 	// step = 1 semitone (based on 1 - Math.pow(1, 1/12);
 	// see http://chimera.labs.oreilly.com/books/1234000001552/ch04.html#s04_2
 	// @todo - try changing this to exponential instead of linear
-	var step = .059463094359295;
+	step = 0.059463094359295;
 	
-	source.playbackRate.value = 1 + (step/100 * tune) + (step * pitch);
+	source.playbackRate.value = 1 + (step / 100 * tune) + (step * pitch);
 	source.start(time);
 	// stop time is slightly delayed to let the release finish
-	source.stop(time + duration + .1);
+	source.stop(time + duration + 0.1);
 }
 
 /**
@@ -162,20 +168,22 @@ function playBassSound(buffer, time, volume, duration, pitch, tune)
  */
 function loop()
 {
+	var steps, volumes, bass, stepTime, i, name, len_i, j, len_j, note, currentDrawStep;
+	
 	looper = requestAnimFrame(loop);
-	var steps = drumPatterns[currentDrumPattern].steps;
-	var volumes = drumPatterns[currentDrumPattern].volumes;
-	var bass = bassPatterns[currentBassPattern];
+	steps = drumPatterns[currentDrumPattern].steps;
+	volumes = drumPatterns[currentDrumPattern].volumes;
+	bass = bassPatterns[currentBassPattern];
 	// calculate the step time based on the current tempo...
-	var stepTime = (60 / STEPS_PER_BEAT) / tempo;
+	stepTime = (60 / STEPS_PER_BEAT) / tempo;
 	
 	// clean up the scheduledSounds array for anything that has finished playing...
 	// @todo - make this cleaner
-	for (var i = scheduledSounds.length; i-- > 0;) 
+	for (i = scheduledSounds.length; i-- > 0;) 
 	{
 		if (scheduledSounds[i].playbackState == 3) 
 		{
-			scheduledSounds.splice(i,1);
+			scheduledSounds.splice(i, 1);
 		}
 	}	
 	
@@ -183,19 +191,19 @@ function loop()
 	while (nextStepTime < context.currentTime + scheduleAhead) 
 	{	
 		// Drum sounds
-		for (var i = 0, len_i = SOUNDS.length; i < len_i; i++) 
+		for (i = 0, len_i = SOUNDS.length; i < len_i; i++) 
 		{
-			var name = SOUNDS[i].name;
+			name = SOUNDS[i].name;
 			if (steps[i][currentStep] == 1) 
 			{				
 				// check for mute groups
-				if (buffers[name]._mute != null) 
+				if (buffers[name]._mute !== null) 
 				{
-					for (var j = 0, len_j = scheduledSounds.length; j < len_j; j++) 
+					for (j = 0, len_j = scheduledSounds.length; j < len_j; j++) 
 					{
 						if (scheduledSounds[j].buffer._mute == buffers[name]._mute) 
 						{
-							scheduledSounds[j].stop(nextStepTime + 5/tempo);
+							scheduledSounds[j].stop(nextStepTime + 5 / tempo);
 						}
 					}
 				}
@@ -206,10 +214,10 @@ function loop()
 		}
 		
 		// check for the bass...
-		if (bass[currentStep].note != 0)
+		if (bass[currentStep].note !== 0)
 		{
 			// play the note...
-			var note = BASS_MAPPING[bass[currentStep].note];
+			note = BASS_MAPPING[bass[currentStep].note];
 			playBassSound(
 				buffers[note.sample],
 				nextStepTime,
@@ -231,7 +239,7 @@ function loop()
 			if (drumMode == "sequence")
 			{
 				drumSequencePosition = (drumSequencePosition + 1) % drumSequence.length;
-				if (drumSequence[drumSequencePosition] == null)
+				if (drumSequence[drumSequencePosition] === null)
 				{
 					drumSequencePosition = 0;
 				}
@@ -241,7 +249,7 @@ function loop()
 			if (bassMode == "sequence")
 			{
 				bassSequencePosition = (bassSequencePosition + 1) % bassSequence.length;
-				if (bassSequence[bassSequencePosition] == null)
+				if (bassSequence[bassSequencePosition] === null)
 				{
 					bassSequencePosition = 0;
 				}
@@ -251,7 +259,7 @@ function loop()
 	}
 	
 	// check if we need to do a drawing update
-	var currentDrawStep = lastStepDrawn;
+	currentDrawStep = lastStepDrawn;
 	while (drawingQueue.length && drawingQueue[0].time < context.currentTime)
 	{
 		currentDrawStep = drawingQueue[0].step;
@@ -260,7 +268,7 @@ function loop()
 	
 	if (currentDrawStep != lastStepDrawn)
 	{
-		if (currentDrawStep == 0)
+		if (currentDrawStep === 0)
 		{
 			if (drumMode == "sequence")
 			{
@@ -284,10 +292,11 @@ function loop()
 */
 function createDrumMeasure(initValue)
 {
-	var measure = [];
-	for (var i = 0, len = SOUNDS.length; i < len; i++)
+	var measure = [],
+		row, i, j, len;
+	for (i = 0, len = SOUNDS.length; i < len; i++)
 	{
-		var row = [];
+		row = [];
 		for (j = 0; j < NUMSTEPS; j++)
 		{
 			row[j] = initValue;
@@ -305,9 +314,9 @@ function createDrumPattern(name)
 	// create a new object...
 	var pattern = {
 		steps: createDrumMeasure(0),
-		volumes: createDrumMeasure(.8),
+		volumes: createDrumMeasure(0.8),
 		rowVolumes: []
-	}
+	};
 	return pattern;
 }
 
@@ -316,14 +325,14 @@ function createDrumPattern(name)
 */
 function createBassPattern()
 {
-	var pattern = [];
-	for (var i = 0; i < NUMSTEPS; i++)
+	var pattern = [], i;
+	for (i = 0; i < NUMSTEPS; i++)
 	{
 		pattern[i] = {
 			note: 0,
-			volume: .8,
+			volume: 0.8,
 			duration: 1
-		}
+		};
 	}
 	return pattern;
 }
