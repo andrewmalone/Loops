@@ -29,12 +29,13 @@ function setParam(p, value)
 function drawCurrentDrumPattern()
 {
 	$("#drumseq .cell-inner").each(function (index) {
-		var row = getRow(index);
-		var col = getCol(index);
+		var row, col, step, vol;
+		row = getRow(index);
+		col = getCol(index);
 		
 		// get the value and volume...
-		var step = drumPatterns[currentDrumPattern].steps[row][col];
-		var vol = drumPatterns[currentDrumPattern].volumes[row][col];
+		step = drumPatterns[currentDrumPattern].steps[row][col];
+		vol = drumPatterns[currentDrumPattern].volumes[row][col];
 		
 		if (step == 1)
 		{
@@ -62,11 +63,12 @@ function drawCurrentDrumPattern()
 function drawCurrentBassPattern()
 {
 	$("#bseq .cell-inner").each(function (index) {
-		var row = (BASS_RANGE - getRow(index)) + BASS_MIN;
-		var col = getCol(index);
-		var note = bassPatterns[currentBassPattern][col].note;
-		var volume = bassPatterns[currentBassPattern][col].volume;
-		var duration = bassPatterns[currentBassPattern][col].duration;
+		var row, col, note, volume, duration, i, width, element;
+		row = (BASS_RANGE - getRow(index)) + BASS_MIN,
+		col = getCol(index);
+		note = bassPatterns[currentBassPattern][col].note;
+		volume = bassPatterns[currentBassPattern][col].volume;
+		duration = bassPatterns[currentBassPattern][col].duration;
 		// reset the cell
 		$(this).removeClass().addClass("cell-inner").css("right", 0);
 		
@@ -74,9 +76,9 @@ function drawCurrentBassPattern()
 		{
 			$(this).addClass("on");
 			$(this).children(".note").css("opacity", volume);
-			var width = 0;
-			var element = $(this).parent();
-			for (var i = 0; i < duration - 1; i++)
+			width = 0;
+			element = $(this).parent();
+			for (i = 0; i < duration - 1; i++)
 			{
 				element = element.next();
 				width -= element.outerWidth();

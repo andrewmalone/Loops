@@ -4,6 +4,9 @@
 * sequence rows, and creates all the parameter sliders
 */
 
+/*global drumInteractions, bassInteractions, drumPatternInteractions, bassPatternInteractions, initCap, setParam */
+/*global SOUNDS, NUMSTEPS, NUMPATTERNS, SEQUENCE_LENGTH, params */
+
 // global constants
 var BASS_MAX = 52;
 var BASS_MIN = 36;
@@ -26,33 +29,35 @@ function initInterface()
 */
 function initDrumGrid()
 {
-	var seq = $("#drumseq");
-	var labels = $("<div id='drum-labels'>");
-	var grid = $("<div id='drum-grid'>");
-	for (var i = 0, len = SOUNDS.length; i < len; i++)
+	var seq, labels, grid, row, label, button, editor, cell, i, j, len;
+	seq = $("#drumseq");
+	labels = $("<div id='drum-labels'>");
+	grid = $("<div id='drum-grid'>");
+	for (i = 0, len = SOUNDS.length; i < len; i++)
 	{
-		var row = $("<div class='row'>");
-		var label = $("<div class='label'>").text(SOUNDS[i].name);
-		var button = $("<button class='drum-edit'>").text("E").attr("name", SOUNDS[i].name);
-		button.addInteraction({
-			click: function(data) {
-				var editor = $(".editor[name='"+ data.element.attr("name") + "']");
-				editor.toggleClass("active")
-			}
-		});
+		row = $("<div class='row'>");
+		label = $("<div class='label'>").text(SOUNDS[i].name);
+		button = $("<button class='drum-edit'>").text("E").attr("name", SOUNDS[i].name);
 		label.append(button).appendTo(labels);
 		// add a edit window...
-		var editor = $("<div class='editor'>").attr("name", SOUNDS[i].name);
+		editor = $("<div class='editor'>").attr("name", SOUNDS[i].name);
 		$(document.body).append(editor);
 		
 		//labels.append(label);
-		for (var j = 0; j < NUMSTEPS; j++)
+		for (j = 0; j < NUMSTEPS; j++)
 		{
-			var cell = $("<div class='cell'><div class='cell-inner'><div class='note'></div></div>");
+			cell = $("<div class='cell'><div class='cell-inner'><div class='note'></div></div>");
 			row.append(cell);
 		}
 		grid.append(row);
 	}
+	labels.addInteraction("button", {
+		click: function (data) 
+		{
+			var editor = $(".editor[name='" + data.element.attr("name") + "']");
+			editor.toggleClass("active");
+		}
+	});
 	seq.append(labels).append(grid);
 	seq.addInteraction(".cell-inner", drumInteractions());	
 }
@@ -62,23 +67,24 @@ function initDrumGrid()
 */
 function initBassGrid()
 {
-	var bass = $("#bseq");
+	var bass, labels, grid, row, notename, label, cell, i, j;
+	bass = $("#bseq");
 	labels = $("<div id='bass-labels'>");
 	grid = $("<div id='bass-grid'>");
-	for (var i = BASS_MAX; i >= BASS_MIN; i--)
+	for (i = BASS_MAX; i >= BASS_MIN; i--)
 	{
-		var row = $("<div class='row'>");
+		row = $("<div class='row'>");
 		// http://stackoverflow.com/questions/712679/convert-midi-note-numbers-to-name-and-octave
-		var notename = "C C#D D#E F F#G G#A A#B ".substr((i % 12) * 2, 2);
+		notename = "C C#D D#E F F#G G#A A#B ".substr((i % 12) * 2, 2);
 		if (notename.indexOf("#") != -1)
 		{
 			row.addClass("blackNote");
 		}
-		var label = $("<div class='label'>").text(notename);
+		label = $("<div class='label'>").text(notename);
 		labels.append(label);
-		for (var j = 0; j < NUMSTEPS; j++)
+		for (j = 0; j < NUMSTEPS; j++)
 		{
-			var cell = $("<div class='cell'><div class='cell-inner'><div class='note'></div></div></div>");
+			cell = $("<div class='cell'><div class='cell-inner'><div class='note'></div></div></div>");
 			row.append(cell);
 		}
 		grid.append(row);
@@ -92,13 +98,14 @@ function initBassGrid()
 */
 function initPatterns()
 {
-	var plist = $(".patterns");
-	var label = $("<div class='label'>").text("patterns");
+	var plist, label, div, i;
+	plist = $(".patterns");
+	label = $("<div class='label'>").text("patterns");
 	plist.append(label);
-	for (var i = 0; i < NUMPATTERNS; i++)
+	for (i = 0; i < NUMPATTERNS; i++)
 	{
-		var div = $("<div class='pattern'>").text(i + 1);
-		if (i == 0)
+		div = $("<div class='pattern'>").text(i + 1);
+		if (i === 0)
 		{
 			div.addClass("active");
 		}
@@ -114,13 +121,14 @@ function initPatterns()
 */
 function initSequence()
 {
-	var sequence = $(".sequence")
-	var label = $("<div class='label'>").text("sequence");
+	var sequence, label, div, buttonlabel, button, i;
+	sequence = $(".sequence");
+	label = $("<div class='label'>").text("sequence");
 	sequence.append(label);
-	for (var i = 0; i < SEQUENCE_LENGTH; i++)
+	for (i = 0; i < SEQUENCE_LENGTH; i++)
 	{
-		var div = $("<div class='pattern'>");
-		if (i == 0)
+		div = $("<div class='pattern'>");
+		if (i === 0)
 		{
 			div.addClass("open");
 		}
@@ -132,10 +140,10 @@ function initSequence()
 	}
 	
 	// playback mode button
-	var buttonlabel = $("<div class='mode'>").text("Playback mode: ");
-	var button = $("<button>").text("loop").appendTo(buttonlabel);
+	buttonlabel = $("<div class='mode'>").text("Playback mode: ");
+	button = $("<button>").text("loop").appendTo(buttonlabel);
 	button.addInteraction({
-		click: function(data)
+		click: function (data)
 		{
 			var type = data.element.parent().parent().attr("id").split("-")[0];
 			window[type + "Mode"] = window[type + "Mode"] == "sequence" ? "loop" : "sequence";
@@ -152,47 +160,48 @@ function initSequence()
 */
 function initSlidersX()
 {
-	var getParam = function(element, param)
+	var getParam, fxPanel, subPanel, fxlist, parameter, param, section, sectionDiv, fx, slider, i;
+	getParam = function (element, param)
 	{
 		var name = element.attr("name");
 		if (params[name] && params[name][param])
 		{
 			return params[name][param];
 		}
-	}
+	};
 	
 	// add some sliders to the fx panel
-	var fxPanel = $("#fx-panel");
-	var subPanel = $("#sub-panel");
+	fxPanel = $("#fx-panel");
+	subPanel = $("#sub-panel");
 
-	var fxlist = {};
-	for (var parameter in params)
+	fxlist = {};
+	for (parameter in params)
 	{
 		// get the three components of the name
-		var param = parameter.split("-");
+		param = parameter.split("-");
 		if (!(param[0] in fxlist))
 		{
-			fxlist[param[0]] = {}
+			fxlist[param[0]] = {};
 		}
 		if (!(param[1] in fxlist[param[0]]))
 		{
-			fxlist[param[0]][param[1]] = {}
+			fxlist[param[0]][param[1]] = {};
 		}
 		fxlist[param[0]][param[1]][param[2]] = parameter;
 	}
 	
 	// create the fx sections
-	for (var section in fxlist)
+	for (section in fxlist)
 	{
 		sectionDiv = $("<div class='fx-section'>").attr("name", section);
 		$("<h4>").text(initCap(section)).appendTo(sectionDiv);
 		
-		for (var fx in fxlist[section])
+		for (fx in fxlist[section])
 		{
 			$("<h5>").text(initCap(fx)).appendTo(sectionDiv);
-			for (var i in fxlist[section][fx])
+			for (i in fxlist[section][fx])
 			{
-				var slider = $("<div>")
+				slider = $("<div>");
 				$("<label>").text(i).appendTo(slider);
 				$("<input class='param' type='range'>").attr("name", fxlist[section][fx][i]).appendTo(slider);
 				slider.appendTo(sectionDiv);
@@ -201,7 +210,7 @@ function initSlidersX()
 		}
 		
 		// decide if this goes on the main fx section or the subsection
-		if (["drum","bass","master"].indexOf(section) == -1)
+		if (["drum", "bass", "master"].indexOf(section) == -1)
 		{
 			subPanel.append(sectionDiv);
 		}
@@ -213,11 +222,11 @@ function initSlidersX()
 	
 	// slider setup
 	$(".param").attr({
-		min: function() {return getParam($(this), "min")},
-		max: function() {return getParam($(this), "max")},
-		step: function() {return getParam($(this), "step")},
-		value: function() {return getParam($(this), "value")}
-	}).on("change", function() {
+		min: function () { return getParam($(this), "min"); },
+		max: function () { return getParam($(this), "max"); },
+		step: function () { return getParam($(this), "step"); },
+		value: function () { return getParam($(this), "value"); }
+	}).on("change", function () {
 		// set the value when moving the slider
 		setParam(params[$(this).attr("name")], $(this).val());
 		return false;	
@@ -226,78 +235,95 @@ function initSlidersX()
 
 function initSliders()
 {
-	var getParam = function(element, param)
+	var getParam, fxPanel, subPanel, fxlist, fx, parameter, param, section, sectionDiv, subsection, subsectionDiv, i, slider;
+
+	getParam = function (element, param)
 	{
 		var name = element.attr("name");
 		if (params[name] && params[name][param])
 		{
 			return params[name][param];
 		}
-	}
-	
-	// add some sliders to the fx panel
-	 var fxPanel = $("#fx-panel");
-	 var subPanel = $("#sub-panel");
+	};
 
-	var fxlist = {};
-	for (var parameter in params)
+	// add some sliders to the fx panel
+	fxPanel = $("#fx-panel");
+	subPanel = $("#sub-panel");
+
+	fxlist = {};
+	for (parameter in params)
 	{
 		// get the three components of the name
-		var param = parameter.split("-");
+		param = parameter.split("-");
 		if (!(param[0] in fxlist))
 		{
-			fxlist[param[0]] = {}
+			fxlist[param[0]] = {};
 		}
 		if (!(param[1] in fxlist[param[0]]))
 		{
-			fxlist[param[0]][param[1]] = {}
+			fxlist[param[0]][param[1]] = {};
 		}
 		fxlist[param[0]][param[1]][param[2]] = parameter;
 	}
-	
+
 	// create the fx sections
-	for (var section in fxlist)
+	for (section in fxlist)
 	{
-		var sectionDiv = $("<div class='fx-section'>");
+		sectionDiv = $("<div class='fx-section'>");
 		$("<h4>").text(initCap(section)).appendTo(sectionDiv);
-		var subsectionDiv = $("<div class='fx-wrapper'>").appendTo(sectionDiv);
-		
-		for (var fx in fxlist[section])
+		subsectionDiv = $("<div class='fx-wrapper'>").appendTo(sectionDiv);
+
+		for (fx in fxlist[section])
 		{
-			var subsection = $("<div class='fx-subsection'>")
+			subsection = $("<div class='fx-subsection'>");
 			$("<h5>").text(initCap(fx)).appendTo(subsection);
-			for (var i in fxlist[section][fx])
+			for (i in fxlist[section][fx])
 			{
-				var slider = $("<div>")
+				slider = $("<div>");
 				$("<label>").text(i).appendTo(slider);
 				$("<input class='param' type='range'>").attr("name", fxlist[section][fx][i]).appendTo(slider);
 				slider.appendTo(subsection);
 			}
 			subsection.appendTo(subsectionDiv);
-			
+
 		}
-		
+
 		// decide if this goes on the main fx section or the subsection
-		if (["drum","bass","master"].indexOf(section) == -1)
+		if (["drum", "bass", "master"].indexOf(section) == -1)
 		{
 			// subPanel.append(sectionDiv);
-			$(".editor[name='"+ section + "']").append(sectionDiv);
+			$(".editor[name='" + section + "']").append(sectionDiv);
 		}
-		else {
+		else
+		{
 			fxPanel.append(sectionDiv);
 		}
 	}
-	
-	
+
+
 	// slider setup
-	$(".param").attr({
-		min: function() {return getParam($(this), "min")},
-		max: function() {return getParam($(this), "max")},
-		step: function() {return getParam($(this), "step")},
-		value: function() {return getParam($(this), "value")}
-	}).on("change", function() {
+	$(".param").attr(
+	{
+		min: function ()
+		{
+			return getParam($(this), "min");
+		},
+		max: function ()
+		{
+			return getParam($(this), "max");
+		},
+		step: function ()
+		{
+			return getParam($(this), "step");
+		},
+		value: function ()
+		{
+			return getParam($(this), "value");
+		}
+	}).on("change", function ()
+	{
 		// set the value when moving the slider
 		setParam(params[$(this).attr("name")], $(this).val());
-		return false;	
+		return false;
 	});
 }

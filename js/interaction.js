@@ -7,7 +7,7 @@
 
 $.fn.addInteraction = function (selector, cb)
 {
-	if (cb === null)
+	if (cb === undefined)
 	{
 		cb = selector;
 		selector = undefined;

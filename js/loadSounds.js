@@ -3,6 +3,8 @@
 * loads all sounds into the buffers object for use in playback
 */
 
+/*global SOUNDS, BASS_SOUNDS, announce, continueSetup, context */
+
 // global object to hold the loaded sounds
 var buffers = {};
 
@@ -12,13 +14,14 @@ var buffers = {};
 function loadSounds() 
 {
 	// test for supported file types
-	var type;
-	var audioTest = new Audio();
-	if (audioTest.canPlayType("audio/ogg") != "")
+	var type, soundCount, loadCheck,
+		audioTest = new Audio();
+	
+	if (audioTest.canPlayType("audio/ogg") !== "")
 	{
 		type = ".ogg";
 	}
-	else if (audioTest.canPlayType("audio/mp3") != "")
+	else if (audioTest.canPlayType("audio/mp3") !== "")
 	{
 		type = ".mp3";
 	}
@@ -28,32 +31,32 @@ function loadSounds()
 	}
 	
 	
-	SOUNDS.forEach(function(sound) {
+	SOUNDS.forEach(function (sound) {
 		sound.source += type;
 		loadSound(sound);
 	});
 	
-	BASS_SOUNDS.forEach(function(sound) {
-		loadSound({name: sound, source: "Samples/" + sound + type})
+	BASS_SOUNDS.forEach(function (sound) {
+		loadSound({name: sound, source: "Samples/" + sound + type});
 	});
 	
 	// wait for all sounds to be loaded before returning
-	var soundCount = SOUNDS.length + BASS_SOUNDS.length;
+	soundCount = SOUNDS.length + BASS_SOUNDS.length;
 	// temporarily hide the button in the modal
 	$("#modal-close").css("display", "none");
 	announce("Loading sounds...");
-	var loadCheck = setInterval(function() {
+	loadCheck = setInterval(function () {
 		if (Object.keys(buffers).length == soundCount)
 		{
 			clearInterval(loadCheck);
 			$("#modal").removeClass("active");
-			setTimeout(function() {
+			setTimeout(function () {
 				// show the button in the modal again
 				$("#modal-close").css("display", "inline-block");
 			}, 500);
 			continueSetup();
 		}
-	}, 50)	
+	}, 50);
 }
 
 /**
@@ -62,21 +65,23 @@ function loadSounds()
 */
 function loadSound(sound, type) 
 {
-	var callback = function(buffer)
+	var callback, request;
+	
+	callback = function (buffer)
 	{
 		buffer._name = sound.name;
-		if (sound.mute != undefined)
+		if (sound.mute !== undefined)
 		{
 			buffer._mute = sound.mute;
 		}
 		buffers[sound.name] = buffer;
 	};
 	
-	var request = new XMLHttpRequest();
+	request = new XMLHttpRequest();
 	request.open('GET', sound.source, true);
 	request.responseType = 'arraybuffer';
-	request.onload = function() {
+	request.onload = function () {
 		context.decodeAudioData(request.response, callback);
-	}
+	};
 	request.send();
 }
