@@ -35,39 +35,41 @@
 </div>
 
 <div id="wrapper">
-<div class="panel" id="drum-panel">
-		<!-- @todo fix the layout here -->
-	<header>
-		<h3>Drums</h3>
-		<p>Click to toggle notes on/off. Drag up/down on notes to adjust the volume.</p>
-	</header>
-	<div id="drumseq"></div>
-	<p id="pattern-copy">Click to switch patterns. Duplicate a pattern by dragging and dropping. Patterns can also be dropped into the sequence row.</p>
-	<div id="drum-patterns" class="patterns"></div>
-	<div id="drum-sequence" class="sequence"></div>
-</div>
+	<div class="panel" id="drum-panel">
+			<!-- @todo fix the layout here -->
+		<header>
+			<h3>Drums</h3>
+			<p>Click to toggle notes on/off. Drag up/down on notes to adjust the volume.</p>
+		</header>
+		<div id="drumseq"></div>
+		<p id="pattern-copy">Click to switch patterns. Duplicate a pattern by dragging and dropping. Patterns can also be dropped into the sequence row.</p>
+		<div id="drum-patterns" class="patterns"></div>
+		<div id="drum-sequence" class="sequence"></div>
+	</div>
 
-<div class="panel" id="bass-panel">
-	<header>
-		<h3>Bass</h3>
-		<p>Click to toggle notes on/off. Drag up/down on notes to adjust the volume. Drag left/right to adjust note length.</p>
-	</header>
-	<div id="bseq"></div>
-	<div id="bass-patterns" class="patterns"></div>
-	<div id="bass-sequence" class="sequence"></div>
-</div>
-
-
-<div class="panel" id="fx-panel">
-	<button class="sub-panel">SHOW DRUM FX</button>
-	<div id="sub-panel"><button class="sub-panel">HIDE DRUM FX</button></div>
-</div>
+	<div class="panel" id="bass-panel">
+		<header>
+			<h3>Bass</h3>
+			<p>Click to toggle notes on/off. Drag up/down on notes to adjust the volume. Drag left/right to adjust note length.</p>
+		</header>
+		<div id="bseq"></div>
+		<div id="bass-patterns" class="patterns"></div>
+		<div id="bass-sequence" class="sequence"></div>
+	</div>
 
 
-<div id="modal">
-<div id="modal-content"></div>
-<button id="modal-close">Close</button>
+	<div class="panel" id="fx-panel">
+		<button class="sub-panel">SHOW DRUM FX</button>
+		<div id="sub-panel"><button class="sub-panel">HIDE DRUM FX</button></div>
+	</div>
+
+
+	<div id="modal">
+	<div id="modal-content"></div>
+	<button id="modal-close">Close</button>
+	</div>
 </div>
-</div>
+
+<div id="editors"></div>
 </body>
 </html>

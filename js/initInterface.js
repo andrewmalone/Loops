@@ -55,11 +55,19 @@ function initDrumGrid()
 		click: function (data) 
 		{
 			var editor = $(".editor[name='" + data.element.attr("name") + "']");
-			editor.toggleClass("active");
+			editor.add("#editors").addClass("active");
 		}
 	});
 	seq.append(labels).append(grid);
-	seq.addInteraction(".cell-inner", drumInteractions());	
+	seq.addInteraction(".cell-inner", drumInteractions());
+	
+	$("#editors").addInteraction({
+		click: function (data, e)
+		{
+			// close the modal editor if clicked outside the editor
+			$(".active").removeClass("active");
+		}
+	});
 }
 
 /**
