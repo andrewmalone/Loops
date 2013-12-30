@@ -29,7 +29,7 @@ function initInterface()
 */
 function initDrumGrid()
 {
-	var seq, labels, grid, row, label, cell, i, j, len;
+	var seq, labels, grid, row, label, button, editor, cell, i, j, len;
 	seq = $("#drumseq");
 	labels = $("<div id='drum-labels'>");
 	grid = $("<div id='drum-grid'>");
@@ -37,7 +37,13 @@ function initDrumGrid()
 	{
 		row = $("<div class='row'>");
 		label = $("<div class='label'>").text(SOUNDS[i].name);
-		labels.append(label);
+		button = $("<button class='drum-edit'>").text("E").attr("name", SOUNDS[i].name);
+		label.append(button).appendTo(labels);
+		// add a edit window...
+		editor = $("<div class='editor'>").attr("name", SOUNDS[i].name);
+		$(document.body).append(editor);
+		
+		//labels.append(label);
 		for (j = 0; j < NUMSTEPS; j++)
 		{
 			cell = $("<div class='cell'><div class='cell-inner'><div class='note'></div></div>");
@@ -45,8 +51,23 @@ function initDrumGrid()
 		}
 		grid.append(row);
 	}
+	labels.addInteraction("button", {
+		click: function (data) 
+		{
+			var editor = $(".editor[name='" + data.element.attr("name") + "']");
+			editor.add("#editors").addClass("active");
+		}
+	});
 	seq.append(labels).append(grid);
-	seq.addInteraction(".cell-inner", drumInteractions());	
+	seq.addInteraction(".cell-inner", drumInteractions());
+	
+	$("#editors").addInteraction({
+		click: function (data, e)
+		{
+			// close the modal editor if clicked outside the editor
+			$(".active").removeClass("active");
+		}
+	});
 }
 
 /**
@@ -145,7 +166,7 @@ function initSequence()
 * in the params object
 * Relies on aaa-bbb-ccc naming convention in params
 */
-function initSliders()
+function initSlidersX()
 {
 	var getParam, fxPanel, subPanel, fxlist, parameter, param, section, sectionDiv, fx, slider, i;
 	getParam = function (element, param)
@@ -217,5 +238,100 @@ function initSliders()
 		// set the value when moving the slider
 		setParam(params[$(this).attr("name")], $(this).val());
 		return false;	
+	});
+}
+
+function initSliders()
+{
+	var getParam, fxPanel, subPanel, fxlist, fx, parameter, param, section, sectionDiv, subsection, subsectionDiv, i, slider;
+
+	getParam = function (element, param)
+	{
+		var name = element.attr("name");
+		if (params[name] && params[name][param])
+		{
+			return params[name][param];
+		}
+	};
+
+	// add some sliders to the fx panel
+	fxPanel = $("#fx-panel");
+	subPanel = $("#sub-panel");
+
+	fxlist = {};
+	for (parameter in params)
+	{
+		// get the three components of the name
+		param = parameter.split("-");
+		if (!(param[0] in fxlist))
+		{
+			fxlist[param[0]] = {};
+		}
+		if (!(param[1] in fxlist[param[0]]))
+		{
+			fxlist[param[0]][param[1]] = {};
+		}
+		fxlist[param[0]][param[1]][param[2]] = parameter;
+	}
+
+	// create the fx sections
+	for (section in fxlist)
+	{
+		sectionDiv = $("<div class='fx-section'>");
+		$("<h4>").text(initCap(section)).appendTo(sectionDiv);
+		subsectionDiv = $("<div class='fx-wrapper'>").appendTo(sectionDiv);
+
+		for (fx in fxlist[section])
+		{
+			subsection = $("<div class='fx-subsection'>");
+			$("<h5>").text(initCap(fx)).appendTo(subsection);
+			for (i in fxlist[section][fx])
+			{
+				slider = $("<div>");
+				$("<label>").text(i).appendTo(slider);
+				$("<input class='param' type='range'>").attr("name", fxlist[section][fx][i]).appendTo(slider);
+				slider.appendTo(subsection);
+			}
+			subsection.appendTo(subsectionDiv);
+
+		}
+
+		// decide if this goes on the main fx section or the subsection
+		if (["drum", "bass", "master"].indexOf(section) == -1)
+		{
+			// subPanel.append(sectionDiv);
+			$(".editor[name='" + section + "']").append(sectionDiv);
+		}
+		else
+		{
+			fxPanel.append(sectionDiv);
+		}
+	}
+
+
+	// slider setup
+	$(".param").attr(
+	{
+		min: function ()
+		{
+			return getParam($(this), "min");
+		},
+		max: function ()
+		{
+			return getParam($(this), "max");
+		},
+		step: function ()
+		{
+			return getParam($(this), "step");
+		},
+		value: function ()
+		{
+			return getParam($(this), "value");
+		}
+	}).on("change", function ()
+	{
+		// set the value when moving the slider
+		setParam(params[$(this).attr("name")], $(this).val());
+		return false;
 	});
 }

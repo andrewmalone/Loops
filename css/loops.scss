@@ -50,7 +50,7 @@ h2.name {
     border: $border;
 }
 #drum-labels, #bass-labels {
-	width: 4em;
+	width: 5em;
 }
 .row {
     @include flexbox;
@@ -205,7 +205,7 @@ $pattern-background: #eee;
 	height:2em;
 	line-height:2em;
 }
-#fx-panel, #sub-panel {
+#fx-panel {
     position: absolute;
     top: 0;
     background: #fff;
@@ -218,22 +218,10 @@ $pattern-background: #eee;
     @include transition-duration(.4s);
 }
 
-#fx-panel.active, #sub-panel.active {
+#fx-panel.active {
 	@include transform(translate3d(0,0,0));
 	@include transition-property(transform);
     @include transition-duration(.4s);
-}
-
-#sub-panel {
-	top: 0;
-	.fx-section {
-		padding: 0;
-		margin-top: 1.5em;
-	}
-}
-
-#fx-panel button, #sub-panel button {
-	position:absolute;
 }
 
 .fx-section {
@@ -354,4 +342,42 @@ button {
 	font-size:.7em;
 	padding:.2em .8em;
 	font-weight: normal;
+	&.drum-edit {
+		padding:0 .5em;
+		margin-left:.5em;
+	}
 }
+
+#editors {
+	position:absolute;
+	width:100%;
+	height:100%;
+	top:0;
+	left:0;
+	background:rgba(10,10,10,.5);
+	display:none;
+	z-index:3;
+	&.active {
+		display:block;
+	}
+}
+.editor {
+	position: absolute;
+	background: #FFF;
+	border: 1px solid #000;
+	left: 15%;
+	top: 15%;
+	right: 15%;
+	bottom: 15%;
+	display:none;
+	z-index:3;
+	.fx-wrapper {
+		@include flexbox;
+		@include flex-wrap(wrap);
+	}
+	&.active {
+		display:block;
+	}
+}
+
+
