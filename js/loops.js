@@ -58,4 +58,7 @@ function continueSetup()
 	{
 		load();
 	}
+	
+	initLFObuffers();
+	// console.log(lfo_buffers);
 }
