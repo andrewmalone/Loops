@@ -20,6 +20,8 @@ function setParam(p, value)
 	else
 	{
 		p.param.value = value;
+		// test store the actual value for reading later
+		p.value = value;
 	}
 }
 

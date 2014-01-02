@@ -75,6 +75,8 @@ function createAudioGraph()
 		param: g.input.bass.gain
 	};
 	
+	addLFOSliders();
+	
 	return g;
 }
 
@@ -286,10 +288,10 @@ function createCompressor(name)
 	};
 	
 	// initial values
-	fx.comp.threshold.value = -24;
-	fx.comp.ratio.value = 12;
-	fx.comp.attack.value = 0.0003;
-	fx.comp.release.value = 0.25;
+	fx.comp.threshold.value = 0;
+	fx.comp.ratio.value = 1;
+	fx.comp.attack.value = 0.005;
+	fx.comp.release.value = 0.005;
 	fx.comp.knee.value = 30;
 	
 	// connections

@@ -228,6 +228,9 @@ function loop()
 			);
 		}
 		
+		// LFOs
+		checkLFOs(currentStep, nextStepTime);
+		
 		drawingQueue.push({step: currentStep, time: nextStepTime});
 		nextStepTime += stepTime; 
 		currentStep++;
