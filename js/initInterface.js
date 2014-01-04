@@ -65,6 +65,7 @@ function initDrumGrid()
 		click: function (data, e)
 		{
 			// close the modal editor if clicked outside the editor
+			// @todo - fix this so that only the immediate classes are affected
 			$(".active").removeClass("active");
 		}
 	});
@@ -289,13 +290,19 @@ function initSliders()
 			$("<h5>").text(initCap(fx)).appendTo(subsection);
 			for (i in fxlist[section][fx])
 			{
-				// console.log(params[fxlist[section][fx][i]]);
-				if (params[fxlist[section][fx][i]].lfo === true)
-				{
-					// console.log(fxlist[section][fx][i]);
-				}
+				
 				slider = $("<div>");
 				$("<label>").text(i).appendTo(slider);
+				// might not be the best place to do this
+				if (params[fxlist[section][fx][i]].lfo !== undefined)
+				{
+					$("<button class='lfo-edit'>").text("lfo").attr("name", fxlist[section][fx][i]).appendTo(slider);
+					// console.log(fxlist[section][fx][i]);
+					for (param in params[fxlist[section][fx][i]].lfo.params)
+					{
+						params[fxlist[section][fx][i] + "-lfo-" + param] = params[fxlist[section][fx][i]].lfo.params[param];
+					}
+				}
 				$("<input class='param' type='range'>").attr("name", fxlist[section][fx][i]).appendTo(slider);
 				slider.appendTo(subsection);
 			}
@@ -313,6 +320,21 @@ function initSliders()
 		{
 			fxPanel.append(sectionDiv);
 		}
+	}
+	
+	// LFO sliders
+	for (i = 0; i < lfos.length; i++)
+	{
+		sectionDiv = $("<div class='lfo'>").attr("name", lfos[i].slider);
+		for (param in lfos[i].params)
+		{
+			slider = $("<div>");
+			$("<label>").text(param).appendTo(slider);
+			$("<input type='range' class='param'>").attr("name", lfos[i].slider + "-lfo-" + param).appendTo(slider);
+			slider.appendTo(sectionDiv);
+		}
+		sectionDiv.appendTo(document.body);
+		//console.log(sectionDiv);
 	}
 
 
