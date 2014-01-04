@@ -53,6 +53,21 @@ function continueSetup()
 	
 	// build the interface...
 	initInterface();
+	$("button.lfo-edit").addInteraction({
+		click: function (data)
+		{
+			var editor = $(".lfo[name='" + data.element.attr("name") + "']");
+			editor.add("#lfos").addClass("active");
+		}
+	});
+	
+	$("#lfos").addInteraction({
+		click: function (data, e)
+		{
+			// close the modal editor if clicked outside the editor
+			$(".lfo.active").add(data.element).removeClass("active");
+		}
+	});
 	
 	// load a pattern depending on url params
 	if (location.hash !== "")
