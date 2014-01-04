@@ -76,7 +76,7 @@ function getLFOSample(type, phase)
 	}
 }
 
-function LFO(p)
+function addLFO(p)
 {
 	var lfo = {};
 	lfo.param = params[p].param;
@@ -113,7 +113,8 @@ function LFO(p)
 	//console.log(lfo);
 	makeLFOCurve(lfo);
 	lfos.push(lfo);
-	return lfo;
+	params[p].lfo = lfo;
+//	return lfo;
 }
 
 function checkLFOs(step, time)
