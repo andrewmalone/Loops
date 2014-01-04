@@ -1,7 +1,7 @@
 /*global context */
 
 var lfo_curves = {};
-var lfo;
+// var lfo;
 var lfos = [];
 
 function initLFObuffers()
@@ -23,30 +23,14 @@ function initLFObuffers()
 		
 	});
 	
-	// set up one lfo for the filter...
-	tmp_array = new Float32Array(len);
-	for (i = 0; i < len; i++)
-	{
-		tmp_array[i] = (1 - lfo_curves.sine[i]) * (context.sampleRate / 2 - 100) + 100;
-	}
-	//lfo.curve = tmp_array;
-	
-	lfo.param = context.graph.masterFx.filter.filter.frequency;
-	lfo.stepCount = -1;
-	lfo.stepStart = 0;
-	lfo.slider = "master-filter-frequency";
-	lfo.len = 16;
-	lfo.amount = -0.8;
-	lfo.type = "sine";
-	makeLFOCurve(lfo);
-	lfos[0] = lfo;
+
 }
 
 function makeLFOCurve(lfo)
 {
 	// amount will be constrained between 1 and -1 (?)
 	lfo.curve = new Float32Array(100);
-	
+	//console.log(lfo);
 	// need current slider value...
 	var p = params[lfo.slider],
 		upper, lower, range, i, lfo_range;
@@ -61,23 +45,24 @@ function makeLFOCurve(lfo)
 	else
 	{
 		upper = parseFloat(p.value);
-		console.log(parseFloat(p.value) + parseFloat(lfo.amount) * range, parseFloat(p.min));
+		//console.log(parseFloat(p.value) + parseFloat(lfo.amount) * range, parseFloat(p.min));
 		lower = Math.max(parseFloat(p.value) + parseFloat(lfo.amount) * range, parseFloat(p.min));
 	}
 	
 	lfo_range = upper - lower;
-	console.log("amount: " + lfo.amount);
-	console.log("upper: " + upper);
-	console.log("lower: " + lower);
-	console.log("value: " + p.value);
+	//console.log("amount: " + lfo.amount);
+	//console.log("upper: " + upper);
+	//console.log("lower: " + lower);
+	//console.log("value: " + p.value);
 	
 	// set the curve
 	for (i = 0; i < 100; i++)
 	{
 		lfo.curve[i] = (lfo.amount > 0 ? lfo_curves[lfo.type][i] : 1 - lfo_curves[lfo.type][i]) * lfo_range + lower;
+		//lfo.curve[i] = lfo_curves[lfo.type][i];
 	}
 	
-	console.log(lfo.curve);
+	//console.log(lfo.curve);
 	
 }
 
@@ -124,6 +109,44 @@ function addLFOSliders()
 	};
 }
 
+function LFO(p)
+{
+	var lfo = {};
+	lfo.param = params[p].param;
+	lfo.stepCount = -1;
+	lfo.stepStart = 0;
+	lfo.slider = p;
+	lfo.len = 8;
+	lfo.amount = 0;
+	lfo.type = "sine";
+	lfo.params = {
+		rate: {
+			max: 32,
+			min: 2,
+			step: 1,
+			value: 16,
+			param: function (value)
+			{
+				lfo.len = value;
+			}
+		},
+		amount: {
+			max: 1,
+			min: -1,
+			step: "any",
+			value: -0.8,
+			param: function (value)
+			{
+				lfo.amount = value;
+				makeLFOCurve(lfo);
+			}
+		}	
+	};
+	makeLFOCurve(lfo);
+	lfos.push(lfo);
+	return lfo;
+}
+
 function checkLFOs(step, time)
 {
 	//return;
@@ -140,7 +163,7 @@ function checkLFOs(step, time)
 			// schedule it?
 			//console.log(time, time + stepTime * lfos[0].len);
 			//lfos[i].param.cancelScheduledValues(time);
-			lfos[i].param.setValueCurveAtTime(lfos[0].curve, time, stepTime * lfos[0].len - 0.00001);
+			lfos[i].param.setValueCurveAtTime(lfos[i].curve, time, stepTime * lfos[i].len - 0.00001);
 			lfos[i].stepCount = 0;
 		}
 		else

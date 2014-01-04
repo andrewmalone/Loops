@@ -3,7 +3,7 @@
 * Creates the audio nodes, fx and routing
 */
 
-/*global context, SOUNDS, tempo: true, setParam */
+/*global context, SOUNDS, tempo: true, setParam, LFO */
 
 // set up global variables
 var params = {};
@@ -75,7 +75,7 @@ function createAudioGraph()
 		param: g.input.bass.gain
 	};
 	
-	addLFOSliders();
+	// addLFOSliders();
 	
 	return g;
 }
@@ -133,6 +133,8 @@ function createFilter(name)
 		value: context.sampleRate / 2,
 		param: fx.filter.frequency
 	};
+	// @todo make this better!
+	params[name + "-filter-frequency"].lfo = LFO(name + "-filter-frequency");
 	
 	params[name + "-filter-q"] = {
 		min: 1,

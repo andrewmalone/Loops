@@ -12,6 +12,7 @@ var context;
 $(function () {
 	
 	context = new AudioContext();
+	initLFObuffers();
 	context.graph = createAudioGraph();
 	
 	// load the sounds	
@@ -59,6 +60,5 @@ function continueSetup()
 		load();
 	}
 	
-	initLFObuffers();
 	// console.log(lfo_buffers);
 }
