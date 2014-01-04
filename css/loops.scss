@@ -136,8 +136,9 @@ $note-playing-color: complement($note-color);
 }
 
 .panel {
-	clear:left;
-	overflow: hidden;
+	// temporary - to add extra sliders
+	// clear:left;
+	// overflow: hidden;
 }
 h3 {
 	margin: 0;
@@ -371,6 +372,41 @@ button {
 	bottom: 15%;
 	display:none;
 	z-index:3;
+	.fx-wrapper {
+		@include flexbox;
+		@include flex-wrap(wrap);
+	}
+	&.active {
+		display:block;
+	}
+}
+
+// background for lfo editors
+// @todo - refactor into more common (since styles are the same as #editors above)
+#lfos {
+	position:absolute;
+	width:100%;
+	height:100%;
+	top:0;
+	left:0;
+	background:rgba(10,10,10,.5);
+	display:none;
+	z-index:4;
+	&.active {
+		display:block;
+	}	
+}
+
+.lfo {
+	position: absolute;
+	background: #FFF;
+	border: 1px solid #000;
+	left: 15%;
+	top: 15%;
+	right: 15%;
+	bottom: 15%;
+	display:none;
+	z-index:4;
 	.fx-wrapper {
 		@include flexbox;
 		@include flex-wrap(wrap);

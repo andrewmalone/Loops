@@ -257,11 +257,12 @@ function initSliders()
 	// add some sliders to the fx panel
 	fxPanel = $("#fx-panel");
 	subPanel = $("#sub-panel");
-
+	
+	// @todo - refactor into one loop?
 	fxlist = {};
 	for (parameter in params)
 	{
-		// get the three components of the name
+		// get the three components of the name (a-b-c)
 		param = parameter.split("-");
 		if (!(param[0] in fxlist))
 		{
@@ -272,6 +273,7 @@ function initSliders()
 			fxlist[param[0]][param[1]] = {};
 		}
 		fxlist[param[0]][param[1]][param[2]] = parameter;
+		// the actual entry has the full name
 	}
 
 	// create the fx sections
@@ -287,6 +289,11 @@ function initSliders()
 			$("<h5>").text(initCap(fx)).appendTo(subsection);
 			for (i in fxlist[section][fx])
 			{
+				// console.log(params[fxlist[section][fx][i]]);
+				if (params[fxlist[section][fx][i]].lfo === true)
+				{
+					// console.log(fxlist[section][fx][i]);
+				}
 				slider = $("<div>");
 				$("<label>").text(i).appendTo(slider);
 				$("<input class='param' type='range'>").attr("name", fxlist[section][fx][i]).appendTo(slider);
