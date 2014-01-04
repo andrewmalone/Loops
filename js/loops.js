@@ -15,6 +15,9 @@ $(function () {
 	initLFObuffers();
 	context.graph = createAudioGraph();
 	
+	// build the interface...
+	initInterface();
+	
 	// load the sounds	
 	loadSounds();
 });
@@ -49,10 +52,39 @@ function continueSetup()
 	
 	$("#modal-close").addInteraction({click: function () {
 		$("#modal").removeClass("active");
-	}});
+	}});	
 	
-	// build the interface...
-	initInterface();
+	
+	$("#drum-labels").addInteraction("button", {
+		click: function (data) 
+		{
+			var editor = $(".editor[name='" + data.element.attr("name") + "']");
+			editor.add("#editors").addClass("active");
+		}
+	});
+	
+	$("#editors").addInteraction({
+		click: function (data, e)
+		{
+			// close the modal editor if clicked outside the editor
+			$(".editor.active").add(data.element).removeClass("active");
+		}
+	});
+	
+	$("#drumseq").addInteraction(".cell-inner", drumInteractions());
+	$("#bseq").addInteraction(".cell-inner", bassInteractions());
+	$("#drum-patterns").addInteraction(".pattern", drumPatternInteractions());	
+	$("#bass-patterns").addInteraction(".pattern", bassPatternInteractions());
+	
+	$(".mode button").addInteraction({
+		click: function (data)
+		{
+			var type = data.element.parent().parent().attr("id").split("-")[0];
+			window[type + "Mode"] = window[type + "Mode"] == "sequence" ? "loop" : "sequence";
+			data.element.text(window[type + "Mode"]);
+		}
+	});
+	
 	$("button.lfo-edit").addInteraction({
 		click: function (data)
 		{
@@ -67,6 +99,42 @@ function continueSetup()
 			// close the modal editor if clicked outside the editor
 			$(".lfo.active").add(data.element).removeClass("active");
 		}
+	});
+	
+	getParam = function (element, param)
+	{
+		var name = element.attr("name");
+		if (params[name] && params[name][param])
+		{
+			return params[name][param];
+		}
+	};
+	
+	// slider setup
+	$(".param").attr(
+	{
+		min: function ()
+		{
+			return getParam($(this), "min");
+		},
+		max: function ()
+		{
+			return getParam($(this), "max");
+		},
+		step: function ()
+		{
+			return getParam($(this), "step");
+		},
+		value: function ()
+		{
+			return getParam($(this), "value");
+		}
+	}).on("change", function ()
+	{
+		// set the value when moving the slider
+		// console.log($(this).attr("name"));
+		setParam(params[$(this).attr("name")], $(this).val());
+		return false;
 	});
 	
 	// load a pattern depending on url params

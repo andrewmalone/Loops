@@ -51,17 +51,20 @@ function initDrumGrid()
 		}
 		grid.append(row);
 	}
-	labels.addInteraction("button", {
+	/*
+labels.addInteraction("button", {
 		click: function (data) 
 		{
 			var editor = $(".editor[name='" + data.element.attr("name") + "']");
 			editor.add("#editors").addClass("active");
 		}
 	});
+*/
 	seq.append(labels).append(grid);
-	seq.addInteraction(".cell-inner", drumInteractions());
+	//seq.addInteraction(".cell-inner", drumInteractions());
 	
-	$("#editors").addInteraction({
+	/*
+$("#editors").addInteraction({
 		click: function (data, e)
 		{
 			// close the modal editor if clicked outside the editor
@@ -69,6 +72,7 @@ function initDrumGrid()
 			$(".active").removeClass("active");
 		}
 	});
+*/
 }
 
 /**
@@ -99,7 +103,7 @@ function initBassGrid()
 		grid.append(row);
 	}
 	bass.append(labels).append(grid);
-	bass.addInteraction(".cell-inner", bassInteractions());
+	//$("#bseq").addInteraction(".cell-inner", bassInteractions());
 }
 
 /**
@@ -121,8 +125,10 @@ function initPatterns()
 		plist.append(div);
 	}
 	
-	$("#drum-patterns").addInteraction(".pattern", drumPatternInteractions());	
+	/*
+$("#drum-patterns").addInteraction(".pattern", drumPatternInteractions());	
 	$("#bass-patterns").addInteraction(".pattern", bassPatternInteractions());
+*/
 }
 
 /**
@@ -151,7 +157,8 @@ function initSequence()
 	// playback mode button
 	buttonlabel = $("<div class='mode'>").text("Playback mode: ");
 	button = $("<button>").text("loop").appendTo(buttonlabel);
-	button.addInteraction({
+	/*
+$(".mode button").addInteraction({
 		click: function (data)
 		{
 			var type = data.element.parent().parent().attr("id").split("-")[0];
@@ -159,6 +166,7 @@ function initSequence()
 			data.element.text(window[type + "Mode"]);
 		}
 	});
+*/
 	sequence.append(buttonlabel);
 }
 
@@ -246,7 +254,8 @@ function initSliders()
 {
 	var getParam, fxPanel, subPanel, fxlist, fx, parameter, param, section, sectionDiv, subsection, subsectionDiv, i, slider;
 
-	getParam = function (element, param)
+	/*
+getParam = function (element, param)
 	{
 		var name = element.attr("name");
 		if (params[name] && params[name][param])
@@ -254,6 +263,7 @@ function initSliders()
 			return params[name][param];
 		}
 	};
+*/
 
 	// add some sliders to the fx panel
 	fxPanel = $("#fx-panel");
@@ -265,6 +275,10 @@ function initSliders()
 	{
 		// get the three components of the name (a-b-c)
 		param = parameter.split("-");
+		
+		// limit length to 3 to avoid lfos... (probably better way)
+		if (param.length != 3) { continue; }
+		
 		if (!(param[0] in fxlist))
 		{
 			fxlist[param[0]] = {};
@@ -294,14 +308,16 @@ function initSliders()
 				slider = $("<div>");
 				$("<label>").text(i).appendTo(slider);
 				// might not be the best place to do this
+				console.log(params[fxlist[section][fx][i]]);
 				if (params[fxlist[section][fx][i]].lfo !== undefined)
 				{
 					$("<button class='lfo-edit'>").text("lfo").attr("name", fxlist[section][fx][i]).appendTo(slider);
 					// console.log(fxlist[section][fx][i]);
-					for (param in params[fxlist[section][fx][i]].lfo.params)
-					{
-						params[fxlist[section][fx][i] + "-lfo-" + param] = params[fxlist[section][fx][i]].lfo.params[param];
-					}
+					//for (param in params[fxlist[section][fx][i]].lfo.params)
+					//{
+						//console.log(params[fxlist[section][fx][i]].lfo.params[param]);
+						//params[fxlist[section][fx][i] + "-lfo-" + param] = params[fxlist[section][fx][i]].lfo.params[param];
+					//}
 				}
 				$("<input class='param' type='range'>").attr("name", fxlist[section][fx][i]).appendTo(slider);
 				slider.appendTo(subsection);
@@ -326,19 +342,20 @@ function initSliders()
 	for (i = 0; i < lfos.length; i++)
 	{
 		sectionDiv = $("<div class='lfo'>").attr("name", lfos[i].slider);
-		for (param in lfos[i].params)
+		["rate", "amount"].forEach(function (name)
 		{
 			slider = $("<div>");
-			$("<label>").text(param).appendTo(slider);
-			$("<input type='range' class='param'>").attr("name", lfos[i].slider + "-lfo-" + param).appendTo(slider);
+			$("<label>").text(name).appendTo(slider);
+			$("<input type='range' class='param'>").attr("name", lfos[i].slider + "-lfo-" + name).appendTo(slider);
 			slider.appendTo(sectionDiv);
-		}
+		});
 		sectionDiv.appendTo(document.body);
 		//console.log(sectionDiv);
 	}
 
 
-	// slider setup
+	/*
+// slider setup
 	$(".param").attr(
 	{
 		min: function ()
@@ -363,4 +380,5 @@ function initSliders()
 		setParam(params[$(this).attr("name")], $(this).val());
 		return false;
 	});
+*/
 }
