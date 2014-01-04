@@ -127,7 +127,7 @@ function checkLFOs(step, time)
 	{
 		// lfos[i].stepCount++;
 		// console.log(lfos[i].stepCount);
-		if ((lfos[i].stepCount + 1) % lfos[i].len == 0)
+		if (lfos[i].amount !== 0 && (lfos[i].stepCount + 1) % lfos[i].len == 0)
 		{
 			// schedule it?
 			//console.log(time, time + stepTime * lfos[0].len);
