@@ -5,12 +5,7 @@ var lfo_curves = {};
 var lfos = [];
 
 function initLFObuffers()
-{
-	var lfo = {},
-		tmp_array,
-		len = 100,
-		i;
-	
+{	
 	["sine", "square", "triangle", "sawtooth", "noise"].forEach(function (type)
 	{
 		var i,
@@ -22,8 +17,6 @@ function initLFObuffers()
 		}
 		
 	});
-	
-
 }
 
 function makeLFOCurve(lfo)
@@ -83,32 +76,6 @@ function getLFOSample(type, phase)
 	}
 }
 
-function addLFOSliders()
-{
-	params["master-lfo-rate"] = {
-		max: 32,
-		min: 2,
-		step: 1,
-		value: 16,
-		param: function (value)
-		{
-			lfos[0].len = value;
-		}
-	};
-	
-	params["master-lfo-amount"] = {
-		max: 1,
-		min: -1,
-		step: "any",
-		value: -0.8,
-		param: function (value)
-		{
-			lfos[0].amount = value;
-			makeLFOCurve(lfos[0]);
-		}
-	};
-}
-
 function LFO(p)
 {
 	var lfo = {};
@@ -119,29 +86,31 @@ function LFO(p)
 	lfo.len = 8;
 	lfo.amount = 0;
 	lfo.type = "sine";
-	lfo.params = {
-		rate: {
-			max: 32,
-			min: 2,
-			step: 1,
-			value: 16,
-			param: function (value)
-			{
-				lfo.len = value;
-			}
-		},
-		amount: {
-			max: 1,
-			min: -1,
-			step: "any",
-			value: -0.8,
-			param: function (value)
-			{
-				lfo.amount = value;
-				makeLFOCurve(lfo);
-			}
+	params[p + "-lfo-rate"] = {
+		max: 32,
+		min: 2,
+		step: 1,
+		value: 8,
+		param: function (value)
+		{
+			// console.log(lfo);
+			lfo.len = value;
 		}	
 	};
+	params[p + "-lfo-amount"] = {
+		max: 1,
+		min: -1,
+		step: "any",
+		value: "0",
+		name: p,
+		param: function (value)
+		{
+			// console.log(lfo);
+			lfo.amount = value;
+			makeLFOCurve(lfo);
+		}	
+	};
+	//console.log(lfo);
 	makeLFOCurve(lfo);
 	lfos.push(lfo);
 	return lfo;
