@@ -3,7 +3,7 @@
 * Interface update functions
 */
 
-/*globals NUMSTEPS drumPatterns, currentDrumPattern, BASS_RANGE, BASS_MIN, bassPatterns, currentBassPattern */
+/*globals NUMSTEPS drumPatterns, currentDrumPattern, BASS_RANGE, BASS_MIN, bassPatterns, currentBassPattern, makeLFOCurve */
 
 // global variable for pattern name
 var saveName = "";
