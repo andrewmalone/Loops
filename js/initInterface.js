@@ -2,10 +2,11 @@
 * init-interface.js
 * Initializes the interface. Dynamically draws the pattern grids, creates the pattern and
 * sequence rows, and creates all the parameter sliders
+* Don't define interactions here!
 */
 
 /*global drumInteractions, bassInteractions, drumPatternInteractions, bassPatternInteractions, initCap, setParam */
-/*global SOUNDS, NUMSTEPS, NUMPATTERNS, SEQUENCE_LENGTH, params */
+/*global SOUNDS, NUMSTEPS, NUMPATTERNS, SEQUENCE_LENGTH, params, lfos */
 
 // global constants
 var BASS_MAX = 52;
@@ -51,23 +52,7 @@ function initDrumGrid()
 		}
 		grid.append(row);
 	}
-	labels.addInteraction("button", {
-		click: function (data) 
-		{
-			var editor = $(".editor[name='" + data.element.attr("name") + "']");
-			editor.add("#editors").addClass("active");
-		}
-	});
 	seq.append(labels).append(grid);
-	seq.addInteraction(".cell-inner", drumInteractions());
-	
-	$("#editors").addInteraction({
-		click: function (data, e)
-		{
-			// close the modal editor if clicked outside the editor
-			$(".active").removeClass("active");
-		}
-	});
 }
 
 /**
@@ -98,7 +83,6 @@ function initBassGrid()
 		grid.append(row);
 	}
 	bass.append(labels).append(grid);
-	bass.addInteraction(".cell-inner", bassInteractions());
 }
 
 /**
@@ -119,9 +103,6 @@ function initPatterns()
 		}
 		plist.append(div);
 	}
-	
-	$("#drum-patterns").addInteraction(".pattern", drumPatternInteractions());	
-	$("#bass-patterns").addInteraction(".pattern", bassPatternInteractions());
 }
 
 /**
@@ -150,14 +131,6 @@ function initSequence()
 	// playback mode button
 	buttonlabel = $("<div class='mode'>").text("Playback mode: ");
 	button = $("<button>").text("loop").appendTo(buttonlabel);
-	button.addInteraction({
-		click: function (data)
-		{
-			var type = data.element.parent().parent().attr("id").split("-")[0];
-			window[type + "Mode"] = window[type + "Mode"] == "sequence" ? "loop" : "sequence";
-			data.element.text(window[type + "Mode"]);
-		}
-	});
 	sequence.append(buttonlabel);
 }
 
@@ -166,103 +139,24 @@ function initSequence()
 * in the params object
 * Relies on aaa-bbb-ccc naming convention in params
 */
-function initSlidersX()
-{
-	var getParam, fxPanel, subPanel, fxlist, parameter, param, section, sectionDiv, fx, slider, i;
-	getParam = function (element, param)
-	{
-		var name = element.attr("name");
-		if (params[name] && params[name][param])
-		{
-			return params[name][param];
-		}
-	};
-	
-	// add some sliders to the fx panel
-	fxPanel = $("#fx-panel");
-	subPanel = $("#sub-panel");
-
-	fxlist = {};
-	for (parameter in params)
-	{
-		// get the three components of the name
-		param = parameter.split("-");
-		if (!(param[0] in fxlist))
-		{
-			fxlist[param[0]] = {};
-		}
-		if (!(param[1] in fxlist[param[0]]))
-		{
-			fxlist[param[0]][param[1]] = {};
-		}
-		fxlist[param[0]][param[1]][param[2]] = parameter;
-	}
-	
-	// create the fx sections
-	for (section in fxlist)
-	{
-		sectionDiv = $("<div class='fx-section'>").attr("name", section);
-		$("<h4>").text(initCap(section)).appendTo(sectionDiv);
-		
-		for (fx in fxlist[section])
-		{
-			$("<h5>").text(initCap(fx)).appendTo(sectionDiv);
-			for (i in fxlist[section][fx])
-			{
-				slider = $("<div>");
-				$("<label>").text(i).appendTo(slider);
-				$("<input class='param' type='range'>").attr("name", fxlist[section][fx][i]).appendTo(slider);
-				slider.appendTo(sectionDiv);
-			}
-			
-		}
-		
-		// decide if this goes on the main fx section or the subsection
-		if (["drum", "bass", "master"].indexOf(section) == -1)
-		{
-			subPanel.append(sectionDiv);
-		}
-		else {
-			fxPanel.append(sectionDiv);
-		}
-	}
-	
-	
-	// slider setup
-	$(".param").attr({
-		min: function () { return getParam($(this), "min"); },
-		max: function () { return getParam($(this), "max"); },
-		step: function () { return getParam($(this), "step"); },
-		value: function () { return getParam($(this), "value"); }
-	}).on("change", function () {
-		// set the value when moving the slider
-		setParam(params[$(this).attr("name")], $(this).val());
-		return false;	
-	});
-}
-
 function initSliders()
 {
-	var getParam, fxPanel, subPanel, fxlist, fx, parameter, param, section, sectionDiv, subsection, subsectionDiv, i, slider;
-
-	getParam = function (element, param)
-	{
-		var name = element.attr("name");
-		if (params[name] && params[name][param])
-		{
-			return params[name][param];
-		}
-	};
+	var fxPanel, subPanel, fxlist, fx, parameter, param, section, sectionDiv, subsection, subsectionDiv, i, slider;
 
 	// add some sliders to the fx panel
 	fxPanel = $("#fx-panel");
 	subPanel = $("#sub-panel");
-
+	
+	// @todo - refactor into one loop?
 	fxlist = {};
 	for (parameter in params)
 	{
-		// get the three components of the name
+		// get the three components of the name (a-b-c)
 		param = parameter.split("-");
+		
+		// limit length to 3 to avoid lfos... (probably better way)
+		if (param.length != 3) { continue; }
+		
 		if (!(param[0] in fxlist))
 		{
 			fxlist[param[0]] = {};
@@ -272,6 +166,7 @@ function initSliders()
 			fxlist[param[0]][param[1]] = {};
 		}
 		fxlist[param[0]][param[1]][param[2]] = parameter;
+		// the actual entry has the full name
 	}
 
 	// create the fx sections
@@ -287,8 +182,15 @@ function initSliders()
 			$("<h5>").text(initCap(fx)).appendTo(subsection);
 			for (i in fxlist[section][fx])
 			{
+				
 				slider = $("<div>");
 				$("<label>").text(i).appendTo(slider);
+				// might not be the best place to do this
+				// console.log(params[fxlist[section][fx][i]]);
+				if (params[fxlist[section][fx][i]].lfo !== undefined)
+				{
+					$("<button class='lfo-edit'>").text("lfo").attr("name", fxlist[section][fx][i]).appendTo(slider);
+				}
 				$("<input class='param' type='range'>").attr("name", fxlist[section][fx][i]).appendTo(slider);
 				slider.appendTo(subsection);
 			}
@@ -299,7 +201,6 @@ function initSliders()
 		// decide if this goes on the main fx section or the subsection
 		if (["drum", "bass", "master"].indexOf(section) == -1)
 		{
-			// subPanel.append(sectionDiv);
 			$(".editor[name='" + section + "']").append(sectionDiv);
 		}
 		else
@@ -307,31 +208,18 @@ function initSliders()
 			fxPanel.append(sectionDiv);
 		}
 	}
-
-
-	// slider setup
-	$(".param").attr(
+	
+	// LFO sliders
+	for (i = 0; i < lfos.length; i++)
 	{
-		min: function ()
+		sectionDiv = $("<div class='lfo'>").attr("name", lfos[i].slider);
+		["rate", "amount"].forEach(function (name)
 		{
-			return getParam($(this), "min");
-		},
-		max: function ()
-		{
-			return getParam($(this), "max");
-		},
-		step: function ()
-		{
-			return getParam($(this), "step");
-		},
-		value: function ()
-		{
-			return getParam($(this), "value");
-		}
-	}).on("change", function ()
-	{
-		// set the value when moving the slider
-		setParam(params[$(this).attr("name")], $(this).val());
-		return false;
-	});
+			slider = $("<div>");
+			$("<label>").text(name).appendTo(slider);
+			$("<input type='range' class='param'>").attr("name", lfos[i].slider + "-lfo-" + name).appendTo(slider);
+			slider.appendTo(sectionDiv);
+		});
+		sectionDiv.appendTo(document.body);
+	}
 }

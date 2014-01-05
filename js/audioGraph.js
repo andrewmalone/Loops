@@ -3,7 +3,7 @@
 * Creates the audio nodes, fx and routing
 */
 
-/*global context, SOUNDS, tempo: true, setParam */
+/*global context, SOUNDS, tempo: true, setParam, addLFO */
 
 // set up global variables
 var params = {};
@@ -74,7 +74,7 @@ function createAudioGraph()
 		step: 0.01,
 		param: g.input.bass.gain
 	};
-	
+		
 	return g;
 }
 
@@ -131,6 +131,7 @@ function createFilter(name)
 		value: context.sampleRate / 2,
 		param: fx.filter.frequency
 	};
+	addLFO(name + "-filter-frequency");
 	
 	params[name + "-filter-q"] = {
 		min: 1,
@@ -139,6 +140,7 @@ function createFilter(name)
 		value: 1,
 		param: fx.filter.Q
 	};
+	addLFO(name + "-filter-q");
 	
 	params[name + "-filter-mix"] = {
 		min: "0",
@@ -202,6 +204,7 @@ function createDelay(name)
 		value: "0",
 		param: fx.feedback.gain
 	};
+	addLFO(name + "-delay-feedback");
 
 	params[name + "-delay-level"] = {
 		min: "0",
@@ -210,7 +213,8 @@ function createDelay(name)
 		value: "0",
 		param: fx.wet.gain
 	};
-
+	addLFO(name + "-delay-level");
+	
 	return fx;
 }
 
@@ -286,10 +290,10 @@ function createCompressor(name)
 	};
 	
 	// initial values
-	fx.comp.threshold.value = -24;
-	fx.comp.ratio.value = 12;
-	fx.comp.attack.value = 0.0003;
-	fx.comp.release.value = 0.25;
+	fx.comp.threshold.value = 0;
+	fx.comp.ratio.value = 1;
+	fx.comp.attack.value = 0.005;
+	fx.comp.release.value = 0.005;
 	fx.comp.knee.value = 30;
 	
 	// connections
@@ -309,6 +313,7 @@ function createCompressor(name)
 		step: "any",
 		param: fx.comp.threshold
 	};
+	addLFO(name + "-compressor-threshold");
 	
 	params[name + "-compressor-ratio"] = {
 		min: 1,
@@ -317,6 +322,7 @@ function createCompressor(name)
 		value: 1,
 		param: fx.comp.ratio
 	};
+	addLFO(name + "-compressor-ratio");
 	
 	params[name + "-compressor-attack"] = {
 		min: 0.005,
