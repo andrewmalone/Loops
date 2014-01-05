@@ -204,6 +204,7 @@ function createDelay(name)
 		value: "0",
 		param: fx.feedback.gain
 	};
+	addLFO(name + "-delay-feedback");
 
 	params[name + "-delay-level"] = {
 		min: "0",
@@ -212,7 +213,8 @@ function createDelay(name)
 		value: "0",
 		param: fx.wet.gain
 	};
-
+	addLFO(name + "-delay-level");
+	
 	return fx;
 }
 
@@ -311,6 +313,7 @@ function createCompressor(name)
 		step: "any",
 		param: fx.comp.threshold
 	};
+	addLFO(name + "-compressor-threshold");
 	
 	params[name + "-compressor-ratio"] = {
 		min: 1,
@@ -319,6 +322,7 @@ function createCompressor(name)
 		value: 1,
 		param: fx.comp.ratio
 	};
+	addLFO(name + "-compressor-ratio");
 	
 	params[name + "-compressor-attack"] = {
 		min: 0.005,

@@ -3,10 +3,15 @@
 * Contains the document load function that is fired when the page first loads
 */
 
-/*global AudioContext, createAudioGraph, loadSounds, start, stop, render, setupSave, setTempo, initInterface, load */
+/*global AudioContext, createAudioGraph, loadSounds, start, stop, render, setupSave, setTempo, initInterface, load, initLFObuffers, drumInteractions, bassInteractions, drumPatternInteractions, bassPatternInteractions, params, setParam */
 
 // global variable for the audio context
 var context;
+
+// global config variable
+var config = {
+	lfo: false
+};
 
 // Initialize things after the page loads
 $(function () {
@@ -24,6 +29,8 @@ $(function () {
 
 function continueSetup()
 {
+	var getParam;
+	
 	// set up all the buttons
 	$("#play").addInteraction({click: function (data) {
 		if (data.element.text() == "PLAY")

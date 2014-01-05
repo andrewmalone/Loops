@@ -1,4 +1,4 @@
-/*global context */
+/*global context, params, STEPS_PER_BEAT, tempo, config */
 
 var lfo_curves = {};
 // var lfo;
@@ -6,6 +6,7 @@ var lfos = [];
 
 function initLFObuffers()
 {	
+	if (!config.lfo) { return; }
 	["sine", "square", "triangle", "sawtooth", "noise"].forEach(function (type)
 	{
 		var i,
@@ -21,9 +22,10 @@ function initLFObuffers()
 
 function makeLFOCurve(lfo)
 {
-	// amount will be constrained between 1 and -1 (?)
+	// amount will be constrained between 1 and -1
+	
 	lfo.curve = new Float32Array(100);
-	//console.log(lfo);
+	
 	// need current slider value...
 	var p = params[lfo.slider],
 		upper, lower, range, i, lfo_range;
@@ -38,25 +40,16 @@ function makeLFOCurve(lfo)
 	else
 	{
 		upper = parseFloat(p.value);
-		//console.log(parseFloat(p.value) + parseFloat(lfo.amount) * range, parseFloat(p.min));
 		lower = Math.max(parseFloat(p.value) + parseFloat(lfo.amount) * range, parseFloat(p.min));
 	}
 	
 	lfo_range = upper - lower;
-	//console.log("amount: " + lfo.amount);
-	//console.log("upper: " + upper);
-	//console.log("lower: " + lower);
-	//console.log("value: " + p.value);
-	
+
 	// set the curve
 	for (i = 0; i < 100; i++)
 	{
 		lfo.curve[i] = (lfo.amount > 0 ? lfo_curves[lfo.type][i] : 1 - lfo_curves[lfo.type][i]) * lfo_range + lower;
-		//lfo.curve[i] = lfo_curves[lfo.type][i];
 	}
-	
-	//console.log(lfo.curve);
-	
 }
 
 function getLFOSample(type, phase)
@@ -78,67 +71,73 @@ function getLFOSample(type, phase)
 
 function addLFO(p)
 {
+	if (!config.lfo) { return; }
 	var lfo = {};
 	lfo.param = params[p].param;
 	lfo.stepCount = -1;
 	lfo.stepStart = 0;
 	lfo.slider = p;
 	lfo.len = 8;
+	//debugger;
 	lfo.amount = 0;
 	lfo.type = "sine";
+	
 	params[p + "-lfo-rate"] = {
 		max: 32,
 		min: 2,
 		step: 1,
-		value: 8,
+		value: lfo.len,
 		param: function (value)
 		{
-			// console.log(lfo);
-			lfo.len = value;
+			lfo.len = parseFloat(value);
 		}	
 	};
+	
 	params[p + "-lfo-amount"] = {
 		max: 1,
 		min: -1,
 		step: "any",
-		value: "0",
+		value: lfo.amount,
 		name: p,
 		param: function (value)
 		{
-			// console.log(lfo);
-			lfo.amount = value;
+			lfo.amount = parseFloat(value);
 			makeLFOCurve(lfo);
 		}	
 	};
-	//console.log(lfo);
+	
 	makeLFOCurve(lfo);
 	lfos.push(lfo);
 	params[p].lfo = lfo;
-//	return lfo;
 }
 
 function checkLFOs(step, time)
 {
-	//return;
+	if (!config.lfo) { return; }
 	var i,
 		len = lfos.length,
 		stepTime = (60 / STEPS_PER_BEAT) / tempo;
 			
 	for (i = 0; i < len; i++)
 	{
-		// lfos[i].stepCount++;
-		// console.log(lfos[i].stepCount);
-		if (lfos[i].amount !== 0 && (lfos[i].stepCount + 1) % lfos[i].len == 0)
+		if (lfos[i].amount === 0) { continue; }
+		
+		// @todo - stepStart isn't right!
+		if ((lfos[i].stepCount + 1) % lfos[i].len == lfos[i].stepStart)
 		{
-			// schedule it?
-			//console.log(time, time + stepTime * lfos[0].len);
-			//lfos[i].param.cancelScheduledValues(time);
-			lfos[i].param.setValueCurveAtTime(lfos[i].curve, time, stepTime * lfos[i].len - 0.00001);
-			lfos[i].stepCount = 0;
+			// schedule it
+			console.log(step, lfos[i]);
+			lfos[i].param.setValueCurveAtTime(lfos[i].curve, time - 0.00001, stepTime * lfos[i].len - 0.00001);
+			lfos[i].stepCount = lfos[i].stepStart;
 		}
 		else
 		{
 			lfos[i].stepCount++;
 		}
 	}
+}
+
+function resetLFOs()
+{
+	if (!config.lfo) { return; }
 }

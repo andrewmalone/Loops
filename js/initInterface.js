@@ -186,7 +186,7 @@ function initSliders()
 				slider = $("<div>");
 				$("<label>").text(i).appendTo(slider);
 				// might not be the best place to do this
-				console.log(params[fxlist[section][fx][i]]);
+				// console.log(params[fxlist[section][fx][i]]);
 				if (params[fxlist[section][fx][i]].lfo !== undefined)
 				{
 					$("<button class='lfo-edit'>").text("lfo").attr("name", fxlist[section][fx][i]).appendTo(slider);
