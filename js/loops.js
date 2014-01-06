@@ -11,6 +11,7 @@ var context;
 // global config variable
 var config = {
 	lfo: false
+	
 };
 
 // Initialize things after the page loads
@@ -118,31 +119,22 @@ function continueSetup()
 	};
 	
 	// slider setup
-	$(".param").attr(
-	{
-		min: function ()
+	$(".param")
+		.each(function ()
 		{
-			return getParam($(this), "min");
-		},
-		max: function ()
+			var element = $(this);
+			["min", "max", "step", "value"].forEach(function (param)
+			{
+				var value = getParam(element, param);
+				element.attr(param, value);
+			});
+		})
+		.on("change", function ()
 		{
-			return getParam($(this), "max");
-		},
-		step: function ()
-		{
-			return getParam($(this), "step");
-		},
-		value: function ()
-		{
-			return getParam($(this), "value");
-		}
-	}).on("change", function ()
-	{
-		// set the value when moving the slider
-		// console.log($(this).attr("name"));
-		setParam(params[$(this).attr("name")], $(this).val());
-		return false;
-	});
+			// set the value when moving the slider
+			setParam(params[$(this).attr("name")], $(this).val());
+			return false;
+		});
 	
 	// load a pattern depending on url params
 	if (location.hash !== "")
