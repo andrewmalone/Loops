@@ -3,7 +3,8 @@
 * Contains the document load function that is fired when the page first loads
 */
 
-/*global AudioContext, createAudioGraph, loadSounds, start, stop, render, setupSave, setTempo, initInterface, load, initLFObuffers, drumInteractions, bassInteractions, drumPatternInteractions, bassPatternInteractions, params, setParam */
+
+/*global AudioContext, createAudioGraph, loadSounds, start, stop, render, setupSave, setTempo, initInterface, load, initLFObuffers, drumInteractions, bassInteractions, drumPatternInteractions, bassPatternInteractions, params, setParam, tempo */
 
 // global variable for the audio context
 var context;
@@ -53,9 +54,11 @@ function continueSetup()
 		data.element.text(text);
 	}});
 	
-	$("#tempo").on("change", function () {
-		setTempo($(this).val());
-	});
+	$("#tempo")
+		.on("change", function () {
+			setTempo($(this).val());
+			$("output[for='tempo']").val($(this).val());
+		});
 	
 	$("#modal-close").addInteraction({click: function () {
 		$("#modal").removeClass("active");
@@ -118,31 +121,30 @@ function continueSetup()
 	};
 	
 	// slider setup
-	$(".param").attr(
-	{
-		min: function ()
+	$(".param")
+		.each(function ()
 		{
-			return getParam($(this), "min");
-		},
-		max: function ()
+			var element = $(this);
+			["min", "max", "step", "value"].forEach(function (param)
+			{
+				var value = getParam(element, param);
+				element.attr(param, value);
+			});
+			
+			// add output element
+			element.after(
+				$("<output>").attr("for", element.attr("name")).val(element.val())
+			);
+		})
+		.on("change", function ()
 		{
-			return getParam($(this), "max");
-		},
-		step: function ()
-		{
-			return getParam($(this), "step");
-		},
-		value: function ()
-		{
-			return getParam($(this), "value");
-		}
-	}).on("change", function ()
-	{
-		// set the value when moving the slider
-		// console.log($(this).attr("name"));
-		setParam(params[$(this).attr("name")], $(this).val());
-		return false;
-	});
+			var name = $(this).attr("name"),
+				val = $(this).val();
+			// set the value when moving the slider
+			setParam(params[name], val);
+			$("output[for='" + name + "']").val(Math.round(val * 100) / 100);
+			return false;
+		});
 	
 	// load a pattern depending on url params
 	if (location.hash !== "")
