@@ -141,8 +141,7 @@ function continueSetup()
 			var name = $(this).attr("name"),
 				val = $(this).val();
 			// set the value when moving the slider
-			setParam(params[name], val);
-			$("output[for='" + name + "']").val(Math.round(val * 100) / 100);
+			setParam(params[name], val, name);
 			return false;
 		});
 	

@@ -40,7 +40,7 @@ function load()
 				$(".param[name='" + param + "']").val(data.fxParams[param]);
 				
 				// update the param
-				setParam(params[param], data.fxParams[param]);	
+				setParam(params[param], data.fxParams[param], param);	
 			}
 			
 			// update the tempo
