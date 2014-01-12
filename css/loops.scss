@@ -251,6 +251,10 @@ $pattern-background: #eee;
 }
 output {
 	font-size:.8em;
+	width:3em;
+	display:inline-block;
+	text-align: center;
+	border:1px solid #cca;
 	
 }
 

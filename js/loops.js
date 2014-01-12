@@ -3,6 +3,7 @@
 * Contains the document load function that is fired when the page first loads
 */
 
+
 /*global AudioContext, createAudioGraph, loadSounds, start, stop, render, setupSave, setTempo, initInterface, load, initLFObuffers, drumInteractions, bassInteractions, drumPatternInteractions, bassPatternInteractions, params, setParam, tempo */
 
 // global variable for the audio context
@@ -11,7 +12,6 @@ var context;
 // global config variable
 var config = {
 	lfo: false
-	
 };
 
 // Initialize things after the page loads
@@ -141,8 +141,7 @@ function continueSetup()
 			var name = $(this).attr("name"),
 				val = $(this).val();
 			// set the value when moving the slider
-			setParam(params[name], val);
-			$("output[for='" + name + "']").val(Math.round(val * 100) / 100);
+			setParam(params[name], val, name);
 			return false;
 		});
 	

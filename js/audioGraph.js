@@ -325,18 +325,18 @@ function createCompressor(name)
 	addLFO(name + "-compressor-ratio");
 	
 	params[name + "-compressor-attack"] = {
-		min: 0.005,
+		min: 0.01,
 		max: 1,
 		step: "any",
-		value: 0.005,
+		value: 0.01,
 		param: fx.comp.attack
 	};
 	
 	params[name + "-compressor-release"] = {
-		min: 0.005,
+		min: 0.01,
 		max: 1,
 		step: "any",
-		value: 0.005,
+		value: 0.01,
 		param: fx.comp.release
 	};
 	

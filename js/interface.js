@@ -11,7 +11,7 @@ var saveName = "";
 /**
 * Sets an fx paramater (usually called when a slider changes)
 */
-function setParam(p, value)
+function setParam(p, value, name)
 {
 	if (typeof(p.param) == "function")
 	{
@@ -27,7 +27,9 @@ function setParam(p, value)
 			makeLFOCurve(p.lfo);
 		}
 	}
+	$("output[for='" + name + "']").val(Math.round(value * 100) / 100);
 }
+
 
 /**
 * Draw the current drum pattern into the drum grid
