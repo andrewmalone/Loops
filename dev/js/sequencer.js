@@ -266,3 +266,38 @@ function createDrumPattern(name)
 	};
 	return pattern;
 }
+
+/**
+* Creates an empty bass pattern
+*/
+function createBassPattern()
+{
+	var pattern = [], i;
+	for (i = 0; i < NUMSTEPS; i++)
+	{
+		pattern[i] = {
+			note: 0,
+			volume: 0.8,
+			duration: 1
+		};
+	}
+	return pattern;
+}
+
+/**
+* Utility functions for converting to seconds (based on the current tempo)
+*/
+function seconds_per_step()
+{
+	return (60 / STEPS_PER_BEAT) / tempo;
+}
+
+function seconds_per_beat()
+{
+	return 60 / tempo;
+}
+
+function seconds_per_measure()
+{
+	return 60 / tempo * BEATS_PER_MEASURE;
+}
