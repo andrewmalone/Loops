@@ -341,3 +341,21 @@ function createBassPattern()
 	}
 	return pattern;
 }
+
+/**
+* Utility functions for converting to seconds (based on the current tempo)
+*/
+function seconds_per_step()
+{
+	return (60 / STEPS_PER_BEAT) / tempo;
+}
+
+function seconds_per_beat()
+{
+	return 60 / tempo;
+}
+
+function seconds_per_measure()
+{
+	return 60 / tempo * BEATS_PER_MEASURE;
+}
