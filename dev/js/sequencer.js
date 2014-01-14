@@ -97,6 +97,7 @@ function start()
 function stop()
 {
 	cancelAnimFrame(looper);
+	looper = null;
 	currentStep = 0;
 	scheduledSounds = [];
 	$(".sequence .active").removeClass("active");
