@@ -169,7 +169,7 @@ function playBassSound(buffer, time, volume, duration, pitch, tune)
  */
 function loop()
 {
-	var steps, volumes, bass, stepTime, i, name, len_i, j, len_j, note, currentDrawStep;
+	var steps, volumes, bass, stepTime, i, name, len_i, j, len_j, note, currentDrawStep, event;
 	
 	looper = requestAnimFrame(loop);
 	steps = drumPatterns[currentDrumPattern].steps;
@@ -231,6 +231,15 @@ function loop()
 		
 		// LFOs
 		checkLFOs(currentStep, nextStepTime);
+		event = new CustomEvent('triggerStep',
+			{
+				detail: {
+					step: currentStep,
+					time: nextStepTime
+				}
+			}
+		);
+		document.dispatchEvent(event);
 		
 		drawingQueue.push({step: currentStep, time: nextStepTime});
 		nextStepTime += stepTime; 
