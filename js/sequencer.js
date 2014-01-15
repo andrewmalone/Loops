@@ -4,7 +4,7 @@
  * functions for looping and audio playback
  */
 
-/*global context, buffers, setActiveSequence, switchActivePattern, SOUNDS, requestAnimFrame, cancelAnimFrame, BASS_MAPPING, drawStep, resetLFOs, checkLFOs */
+/*global context, buffers, setActiveSequence, switchActivePattern, SOUNDS, requestAnimFrame, cancelAnimFrame, BASS_MAPPING, drawStep, resetLFOs, checkLFOs, checkShuffler */
 
 // set some global variables
 var BEATS_PER_MEASURE = 4;
@@ -232,6 +232,9 @@ function loop()
 		
 		// LFOs
 		checkLFOs(currentStep, nextStepTime);
+		
+		// shuffler
+		checkShuffler(currentStep, nextStepTime);
 		
 		drawingQueue.push({step: currentStep, time: nextStepTime});
 		nextStepTime += stepTime; 

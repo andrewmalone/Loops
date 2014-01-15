@@ -11,7 +11,8 @@ var context;
 
 // global config variable
 var config = {
-	lfo: false
+	lfo: true,
+	shuffler: true
 };
 
 // Initialize things after the page loads
