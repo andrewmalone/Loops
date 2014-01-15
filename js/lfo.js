@@ -113,6 +113,7 @@ function addLFO(p)
 
 function checkLFOs(step, time)
 {
+	// @todo - try with event model instead!
 	if (!config.lfo) { return; }
 	var i,
 		len = lfos.length,
