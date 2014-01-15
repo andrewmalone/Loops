@@ -3,6 +3,8 @@
 * Creates the audio nodes, fx and routing
 */
 
+/*global context, SOUNDS, tempo: true, setParam, addLFO, createShuffler */
+
 // set up global variables
 var params = {};
 // curves to use for the waveshaper;
@@ -41,13 +43,23 @@ function createAudioGraph()
 			param: g.input.drum[sound.name].gain
 		};
 	});
+	g.shuffler = createShuffler();
 	
 	// build connections
 	g.drumMaster.connect(g.drumMasterFx.input);
 	g.drumMasterFx.output.connect(g.master);
 		
 	g.master.connect(g.masterFx.input);
-	g.masterFx.output.connect(g.output);
+
+	if (g.shuffler !== null)
+	{
+		g.masterFx.output.connect(g.shuffler.input);
+		g.shuffler.output.connect(g.output);	
+	}
+	else
+	{
+		g.masterFx.output.connect(g.output);
+	}
 	
 	g.output.connect(context.destination);
 	
