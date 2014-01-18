@@ -11,7 +11,7 @@ var context;
 
 // global config variable
 var config = {
-	lfo: false
+	lfo: true
 };
 
 // Initialize things after the page loads

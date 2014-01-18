@@ -233,7 +233,7 @@ function loop()
 		}
 		
 		// LFOs
-		checkLFOs(currentStep, nextStepTime);
+		//checkLFOs(currentStep, nextStepTime);
 		event = new CustomEvent('triggerStep',
 			{
 				detail: {

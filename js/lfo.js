@@ -109,6 +109,32 @@ function addLFO(p)
 	makeLFOCurve(lfo);
 	lfos.push(lfo);
 	params[p].lfo = lfo;
+	
+	document.addEventListener('triggerStep', checkLFO(lfo));
+}
+
+function checkLFO(lfo)
+{
+	var fn = function (e)
+	{
+		if (lfo.amount === 0) { return; }
+		
+		var time = e.detail.time,
+			step = e.detail.step,
+			stepTime = (60 / STEPS_PER_BEAT) / tempo;
+			
+		if ((lfo.stepCount + 1) % lfo.len === 0)
+		{
+			// schedule it
+			lfo.param.setValueCurveAtTime(lfo.curve, time - 0.00001, stepTime * lfo.len - 0.00001);
+			lfo.stepCount = 0;
+		}
+		else
+		{
+			lfo.stepCount++;
+		}
+	};
+	return fn;
 }
 
 function checkLFOs(step, time)
