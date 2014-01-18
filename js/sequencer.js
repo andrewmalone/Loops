@@ -4,7 +4,7 @@
  * functions for looping and audio playback
  */
 
-/*global context, buffers, setActiveSequence, switchActivePattern, SOUNDS, requestAnimFrame, cancelAnimFrame, BASS_MAPPING, drawStep, resetLFOs, checkLFOs */
+/*global context, buffers, setActiveSequence, switchActivePattern, SOUNDS, requestAnimFrame, cancelAnimFrame, BASS_MAPPING, drawStep, resetLFOs, checkLFOs, CustomEvent */
 
 // set some global variables
 var BEATS_PER_MEASURE = 4;
@@ -205,6 +205,9 @@ function loop()
 						if (scheduledSounds[j].buffer._mute == buffers[name]._mute) 
 						{
 							scheduledSounds[j].stop(nextStepTime + 5 / tempo);
+							scheduledSounds.splice(j, 1);
+							j--;
+							len_j--;
 						}
 					}
 				}
