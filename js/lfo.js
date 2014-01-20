@@ -137,32 +137,6 @@ function checkLFO(lfo)
 	return fn;
 }
 
-function checkLFOs(step, time)
-{
-	// @todo - try with event model instead!
-	if (!config.lfo) { return; }
-	var i,
-		len = lfos.length,
-		stepTime = (60 / STEPS_PER_BEAT) / tempo;
-			
-	for (i = 0; i < len; i++)
-	{
-		if (lfos[i].amount === 0) { continue; }
-		
-		// @todo - stepStart isn't right!
-		if ((lfos[i].stepCount + 1) % lfos[i].len == lfos[i].stepStart)
-		{
-			// schedule it
-			console.log(step, lfos[i]);
-			lfos[i].param.setValueCurveAtTime(lfos[i].curve, time - 0.00001, stepTime * lfos[i].len - 0.00001);
-			lfos[i].stepCount = lfos[i].stepStart;
-		}
-		else
-		{
-			lfos[i].stepCount++;
-		}
-	}
-}
 
 function resetLFOs()
 {

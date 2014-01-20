@@ -210,6 +210,7 @@ function initSliders()
 	}
 	
 	// LFO sliders
+	// @todo - remove global variable here?
 	for (i = 0; i < lfos.length; i++)
 	{
 		sectionDiv = $("<div class='lfo'>").attr("name", lfos[i].slider);
