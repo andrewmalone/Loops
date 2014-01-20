@@ -4,7 +4,7 @@
  * functions for looping and audio playback
  */
 
-/*global context, buffers, setActiveSequence, switchActivePattern, SOUNDS, requestAnimFrame, cancelAnimFrame, BASS_MAPPING, drawStep, resetLFOs, checkLFOs, checkShuffler */
+/*global context, buffers, setActiveSequence, switchActivePattern, SOUNDS, requestAnimFrame, cancelAnimFrame, BASS_MAPPING, drawStep, resetLFOs, checkLFOs, CustomEvent */
 
 // set some global variables
 var BEATS_PER_MEASURE = 4;
@@ -170,7 +170,7 @@ function playBassSound(buffer, time, volume, duration, pitch, tune)
  */
 function loop()
 {
-	var steps, volumes, bass, stepTime, i, name, len_i, j, len_j, note, currentDrawStep;
+	var steps, volumes, bass, stepTime, i, name, len_i, j, len_j, note, currentDrawStep, event;
 	
 	looper = requestAnimFrame(loop);
 	steps = drumPatterns[currentDrumPattern].steps;
@@ -206,6 +206,9 @@ function loop()
 						if (scheduledSounds[j].buffer._mute == buffers[name]._mute) 
 						{
 							scheduledSounds[j].stop(nextStepTime + 5 / tempo);
+							scheduledSounds.splice(j, 1);
+							j--;
+							len_j--;
 						}
 					}
 				}
@@ -232,6 +235,15 @@ function loop()
 		
 		// LFOs
 		checkLFOs(currentStep, nextStepTime);
+		event = new CustomEvent('triggerStep',
+			{
+				detail: {
+					step: currentStep,
+					time: nextStepTime
+				}
+			}
+		);
+		document.dispatchEvent(event);
 		
 		// shuffler
 		checkShuffler(currentStep, nextStepTime);
