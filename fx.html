@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+<title>Fx section</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<!-- @reload -->
+<!-- @stylesheet loops -->
+<style>
+.fx, .fx-item, header {
+    border: 1px solid black;
+}
+.filter-display, .lfo-display {
+	width: 100px;
+	height: 50px;
+	border:1px solid black;
+}
+.fx {
+	display:inline-flex;
+}
+.fx > div {
+
+}
+
+header {
+	display:flex;
+	align-items: center;
+	justify-content: space-between;
+	margin:0;
+	padding:0;
+}
+h2, h3, h4, h5 {
+	margin:0;
+	padding:0;
+}
+label {
+
+}
+
+</style>
+</head>
+<body>
+<div class="fx">
+	<div class="filter fx-item">
+		<header>
+		<h3>Filter</h3>
+		<div>
+		<label>mix</label>
+		<input class="param" type="range">
+		<output value="1">1</output>
+		</div>
+		<button>on</button>
+		</header>
+        <div class="fx-content">        
+            <div class="filter-main">
+                <div class="filter-buttons">
+                <button>LP</button>
+                <button>HP</button>
+                <button>BP</button>
+                <button>BR</button>
+                </div>
+        		<svg class="filter-display"></svg>
+            </div>
+            <div class="filter-sub">
+                <div class="filter-lfo">
+    		      <h4>Frequency LFO</h4>
+                  <div class="lfo-buttons">
+                      <button>sin</button>
+                      <button>sq</button>
+                      <button>tri</button>
+                      <button>saw</button>
+                  </div>
+                  <svg class="lfo-display"></svg>
+                  <div class="lfo-control">
+                  	<div><label>speed</label>
+					  <input type="range"><output>1</output></div>
+					<div><label>amount</label>
+					<input type="range"><output>-1</output></div>
+					<div><label>offset</label>
+					<input type="range"><output>0</output></div>
+                  </div>
+                </div>
+                <div class="filter-lfo">
+                    <h4>Q LFO</h4>
+                  <div class="lfo-buttons">
+                      <button>sin</button>
+                      <button>sq</button>
+                      <button>tri</button>
+                      <button>saw</button>
+                  </div>
+                  <svg class="lfo-display"></svg>
+                  <div class="lfo-control">
+                  	<div><label>speed</label>
+					  <input type="range"><output>1</output></div>
+					<div><label>amount</label>
+					<input type="range"><output>-1</output></div>
+					<div><label>offset</label>
+					<input type="range"><output>0</output></div>
+                  </div>
+                </div>
+            </div>
+		</div>
+	</div>
+	<div class="delay fx-item">
+		<header>
+		<h3>Delay</h3>
+		<button>on</button>
+		</header>
+	</div>
+</div></body>
+</html>
