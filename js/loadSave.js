@@ -70,7 +70,7 @@ function load()
 					text = "";
 					if (sequence.length > 1 || sequence[0] !== 0)
 					{
-						text = i + 1;
+						text = sequence[i] + 1;
 					}
 					element.text(text).removeClass("closed").addClass("open");
 					
