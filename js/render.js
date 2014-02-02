@@ -67,6 +67,9 @@ function render()
 						if (scheduledSounds[j].buffer._mute == buffers[name]._mute) 
 						{
 							scheduledSounds[j].stop(time + 5 / tempo);
+							scheduledSounds.splice(j, 1);
+							j--;
+							len_j--;
 						}
 					}
 					playDrumSound(buffers[name], time, volumes[i][step]);
