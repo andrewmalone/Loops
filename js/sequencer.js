@@ -15,26 +15,20 @@ var SEQUENCE_LENGTH = 8;
 
 // create a default empty drum and bass pattern
 var drumPatterns = [];
-var bassPatterns = [];
 for (var i = 0; i < NUMPATTERNS; i++)
 {
 	drumPatterns.push(createDrumPattern());
-	bassPatterns.push(createBassPattern());
 }
 
 // modes for switching loop/sequence
-var bassMode = "loop";
 var drumMode = "loop";
 
 // initialize the sequences
 var drumSequence = [0];
 var drumSequencePosition = 0;
-var bassSequence = [0];
-var bassSequencePosition = 0;
 
 // set the current pattern to the default
 var currentDrumPattern = 0;
-var currentBassPattern = 0;
 
 // sequencer variables
 var currentStep = 0;
@@ -94,12 +88,6 @@ function start()
 		setActiveSequence(0, "drum");
 		switchActivePattern(drumSequence[0], "drum");
 	}
-	if (bassMode == "sequence")
-	{
-		bassSequencePosition = 0;
-		setActiveSequence(0, "bass");
-		switchActivePattern(bassSequence[0], "bass");
-	}
 	
 	// start looping
 	looper = requestAnimFrame(loop);
@@ -115,6 +103,7 @@ function stop()
 	scheduledSounds = [];
 	$(".sequence .active").removeClass("active");
 	$(".playing").removeClass("playing");
+	// @todo - broadcast an event here
 	resetLFOs();
 }
 
@@ -138,43 +127,15 @@ function playDrumSound(buffer, time, volume)
 }
 
 /**
-* Schedules an individual bass sound for playback
-*/
-function playBassSound(buffer, time, volume, duration, pitch, tune)
-{
-	var source, v, step;
-	source = context.createBufferSource();
-	source.buffer = buffer;
-	v = context.createGain();
-	v.gain.value = volume;
-	// set release value for smoother playback
-	v.gain.setTargetAtTime(0, time + duration, 0.005);
-	source.connect(v);
-	v.connect(context.graph.input.bass);
-	
-	// set the tuning 
-	// step = 1 semitone (based on 1 - Math.pow(1, 1/12);
-	// see http://chimera.labs.oreilly.com/books/1234000001552/ch04.html#s04_2
-	// @todo - try changing this to exponential instead of linear
-	step = 0.059463094359295;
-	
-	source.playbackRate.value = 1 + (step / 100 * tune) + (step * pitch);
-	source.start(time);
-	// stop time is slightly delayed to let the release finish
-	source.stop(time + duration + 0.1);
-}
-
-/**
  *	Main loop controller
  */
 function loop()
 {
-	var steps, volumes, bass, stepTime, i, name, len_i, j, len_j, note, currentDrawStep, event;
+	var steps, volumes, stepTime, i, name, len_i, j, len_j, currentDrawStep, event;
 	
 	looper = requestAnimFrame(loop);
 	steps = drumPatterns[currentDrumPattern].steps;
 	volumes = drumPatterns[currentDrumPattern].volumes;
-	bass = bassPatterns[currentBassPattern];
 	// calculate the step time based on the current tempo...
 	stepTime = (60 / STEPS_PER_BEAT) / tempo;
 	
@@ -216,21 +177,7 @@ function loop()
 				playDrumSound(buffers[name], nextStepTime, volumes[i][currentStep]);
 			}
 		}
-		
-		// check for the bass...
-		if (bass[currentStep].note !== 0)
-		{
-			// play the note...
-			note = BASS_MAPPING[bass[currentStep].note];
-			playBassSound(
-				buffers[note.sample],
-				nextStepTime,
-				bass[currentStep].volume,
-				bass[currentStep].duration * stepTime,
-				note.pitch,
-				note.tune
-			);
-		}
+
 		
 		// LFOs
 		checkLFOs(currentStep, nextStepTime);
@@ -261,16 +208,6 @@ function loop()
 				}
 				currentDrumPattern = drumSequence[drumSequencePosition];
 			}
-			
-			if (bassMode == "sequence")
-			{
-				bassSequencePosition = (bassSequencePosition + 1) % bassSequence.length;
-				if (bassSequence[bassSequencePosition] === null)
-				{
-					bassSequencePosition = 0;
-				}
-				currentBassPattern = bassSequence[bassSequencePosition];
-			}
 		}
 	}
 	
@@ -290,11 +227,6 @@ function loop()
 			{
 				setActiveSequence(drumSequencePosition, "drum");
 				switchActivePattern(drumSequence[drumSequencePosition], "drum");
-			}
-			if (bassMode == "sequence")
-			{
-				setActiveSequence(bassSequencePosition, "bass");
-				switchActivePattern(bassSequence[bassSequencePosition], "bass");
 			}
 		}
 		drawStep(currentDrawStep);
@@ -333,22 +265,5 @@ function createDrumPattern(name)
 		volumes: createDrumMeasure(0.8),
 		rowVolumes: []
 	};
-	return pattern;
-}
-
-/**
-* Creates an empty bass pattern
-*/
-function createBassPattern()
-{
-	var pattern = [], i;
-	for (i = 0; i < NUMSTEPS; i++)
-	{
-		pattern[i] = {
-			note: 0,
-			volume: 0.8,
-			duration: 1
-		};
-	}
 	return pattern;
 }

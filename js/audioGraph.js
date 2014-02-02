@@ -19,15 +19,13 @@ function createAudioGraph()
 	// set up the main nodes
 	var g = {
 		input: {
-			drum: {},
-			bass: context.createGain()
+			drum: {}
 		},
 		drumFx: [],
 		output: context.createGain(),
 		master: context.createGain(),
 		drumMaster: context.createGain(),
 		drumMasterFx: createFx("drum"),
-		bassFx: createFx("bass"),
 		masterFx: createFx("master")
 	};
 	
@@ -49,10 +47,7 @@ function createAudioGraph()
 	// build connections
 	g.drumMaster.connect(g.drumMasterFx.input);
 	g.drumMasterFx.output.connect(g.master);
-	
-	g.input.bass.connect(g.bassFx.input);
-	g.bassFx.output.connect(g.master);
-	
+		
 	g.master.connect(g.masterFx.input);
 	g.masterFx.output.connect(g.output);
 	
@@ -65,14 +60,6 @@ function createAudioGraph()
 		value: 1,
 		step: 0.01,
 		param: g.drumMaster.gain
-	};
-	
-	params["bass-master-level"] = {
-		max: 1,
-		min: "0",
-		value: 1,
-		step: 0.01,
-		param: g.input.bass.gain
 	};
 		
 	return g;
