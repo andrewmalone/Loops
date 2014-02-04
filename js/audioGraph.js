@@ -71,15 +71,13 @@ function createAudioGraph()
 function createFx(name)
 {
 	var fx = {
-		comp: createCompressor(name),
 		filter: createFilter(name),
 		delay: createDelay(name),
 		shaper: createShaper(name)
 	};
 	
 	fx.input = fx.filter.input;
-	fx.filter.output.connect(fx.comp.input);
-	fx.comp.output.connect(fx.delay.input);
+	fx.filter.output.connect(fx.delay.input);
 	fx.delay.output.connect(fx.shaper.input);
 	fx.output = fx.shaper.output;
 	return fx;
