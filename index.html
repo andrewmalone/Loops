@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 <!-- @reload -->
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
 <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro' rel='stylesheet' type='text/css'>
 <!-- @stylesheet loops -->
 <!-- @javascript AudioContextMonkeyPatch -->
@@ -57,5 +58,24 @@
 
 <div id="editors"></div>
 <div id="lfos"></div>
+
+<script id="drum-editor-template" type="text/html">
+<div class="editor" name="{{name}}">
+	<header>
+		<h3>{{hname}}</h3>		
+	</header>
+	<div class="editor-section">
+		<header>
+		<h4>Level</h4>
+		</header>
+	</div>
+	<div class="editor-section">
+		<header>
+		<h4>Filter</h4>
+		</header>
+	</div>
+</div>
+</script>
+
 </body>
 </html>
