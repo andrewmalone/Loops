@@ -64,15 +64,23 @@
 	<header>
 		<h3>{{hname}}</h3>		
 	</header>
-	<div class="editor-section">
-		<header>
-		<h4>Level</h4>
-		</header>
-	</div>
-	<div class="editor-section">
-		<header>
-		<h4>Filter</h4>
-		</header>
+	<div class="sections">
+		<div class="editor-section">
+			<header>
+			<h4>Level</h4>
+			</header>
+		</div>
+		<div class="editor-section">
+			<header>
+			<h4>Filter</h4>
+			<div>
+				<label>mix</label><input type="range" class="param" name="{{name}}-filter-mix">
+			</div>
+			<button>on</button>
+			</header>
+			<svg></svg>
+			<label>freq</label><input type="range" class="param" name="{{name}}-filter-frequency">
+		</div>
 	</div>
 </div>
 </script>

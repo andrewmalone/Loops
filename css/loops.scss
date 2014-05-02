@@ -382,13 +382,27 @@ button {
 	bottom: 15%;
 	display:none;
 	z-index:3;
-	.fx-wrapper {
+	.sections {
 		@include flexbox;
-		@include flex-wrap(wrap);
 	}
 	&.active {
 		display:block;
 	}
+	h3, h4 {
+		margin:0;
+	}
+	header {
+		padding:0;
+		@include flexbox;
+	}
+	svg {
+		width:5em;
+		height:3em;
+	}
+}
+
+.editor-section {
+	border:1px solid black;
 }
 
 // background for lfo editors
