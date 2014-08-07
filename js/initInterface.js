@@ -16,7 +16,7 @@ function initInterface()
 	initDrumGrid();
 	initPatterns();
 	initSequence();
-	// initSliders();
+	initSliders();
 }
 
 /**
@@ -24,7 +24,7 @@ function initInterface()
 */
 function initDrumGrid()
 {
-	var seq, labels, grid, row, label, button, cell, i, j, len;
+	var seq, labels, grid, row, label, button, editor, cell, i, j, len;
 	seq = $("#drumseq");
 	labels = $("<div id='drum-labels'>");
 	grid = $("<div id='drum-grid'>");
@@ -34,11 +34,9 @@ function initDrumGrid()
 		label = $("<div class='label'>").text(SOUNDS[i].name);
 		button = $("<button class='drum-edit'>").text("E").attr("name", SOUNDS[i].name);
 		label.append(button).appendTo(labels);
-		
 		// add a edit window...
-		//editor = $("<div class='editor'>").attr("name", SOUNDS[i].name);
-		//$(document.body).append(editor);
-		initEditor(SOUNDS[i].name);
+		editor = $("<div class='editor'>").attr("name", SOUNDS[i].name);
+		$(document.body).append(editor);
 		
 		//labels.append(label);
 		for (j = 0; j < NUMSTEPS; j++)
@@ -49,20 +47,6 @@ function initDrumGrid()
 		grid.append(row);
 	}
 	seq.append(labels).append(grid);
-}
-
-function initEditor(name)
-{
-	var editor = {
-		name: name,
-		hname: initCap(name)
-	};
-	
-	$.Mustache.addFromDom('drum-editor-template');
-	$(document.body).mustache('drum-editor-template', editor);
-	//editor = $("<div class='editor'>").attr("name", name);
-	//editor.append($("<h4>").text(name));
-	//$(document.body).append(editor);
 }
 
 /**
