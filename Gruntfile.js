@@ -20,10 +20,8 @@ module.exports = function(grunt) {
 	
 	grunt.util._.extend(config, loadConfig('./tasks/options/'));
 	grunt.initConfig(config);
-    // 4. Where we tell Grunt what to do when we type "grunt" into the terminal.
+
     require('load-grunt-tasks')(grunt);
 	grunt.registerTask('default', ['copy']);
 	
-	//grunt.registerTask('publish', ['sass', 'autoprefixer', 'shell:jekyllPublish']);
-
 };
