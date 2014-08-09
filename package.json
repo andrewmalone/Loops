@@ -1,0 +1,9 @@
+{
+  "name": "example-project",
+  "version": "0.1.0",
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-copy": "^0.5.0",
+    "grunt-contrib-sass": "^0.7.3"
+  }
+}
