@@ -1,6 +1,6 @@
 module.exports = {
 	main: {
-		        src: ['*.html', '!_*'],
-		        dest: 'dest/'
+		        src: ['*.html', '!_*', 'Ruffrider/**'],
+		        dest: 'build/'
 	        }
 }
