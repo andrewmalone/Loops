@@ -1,7 +1,8 @@
 module.exports = {
 	server: {
 		options: {
-			keepalive: true
+			base: 'build',
+			open: true
 		}
 	}
 }
