@@ -1,7 +1,6 @@
 // @todo fix output styles
 
 @import "bourbon";
-@import "flex";
 @import "slider";
 
 $border-color: #666;
@@ -16,22 +15,26 @@ $control-height: 2.5rem;
 }
 
 * {
-	@include box-sizing(border-box);
+	box-sizing: border-box;
 }
+
 html {
 	height:100%;
 }
+
 body {
 	font-family: 'Source Sans Pro', Arial;
 	padding: 0;
 	margin: 0;
 	height:100%
 }
+
 #wrapper {
 	position:absolute;
 	width:100%;
 	overflow-x: hidden;
 }
+
 h2.name {
 	position:absolute;
 	top: $control-height;
@@ -41,28 +44,34 @@ h2.name {
 	font-size: 1.3em;
 	font-weight: normal;
 }
+
 #drumseq, #bseq {
-    @include flexbox;
+    display:flex;
     font-size:.8em;
     padding:.2em;
     width: 60%;
     float:left;
 }
+
 #drum-grid, #bass-grid {
-    @include flex(1);
+    flex:1;
     border: $border;
 }
+
 #drum-labels, #bass-labels {
 	width: 5em;
 }
+
 .row {
-    @include flexbox;
+    display:flex;
     border-bottom: $border-light;
     height: 1.2em;
 }
+
 .row:last-child {
 	border-bottom-width: 0;
 }
+
 .label {
     height: 1.2em;
     text-align: right;
@@ -86,23 +95,27 @@ $note-playing-color: complement($note-color);
 }
 
 .cell {
-    @include flex(1);
+    flex: 1;
 	border-left: $border-light;
 	position:relative;
 	background: $cell-color;
 }
+
 .cell:nth-of-type(4n + 1) {
 	border-left: $border;
 }
+
 .cell:first-child {
 	border-left-width: 0;
 }
+
 .cell-inner {
 	position:absolute;
 	height:100%;
 	left:0;
 	right:0;
 }
+
 .cell-inner.on {
 	border:1px solid darken($note-color,20%);
 	background:#fff;
@@ -216,7 +229,7 @@ $pattern-background: #eee;
     width: 100%;
     height: 100%;
     z-index:2;
-    @include flexbox;
+    display: flex;
     @include transform(translate3d(101%,0,0));
     @include transition-property(transform);
     @include transition-duration(.4s);
@@ -230,7 +243,7 @@ $pattern-background: #eee;
 
 .fx-section {
     //float: left;
-    @include flex(1);
+    flex: 1;
     margin: 1em;
     padding:.5em 1em;
     h4 {
@@ -384,8 +397,8 @@ button {
 	display:none;
 	z-index:3;
 	.fx-wrapper {
-		@include flexbox;
-		@include flex-wrap(wrap);
+		display: flex;
+		flex-wrap: wrap;
 	}
 	&.active {
 		display:block;
@@ -419,8 +432,8 @@ button {
 	display:none;
 	z-index:4;
 	.fx-wrapper {
-		@include flexbox;
-		@include flex-wrap(wrap);
+		display: flex;
+		flex-wrap: wrap;
 	}
 	&.active {
 		display:block;
