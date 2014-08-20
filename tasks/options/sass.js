@@ -1,7 +1,7 @@
 module.exports = {
 		    dist: {
 		      options: {
-			    style: 'compressed',
+			    style: 'nested',
 			    loadPath: require('node-bourbon').includePaths 
 		      },
 		      files: [{
