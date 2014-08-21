@@ -3,8 +3,6 @@
 * loads all sounds into the buffers object for use in playback
 */
 
-/*global SOUNDS, BASS_SOUNDS, announce, continueSetup, context */
-
 // global object to hold the loaded sounds
 var buffers = {};
 
@@ -36,12 +34,8 @@ function loadSounds()
 		loadSound(sound);
 	});
 	
-	BASS_SOUNDS.forEach(function (sound) {
-		loadSound({name: sound, source: "Samples/" + sound + type});
-	});
-	
 	// wait for all sounds to be loaded before returning
-	soundCount = SOUNDS.length + BASS_SOUNDS.length;
+	soundCount = SOUNDS.length;
 	// temporarily hide the button in the modal
 	$("#modal-close").css("display", "none");
 	announce("Loading sounds...");

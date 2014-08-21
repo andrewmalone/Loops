@@ -1,6 +1,5 @@
 // @todo fix output styles
 
-@import "flex";
 @import "slider";
 
 $border-color: #666;
@@ -15,22 +14,26 @@ $control-height: 2.5rem;
 }
 
 * {
-	@include box-sizing(border-box);
+	box-sizing: border-box;
 }
+
 html {
 	height:100%;
 }
+
 body {
 	font-family: 'Source Sans Pro', Arial;
 	padding: 0;
 	margin: 0;
 	height:100%
 }
+
 #wrapper {
 	position:absolute;
 	width:100%;
 	overflow-x: hidden;
 }
+
 h2.name {
 	position:absolute;
 	top: $control-height;
@@ -40,28 +43,34 @@ h2.name {
 	font-size: 1.3em;
 	font-weight: normal;
 }
+
 #drumseq, #bseq {
-    @include flexbox;
+    display:flex;
     font-size:.8em;
     padding:.2em;
     width: 60%;
     float:left;
 }
+
 #drum-grid, #bass-grid {
-    @include flex(1);
+    flex:1;
     border: $border;
 }
+
 #drum-labels, #bass-labels {
 	width: 5em;
 }
+
 .row {
-    @include flexbox;
+    display:flex;
     border-bottom: $border-light;
     height: 1.2em;
 }
+
 .row:last-child {
 	border-bottom-width: 0;
 }
+
 .label {
     height: 1.2em;
     text-align: right;
@@ -85,23 +94,27 @@ $note-playing-color: complement($note-color);
 }
 
 .cell {
-    @include flex(1);
+    flex: 1;
 	border-left: $border-light;
 	position:relative;
 	background: $cell-color;
 }
+
 .cell:nth-of-type(4n + 1) {
 	border-left: $border;
 }
+
 .cell:first-child {
 	border-left-width: 0;
 }
+
 .cell-inner {
 	position:absolute;
 	height:100%;
 	left:0;
 	right:0;
 }
+
 .cell-inner.on {
 	border:1px solid darken($note-color,20%);
 	background:#fff;
@@ -215,21 +228,21 @@ $pattern-background: #eee;
     width: 100%;
     height: 100%;
     z-index:2;
-    @include flexbox;
-    @include transform(translate3d(101%,0,0));
-    @include transition-property(transform);
-    @include transition-duration(.4s);
+    display: flex;
+    transform: translate3d(101%,0,0);
+    transition-property: transform;
+    transition-duration: .4s;
 }
 
 #fx-panel.active {
-	@include transform(translate3d(0,0,0));
-	@include transition-property(transform);
-    @include transition-duration(.4s);
+	transform: translate3d(0,0,0);
+	transition-property: transform;
+    transition-duration: .4s;
 }
 
 .fx-section {
     //float: left;
-    @include flex(1);
+    flex: 1;
     margin: 1em;
     padding:.5em 1em;
     h4 {
@@ -309,7 +322,8 @@ $thumb-gradient: grayscale(adjust-color($thumb-color, $saturation:  9%,  $lightn
 	border: 1px solid $thumb-border;
 	border-radius: 100%;
 	box-shadow: inset 0 1px 0 0 $thumb-shadow;
-	@include linear-gradient($thumb-color, $thumb-gradient);
+	background-color: $thumb-color;
+	background-image: linear-gradient($thumb-color $thumb-gradient);
 }
 
 @include slider-thumb-active {
@@ -318,7 +332,8 @@ $thumb-gradient: grayscale(adjust-color($thumb-color, $saturation:  9%,  $lightn
     $gradient-color: grayscale(adjust-color($thumb-color, $saturation:  8%, $lightness: -14%));
     
     box-shadow: inset 0 1px 0 0 $shadow-color;
-    @include linear-gradient ($active-color, $gradient-color);
+    background-color:$active-color;
+    background-image: linear-gradient($active-color $gradient-color);
 }
 
 #modal {
@@ -335,21 +350,73 @@ $thumb-gradient: grayscale(adjust-color($thumb-color, $saturation:  9%,  $lightn
 	box-shadow:1px 1px 1px #bbb;
 	border-radius:.2em;
 	opacity:0;
-	@include transform(translateX(500%));
-	@include transition-property(transform, opacity);
-	@include transition-duration(0,.2s);
-	@include transition-delay(.2s,0);
+	transform: translateX(500%);
+	transition-property: transform, opacity;
+	transition-duration: 0,.2s;
+	transition-delay: .2s,0;
 	z-index:2;
 }
 
 #modal.active {
 	opacity:1;
-	@include transform(translateX(0));
-	@include transition-delay(0,0);
+	transform: translateX(0);
+	transition-delay: 0,0;
 }
 
 button {
-	@include button(#d5d5d5);
+	// button styles from bourbon: need to simplify!
+	border: 1px solid #b1b1b1;
+	border-radius: 3px;
+	box-shadow: inset 0 1px 0 0 #fbfbfb;
+	color: #333333;
+	display: inline-block;
+	font-size: inherit;
+	font-weight: bold;
+	background-color: #d5d5d5;
+	background-image: linear-gradient(#d5d5d5 #b9b9b9);
+	padding: 7px 18px;
+	text-decoration: none;
+	text-shadow: 0 1px 0 #dfdfdf;
+	background-clip: padding-box;
+	border: 1px solid #b8aaaa;
+	border-radius: 3px;
+	box-shadow: inset 0 1px 0 0 #fbfbfb;
+	color: #333333;
+	display: inline-block;
+	font-size: inherit;
+	font-weight: bold;
+	background-color: #d5d5d5;
+	background-image: linear-gradient(#d5d5d5 #bfb3b3);
+	padding: 7px 18px;
+	text-decoration: none;
+	text-shadow: 0 1px 0 #e2dcdc;
+	background-clip: padding-box;
+
+	&:hover:not(:disabled) {
+		box-shadow: inset 0 1px 0 0 #e2e2e2;
+		cursor: pointer;
+		background-color: #c8c8c8;
+		background-image: linear-gradient(#c8c8c8 #b1b1b1); 
+	}
+	&:active:not(:disabled), &:focus:not(:disabled) {
+		border: 1px solid #b1b1b1;
+		box-shadow: inset 0 0 8px 4px #aaaaaa, inset 0 0 8px 4px #aaaaaa; 
+	}
+	&:hover:not(:disabled) {
+		box-shadow: inset 0 1px 0 0 #e2e2e2;
+		cursor: pointer;
+		background-color: #c8c8c8;
+		background-image: linear-gradient(#c8c8c8 #b8abab); 
+	}
+	&:active:not(:disabled), &:focus:not(:disabled) {
+		border: 1px solid #b8aaaa;
+		box-shadow: inset 0 0 8px 4px #b0a4a4, inset 0 0 8px 4px #b0a4a4; 
+	}
+	&:disabled {
+		opacity: 0.5;
+		cursor: not-allowed; 
+	}
+	
 	font-size:.7em;
 	padding:.2em .8em;
 	font-weight: normal;
@@ -383,8 +450,8 @@ button {
 	display:none;
 	z-index:3;
 	.fx-wrapper {
-		@include flexbox;
-		@include flex-wrap(wrap);
+		display: flex;
+		flex-wrap: wrap;
 	}
 	&.active {
 		display:block;
@@ -418,8 +485,8 @@ button {
 	display:none;
 	z-index:4;
 	.fx-wrapper {
-		@include flexbox;
-		@include flex-wrap(wrap);
+		display: flex;
+		flex-wrap: wrap;
 	}
 	&.active {
 		display:block;

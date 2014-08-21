@@ -4,9 +4,6 @@
 * and loading saved patterns
 */
 
-/*global setParam, switchActivePattern, initCap, updateName, announce, showModal */
-/*global tempo, params */
-
 /**
 * load a pattern
 */
@@ -52,7 +49,8 @@ function load()
 			$(".pattern.active").removeClass("active");
 			
 			// pattern sequences and sequence modes
-			["bass", "drum"].forEach(function (name) {
+			// @todo - don't need forEach here anymore?
+			["drum"].forEach(function (name) {
 				var sequence, element, text, i;
 				
 				// active pattern
@@ -69,7 +67,7 @@ function load()
 					text = "";
 					if (sequence.length > 1 || sequence[0] !== 0)
 					{
-						text = i + 1;
+						text = sequence[i] + 1;
 					}
 					element.text(text).removeClass("closed").addClass("open");
 					
@@ -118,13 +116,9 @@ function save()
 			"tempo",
 			"saveName",
 			"drumPatterns",
-			"bassPatterns",
 			"drumSequence",
-			"bassSequence",
 			"drumMode",
-			"bassMode",
-			"currentDrumPattern",
-			"currentBassPattern"
+			"currentDrumPattern"
 		];
 	
 	// create the combined data object

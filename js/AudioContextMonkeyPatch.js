@@ -89,7 +89,7 @@ BiquadFilterNode.type and OscillatorNode.type.
             this.noteGrainOn( when, offset, duration );
           else
             this.noteOn( when );
-        }
+        };
       }
       if (!node.stop)
         node.stop = node.noteOff;

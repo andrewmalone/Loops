@@ -5,21 +5,12 @@
 * Don't define interactions here!
 */
 
-/*global drumInteractions, bassInteractions, drumPatternInteractions, bassPatternInteractions, initCap, setParam */
-/*global SOUNDS, NUMSTEPS, NUMPATTERNS, SEQUENCE_LENGTH, params, lfos */
-
-// global constants
-var BASS_MAX = 52;
-var BASS_MIN = 36;
-var BASS_RANGE = BASS_MAX - BASS_MIN;
-
 /**
 * Build everything
 */
 function initInterface()
 {
 	initDrumGrid();
-	initBassGrid();
 	initPatterns();
 	initSequence();
 	initSliders();
@@ -53,36 +44,6 @@ function initDrumGrid()
 		grid.append(row);
 	}
 	seq.append(labels).append(grid);
-}
-
-/**
-* Creates the grid for bass
-*/
-function initBassGrid()
-{
-	var bass, labels, grid, row, notename, label, cell, i, j;
-	bass = $("#bseq");
-	labels = $("<div id='bass-labels'>");
-	grid = $("<div id='bass-grid'>");
-	for (i = BASS_MAX; i >= BASS_MIN; i--)
-	{
-		row = $("<div class='row'>");
-		// http://stackoverflow.com/questions/712679/convert-midi-note-numbers-to-name-and-octave
-		notename = "C C#D D#E F F#G G#A A#B ".substr((i % 12) * 2, 2);
-		if (notename.indexOf("#") != -1)
-		{
-			row.addClass("blackNote");
-		}
-		label = $("<div class='label'>").text(notename);
-		labels.append(label);
-		for (j = 0; j < NUMSTEPS; j++)
-		{
-			cell = $("<div class='cell'><div class='cell-inner'><div class='note'></div></div></div>");
-			row.append(cell);
-		}
-		grid.append(row);
-	}
-	bass.append(labels).append(grid);
 }
 
 /**
@@ -213,13 +174,15 @@ function initSliders()
 	for (i = 0; i < lfos.length; i++)
 	{
 		sectionDiv = $("<div class='lfo'>").attr("name", lfos[i].slider);
-		["rate", "amount"].forEach(function (name)
+		var lfoParams = ["rate", "amount"];
+		for (var n in lfoParams)
 		{
+			var name = lfoParams[n];
 			slider = $("<div>");
 			$("<label>").text(name).appendTo(slider);
 			$("<input type='range' class='param'>").attr("name", lfos[i].slider + "-lfo-" + name).appendTo(slider);
 			slider.appendTo(sectionDiv);
-		});
+		}
 		sectionDiv.appendTo(document.body);
 	}
 }

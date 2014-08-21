@@ -8,8 +8,10 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro' rel='stylesheet' type='text/css'>
 <!-- @stylesheet loops -->
+<link href='css/loops.css' rel='stylesheet' type='text/css'>
 <!-- @javascript AudioContextMonkeyPatch -->
 <!-- @javascript js/* -->
+<script src='js/loops.js'></script>
 <!-- @include ga -->
 </head>
 <body>
@@ -39,22 +41,10 @@
 			<!-- @todo fix the layout here -->
 		<header>
 			<h3>Drums</h3>
-			<p>Click to toggle notes on/off. Drag up/down on notes to adjust the volume.</p>
 		</header>
 		<div id="drumseq"></div>
-		<p id="pattern-copy">Click to switch patterns. Duplicate a pattern by dragging and dropping. Patterns can also be dropped into the sequence row.</p>
 		<div id="drum-patterns" class="patterns"></div>
 		<div id="drum-sequence" class="sequence"></div>
-	</div>
-
-	<div class="panel" id="bass-panel">
-		<header>
-			<h3>Bass</h3>
-			<p>Click to toggle notes on/off. Drag up/down on notes to adjust the volume. Drag left/right to adjust note length.</p>
-		</header>
-		<div id="bseq"></div>
-		<div id="bass-patterns" class="patterns"></div>
-		<div id="bass-sequence" class="sequence"></div>
 	</div>
 
 

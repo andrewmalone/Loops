@@ -4,8 +4,6 @@
 */
 
 
-/*global AudioContext, createAudioGraph, loadSounds, start, stop, render, setupSave, setTempo, initInterface, load, initLFObuffers, drumInteractions, bassInteractions, drumPatternInteractions, bassPatternInteractions, params, setParam, tempo */
-
 // global variable for the audio context
 var context;
 
@@ -82,9 +80,9 @@ function continueSetup()
 	});
 	
 	$("#drumseq").addInteraction(".cell-inner", drumInteractions());
-	$("#bseq").addInteraction(".cell-inner", bassInteractions());
+	//$("#bseq").addInteraction(".cell-inner", bassInteractions());
 	$("#drum-patterns").addInteraction(".pattern", drumPatternInteractions());	
-	$("#bass-patterns").addInteraction(".pattern", bassPatternInteractions());
+	//$("#bass-patterns").addInteraction(".pattern", bassPatternInteractions());
 	
 	$(".mode button").addInteraction({
 		click: function (data)

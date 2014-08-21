@@ -3,30 +3,20 @@
 * Switches audio processing to offline mode and renders to .wav
 */
 
-// global functions...
-/*global stop, OfflineAudioContext, Blob, createAudioGraph, setParam, playDrumSound, playBassSounds, , playBassSound, AudioContext, showModal */
-
-// global vars (readonly)
-/*global bassMode, bassSequence, bassPatterns, drumMode, drumSequence, drumPatterns, tempo, BEATS_PER_MEASURE, STEPS_PER_BEAT, NUMSTEPS, SOUNDS, BASS_MAPPING, buffers, params */
-
-// global vars
-/*global context: true, drumSequencePosition: true, currentDrumPattern: true, bassSequencePosition: true, currentBassPattern: true, scheduledSounds: true */
-
 /**
 * Main render function
 * Note - may be able to refactor common code from the main sequencer loop
 */
 function render()
 {
-	var drumLength, bassLength, measures, stepTime, steps, volumes, bass, time, measureCount, step, name, note, i, j, len_j;
+	var drumLength, measures, stepTime, steps, volumes, time, measureCount, step, name, i, j, len_j;
 
 	// stop playback
 	stop();
 	
 	// calculate length based on sequence modes
-	bassLength = bassMode == "loop" ? 1 : bassSequence.length;
 	drumLength = drumMode == "loop" ? 1 : drumSequence.length;
-	measures = Math.max(bassLength, drumLength);	
+	measures = drumLength;
 	
 	// switch to offline mode
 	context = new OfflineAudioContext(2, ((60 / tempo) * (BEATS_PER_MEASURE * measures)) * context.sampleRate, context.sampleRate);
@@ -47,18 +37,12 @@ function render()
 		drumSequencePosition = 0;
 		currentDrumPattern = drumSequence[0];
 	}
-	if (bassMode == "sequence")
-	{
-		bassSequencePosition = 0;
-		currentDrumPattern = bassSequence[0];
-	}
 
 	// loop through the measures and schedule all the sounds
 	for (measureCount = 0; measureCount < measures; measureCount++)
 	{
 		steps = drumPatterns[currentDrumPattern].steps;
 		volumes = drumPatterns[currentDrumPattern].volumes;
-		bass = bassPatterns[currentBassPattern];
 		
 		// loop through the steps
 		for (step = 0; step < NUMSTEPS; step++)
@@ -74,26 +58,15 @@ function render()
 						if (scheduledSounds[j].buffer._mute == buffers[name]._mute) 
 						{
 							scheduledSounds[j].stop(time + 5 / tempo);
+							scheduledSounds.splice(j, 1);
+							j--;
+							len_j--;
 						}
 					}
 					playDrumSound(buffers[name], time, volumes[i][step]);
 				}
 			}
 			
-			// check for bass
-			if (bass[step].note !== 0)
-			{
-				// play the note...
-				note = BASS_MAPPING[bass[step].note];
-				playBassSound(
-					buffers[note.sample],
-					time,
-					bass[step].volume,
-					bass[step].duration * stepTime,
-					note.pitch,
-					note.tune
-				);
-			}
 			time += stepTime;	
 		}
 		
@@ -105,15 +78,6 @@ function render()
 				drumSequencePosition = 0;
 			}
 			currentDrumPattern = drumSequence[drumSequencePosition];
-		}
-		if (bassMode == "sequence")
-		{
-			bassSequencePosition = (bassSequencePosition + 1) % bassSequence.length;
-			if (bassSequence[bassSequencePosition] === null)
-			{
-				bassSequencePosition = 0;
-			}
-			currentBassPattern = bassSequence[bassSequencePosition];
 		}
 	}
 	

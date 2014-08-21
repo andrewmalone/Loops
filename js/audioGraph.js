@@ -3,8 +3,6 @@
 * Creates the audio nodes, fx and routing
 */
 
-/*global context, SOUNDS, tempo: true, setParam, addLFO */
-
 // set up global variables
 var params = {};
 // curves to use for the waveshaper;
@@ -19,15 +17,13 @@ function createAudioGraph()
 	// set up the main nodes
 	var g = {
 		input: {
-			drum: {},
-			bass: context.createGain()
+			drum: {}
 		},
 		drumFx: [],
 		output: context.createGain(),
 		master: context.createGain(),
 		drumMaster: context.createGain(),
 		drumMasterFx: createFx("drum"),
-		bassFx: createFx("bass"),
 		masterFx: createFx("master")
 	};
 	
@@ -49,10 +45,7 @@ function createAudioGraph()
 	// build connections
 	g.drumMaster.connect(g.drumMasterFx.input);
 	g.drumMasterFx.output.connect(g.master);
-	
-	g.input.bass.connect(g.bassFx.input);
-	g.bassFx.output.connect(g.master);
-	
+		
 	g.master.connect(g.masterFx.input);
 	g.masterFx.output.connect(g.output);
 	
@@ -66,14 +59,6 @@ function createAudioGraph()
 		step: 0.01,
 		param: g.drumMaster.gain
 	};
-	
-	params["bass-master-level"] = {
-		max: 1,
-		min: "0",
-		value: 1,
-		step: 0.01,
-		param: g.input.bass.gain
-	};
 		
 	return g;
 }
@@ -84,15 +69,13 @@ function createAudioGraph()
 function createFx(name)
 {
 	var fx = {
-		comp: createCompressor(name),
 		filter: createFilter(name),
 		delay: createDelay(name),
 		shaper: createShaper(name)
 	};
 	
 	fx.input = fx.filter.input;
-	fx.filter.output.connect(fx.comp.input);
-	fx.comp.output.connect(fx.delay.input);
+	fx.filter.output.connect(fx.delay.input);
 	fx.delay.output.connect(fx.shaper.input);
 	fx.output = fx.shaper.output;
 	return fx;

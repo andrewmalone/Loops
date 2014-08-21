@@ -3,8 +3,6 @@
 * Interface update functions
 */
 
-/*globals NUMSTEPS drumPatterns, currentDrumPattern, BASS_RANGE, BASS_MIN, bassPatterns, currentBassPattern, makeLFOCurve */
-
 // global variable for pattern name
 var saveName = "";
 
@@ -66,41 +64,6 @@ function drawCurrentDrumPattern()
 }
 
 /**
-* Draw the current bass pattern into the bass grid
-*/
-function drawCurrentBassPattern()
-{
-	$("#bseq .cell-inner").each(function (index) {
-		var row, col, note, volume, duration, i, width, element;
-		row = (BASS_RANGE - getRow(index)) + BASS_MIN,
-		col = getCol(index);
-		note = bassPatterns[currentBassPattern][col].note;
-		volume = bassPatterns[currentBassPattern][col].volume;
-		duration = bassPatterns[currentBassPattern][col].duration;
-		// reset the cell
-		$(this).removeClass().addClass("cell-inner").css("right", 0);
-		
-		if (note == row)
-		{
-			$(this).addClass("on");
-			$(this).children(".note").css("opacity", volume);
-			width = 0;
-			element = $(this).parent();
-			for (i = 0; i < duration - 1; i++)
-			{
-				element = element.next();
-				width -= element.outerWidth();
-			}
-			$(this).css("right", width);
-			if (duration > 1)
-			{
-				$(this).addClass("dur d" + (col + duration == NUMSTEPS ? 0 : col + duration));
-			}
-		}
-	});
-}
-
-/**
 * Utility function to calculate a volume based on mouse movement
 * Translates pixel variance to 0-1 volume range
 */
@@ -141,6 +104,7 @@ function initCap(string)
 * Switches a pattern (for drum or bass) - updates the pattern list display
 * and the pattern grid
 */
+// @todo - factor out type switching here?
 function switchActivePattern(index, type)
 {
 	var element;
