@@ -31,7 +31,8 @@ body {
 #wrapper {
 	position:absolute;
 	width:100%;
-	overflow-x: hidden;
+	// not sure why this was here - removing to fix clipping bug
+	// overflow-x: hidden;
 }
 
 h2.name {
