@@ -1,4 +1,3 @@
-/*global context, params, STEPS_PER_BEAT, tempo, config */
 
 var lfo_curves = {};
 // var lfo;

@@ -4,8 +4,6 @@
 */
 
 
-/*global AudioContext, createAudioGraph, loadSounds, start, stop, render, setupSave, setTempo, initInterface, load, initLFObuffers, drumInteractions, bassInteractions, drumPatternInteractions, bassPatternInteractions, params, setParam, tempo */
-
 // global variable for the audio context
 var context;
 

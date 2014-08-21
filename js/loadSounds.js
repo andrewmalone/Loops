@@ -3,8 +3,6 @@
 * loads all sounds into the buffers object for use in playback
 */
 
-/*global SOUNDS, announce, continueSetup, context */
-
 // global object to hold the loaded sounds
 var buffers = {};
 

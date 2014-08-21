@@ -4,8 +4,6 @@
  * functions for looping and audio playback
  */
 
-/*global context, buffers, setActiveSequence, switchActivePattern, SOUNDS, requestAnimFrame, cancelAnimFrame, BASS_MAPPING, drawStep, resetLFOs, checkLFOs, CustomEvent */
-
 // set some global variables
 var BEATS_PER_MEASURE = 4;
 var STEPS_PER_BEAT = 4;

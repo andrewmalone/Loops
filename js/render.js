@@ -3,15 +3,6 @@
 * Switches audio processing to offline mode and renders to .wav
 */
 
-// global functions...
-/*global stop, OfflineAudioContext, Blob, createAudioGraph, setParam, playDrumSound, AudioContext, showModal */
-
-// global vars (readonly)
-/*global drumMode, drumSequence, drumPatterns, tempo, BEATS_PER_MEASURE, STEPS_PER_BEAT, NUMSTEPS, SOUNDS, buffers, params */
-
-// global vars
-/*global context: true, drumSequencePosition: true, currentDrumPattern: true, scheduledSounds: true */
-
 /**
 * Main render function
 * Note - may be able to refactor common code from the main sequencer loop

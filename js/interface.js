@@ -3,8 +3,6 @@
 * Interface update functions
 */
 
-/*globals NUMSTEPS drumPatterns, currentDrumPattern, makeLFOCurve */
-
 // global variable for pattern name
 var saveName = "";
 

@@ -5,9 +5,6 @@
 * Don't define interactions here!
 */
 
-/*global initCap, setParam */
-/*global SOUNDS, NUMSTEPS, NUMPATTERNS, SEQUENCE_LENGTH, params, lfos */
-
 /**
 * Build everything
 */

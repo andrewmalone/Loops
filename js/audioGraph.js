@@ -3,8 +3,6 @@
 * Creates the audio nodes, fx and routing
 */
 
-/*global context, SOUNDS, tempo: true, setParam, addLFO */
-
 // set up global variables
 var params = {};
 // curves to use for the waveshaper;

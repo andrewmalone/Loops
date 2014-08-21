@@ -4,9 +4,6 @@
 * and loading saved patterns
 */
 
-/*global setParam, switchActivePattern, initCap, updateName, announce, showModal */
-/*global tempo, params */
-
 /**
 * load a pattern
 */
