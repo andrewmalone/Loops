@@ -1,6 +1,6 @@
 module.exports = {
 	main: {
-		src: ['js/AudioContextMonkeyPatch.js', 'js/sounds.js', 'js/*.js'],
+		src: ['dev/js/AudioContextMonkeyPatch.js', 'dev/js/sounds.js', 'dev/js/*.js'],
 		dest: 'build/js/loops.js'
 	}
 }

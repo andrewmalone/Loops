@@ -1,6 +1,6 @@
 module.exports = {
 	dev: {
-		files: ['*.html', 'css/*.scss', 'js/*.js'],
+		files: ['dev/*.html', 'dev/css/*.scss', 'dev/js/*.js'],
 		tasks: 'build',
 		options: {
 			livereload: true
