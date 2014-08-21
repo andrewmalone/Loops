@@ -53,7 +53,7 @@ function continueSetup()
 	}});
 	
 	$("#tempo")
-		.on("change", function () {
+		.on("input", function () {
 			setTempo($(this).val());
 			$("output[for='tempo']").val($(this).val());
 		});
@@ -134,7 +134,7 @@ function continueSetup()
 				$("<output>").attr("for", element.attr("name")).val(element.val())
 			);
 		})
-		.on("change", function ()
+		.on("input", function ()
 		{
 			var name = $(this).attr("name"),
 				val = $(this).val();
