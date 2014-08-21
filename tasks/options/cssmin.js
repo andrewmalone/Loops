@@ -1,7 +1,8 @@
 module.exports = {
 	build: {
 		expand: true,
-		src: ['build/css/*.css'],
-		dest: 'build/css/'
+		cwd: 'build/css/',
+		src: ['*.css'],
+		dest: 'build/css'
 	}
 }
