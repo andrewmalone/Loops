@@ -177,13 +177,15 @@ function initSliders()
 	for (i = 0; i < lfos.length; i++)
 	{
 		sectionDiv = $("<div class='lfo'>").attr("name", lfos[i].slider);
-		["rate", "amount"].forEach(function (name)
+		var lfoParams = ["rate", "amount"];
+		for (var n in lfoParams)
 		{
+			var name = lfoParams[n];
 			slider = $("<div>");
 			$("<label>").text(name).appendTo(slider);
 			$("<input type='range' class='param'>").attr("name", lfos[i].slider + "-lfo-" + name).appendTo(slider);
 			slider.appendTo(sectionDiv);
-		});
+		}
 		sectionDiv.appendTo(document.body);
 	}
 }
