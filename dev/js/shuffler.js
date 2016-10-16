@@ -4,10 +4,10 @@ function createShuffler()
 {
 	if (!config.shuffler) { return null; }
 	var fx = {
-		input: context.createGainNode(),
-		output: context.createGainNode(),
-		dry: context.createGainNode(),
-		wet: context.createGainNode(),
+		input: context.createGain(),
+		output: context.createGain(),
+		dry: context.createGain(),
+		wet: context.createGain(),
 		capture: context.createScriptProcessor(4096),
 		captureBuffers: [],
 		playbackBuffers: [],
@@ -20,7 +20,7 @@ function createShuffler()
 	fx.input.connect(fx.dry);
 	fx.dry.connect(fx.output);
 	fx.wet.connect(fx.output);
-	fx.dry.gain.value = 0;
+	fx.dry.gain.value = 0.5;
 	fx.wet.gain.value = 1;
 	
 	fx.capture.connect(context.destination);
