@@ -20,7 +20,7 @@ function createShuffler()
 	fx.input.connect(fx.dry);
 	fx.dry.connect(fx.output);
 	fx.wet.connect(fx.output);
-	fx.dry.gain.value = 0.5;
+	fx.dry.gain.value = 0;
 	fx.wet.gain.value = 1;
 	
 	fx.capture.connect(context.destination);
